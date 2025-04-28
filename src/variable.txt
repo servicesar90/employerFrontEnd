@@ -1,0 +1,59 @@
+      companyName: '',
+      jobTitle: '',
+      jobType: 'Full Time',
+      nightShift: false,
+      workLocationType: '',
+      location: "",
+      payType: '',
+      minimumSalary: "",
+      maximumSalary: "",
+      incentive: "",
+      perks: [],
+      joiningfee: "",
+      joiningFeeAmount: "",
+      joiningFeesAmountReason: "",
+      joiningFeesAmountReasonDetail: "",
+      joiningFeeAmountTime: "",
+      education: '',
+      english: '',
+      experience: '',
+      experienceLevel: "",
+      specialization: "",
+      gender: '',
+      age: '',
+      languages: '',
+      distance: '',
+      skills: '',
+      jobDescription: '',
+      walkIn: '',
+      walkInAddress: "",
+      walkInStartDate: "",
+      walkInEndDate: "",
+      walkInStartTime: "",
+      walkInInstructions: "",
+      contactPreference: '',
+      otherRecruiterName: "",
+      otherRecruiterNumber: "",
+      otherRecruiterEmail: "",
+      candidateType: "",
+      notificationPreference: ""
+
+
+
+
+job type: "full-time", "part-time", "contract", "internship"
+location type: "work-from-office", "work-from-home", "field-work"
+pay type: "fixed-only", "fixed-incentive", "incentive-only"
+joining fee time: "before-interview", "after-interview", deducted-from-salary
+joining fee reason: "inventory-charge", "security-deposit", "registration-fees", commission, IRDA-exam, other-reason
+perks: 'Flexible Working Hours','Weekly Payout', 'Overtime Pay','Joining Bonus', 'Annual Bonus', 'PF', 'Travel Allowance (TA)', 'Petrol Allowance','Mobile Allowance','Internet Allowance','Laptop', 'Health Insurance','ESI (ESIC)', 'Food/Meals', 'Accommodation', '5 Working Days', 'One-Way Cab','Two-Way Cab'
+education type: '10th Or Below 10th', '12th Pass', 'Diploma', 'ITI', 'Graduate', 'Post Graduate'
+gender: 'Male', 'Female', 'Other',
+distance: '<10km', '10-20km', '>20km',
+languages: 'Hindi', 'English', 'Tamil',
+skills: 'Communication', 'Sales', 'Excel',
+age: '18-25', '26-35', '36+',
+specialization: 'Marketing', 'Finance', 'HR'
+englishLevels = 'No English', 'Basic English', 'Good English'
+experienceOptions ='Any', 'Experienced Only', 'Fresher Only';
+experienceLevelOptions = "6 Months", "1 year", "2 year", "3 year", "4 year", "5 year", "5+ year"

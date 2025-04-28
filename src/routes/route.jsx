@@ -1,0 +1,50 @@
+import React from 'react';
+import { Route, Routes, Outlet } from 'react-router-dom';
+import Home from '../views/home';
+import Header from '../components/ui/navbar'
+import Footer from '../components/ui/footer'
+import EmployerHome from '../views/employerHome';
+import ProfileUpdate from '../components/modals/otherModals/profileUpdateModal';
+import Jobs from '../components/pages/jobs';
+import PostJob from '../components/modals/otherModals/createJobModal';
+import CandidateManagementPage from '../components/pages/jobDetail';
+import SearchCandidatesForm from '../components/modals/otherModals/searchCandidateModal';
+import UnlockedCandidates from '../components/pages/unlockCandidate';
+import ApplicationsReportCard from '../components/ui/cards/ReportCard';
+import DownloadApplicationsCard from '../components/modals/otherModals/reportDownloadModal';
+
+
+function Layout() {
+    return (
+      <>
+        <Header />
+        <Outlet />
+        <Footer />
+      </>
+    )
+  }
+  
+
+
+export default function Routess() {
+    return (
+        <Routes>
+            <Route path='/' element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path='/employerHome' element={<EmployerHome />}>
+                    <Route index element={<Jobs />} />
+                    <Route path='Jobs' element={<Jobs />} />
+                    <Route path="jobsDetail/:id" element={<CandidateManagementPage />} />
+                    <Route path='SearchCandidates' element={<SearchCandidatesForm />} />
+                    <Route path='UnlockedCandidates' element={<UnlockedCandidates />} />
+                    <Route path='Reports' element={<ApplicationsReportCard />} />
+                    <Route path="downloadReport" element={<DownloadApplicationsCard />} />
+                </Route>
+
+                <Route path='/jobsModal' element={<PostJob />} />
+                <Route path='/profile' element={<ProfileUpdate />} />
+                
+            </Route>
+        </Routes>
+    )
+}
