@@ -9,7 +9,7 @@ export default function Jobs() {
     const navigate = useNavigate();
     const jobs= employer.jobs;
 
-    if (jobs.length > 0) {
+    if (jobs.length == 0) {
         return (
             <>
             <Button variant="contained" onClick={() => navigate("/jobsModal")} color="success">
@@ -27,7 +27,7 @@ export default function Jobs() {
         )
     } else {
         return (
-            <div className="min-h-screen bg-gray-100 p-6">
+            <div className="min-h-screen w-full bg-gray-100 p-6">
                 <Button variant='contained' onClick={() => navigate("/profile")} color='success'>Update profile</Button>
                 <div className="max-w-6xl mx-auto">
                     <div className="flex items-center justify-between py-4">

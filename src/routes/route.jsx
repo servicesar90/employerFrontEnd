@@ -12,14 +12,15 @@ import SearchCandidatesForm from '../components/modals/otherModals/searchCandida
 import UnlockedCandidates from '../components/pages/unlockCandidate';
 import ApplicationsReportCard from '../components/ui/cards/ReportCard';
 import DownloadApplicationsCard from '../components/modals/otherModals/reportDownloadModal';
+import LoginPageWithPopup from '../views/landingPage';
 
 
 function Layout() {
     return (
       <>
-        <Header />
+       
         <Outlet />
-        <Footer />
+        
       </>
     )
   }
@@ -30,7 +31,7 @@ export default function Routess() {
     return (
         <Routes>
             <Route path='/' element={<Layout />}>
-                <Route index element={<Home />} />
+                <Route index element={<LoginPageWithPopup />} />
                 <Route path='/employerHome' element={<EmployerHome />}>
                     <Route index element={<Jobs />} />
                     <Route path='Jobs' element={<Jobs />} />

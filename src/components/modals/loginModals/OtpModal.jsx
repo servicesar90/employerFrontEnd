@@ -44,7 +44,7 @@ export default function OtpModal({  onClose, mobile }) {
       if(response){
         if(response.data.user.profile){
           
-          navigate("/jobs")
+          navigate("/employerHome/jobs")
         }else{
         
           navigate("/profile")

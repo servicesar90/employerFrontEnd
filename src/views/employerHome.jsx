@@ -1,21 +1,28 @@
 import React from 'react';
-
+import Header from '../components/ui/header';
 import Sidebar from '../components/ui/sidebar';
 import { Outlet } from 'react-router-dom';
 
 const EmployerHome = () => {
 
-  
+
   return (
-    <div className="flex">
-    <Sidebar />
-    <div className="flex-1 pl-15">
-      {/* Your main content here */}
-      <h2 className="text-xl font-semibold">Dashboard</h2>
-      <Outlet />
-    </div>
-  </div>
+    <div className='flex flex-col w-full'>
+      <div className='flex flex-col w-full'>
+        <Header />
+      </div>
+  
+    <div className="flex flex-row w-full" >
+      <div className='flex w-[15rem]'>
+        <Sidebar />
+      </div>
+
+      <div className="flex-1 w-[85rem] ">
     
+        <Outlet />
+      </div>
+    </div>
+    </div>
   );
 };
 

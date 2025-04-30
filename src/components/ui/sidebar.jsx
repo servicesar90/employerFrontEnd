@@ -34,12 +34,12 @@ const Sidebar = () => {
   ];
 
   return (
-    <Drawer
-      variant="permanent"
-      anchor="left"
-      classes={{ paper: 'w-60 bg-white shadow-md' }}
-    >
-      <div className="h-full flex flex-col p-4">
+    // <Drawer
+    //   variant="permanent"
+    //   anchor="left"
+    //   classes={{ paper: 'w-60 bg-white shadow-md' }}
+    // >
+      <div className="h-full flex flex-col pt-4">
         <h1 className="text-2xl font-bold mb-6">MyApp</h1>
         <List className="space-y-2">
           {navItems.map((item, index) => (
@@ -92,7 +92,7 @@ const Sidebar = () => {
           ))}
         </List>
       </div>
-    </Drawer>
+    // </Drawer>
   );
 };
 
