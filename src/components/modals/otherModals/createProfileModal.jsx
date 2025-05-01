@@ -1,5 +1,5 @@
 import { Circle, FileQuestion, LogOut } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 import { Checkbox, FormControlLabel, Box, TextField, Paper, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 const companySizes = [
