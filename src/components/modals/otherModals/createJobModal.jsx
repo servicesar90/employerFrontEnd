@@ -144,39 +144,44 @@ const PostJob = () => {
   };
 
   return (
-    <Box className="p-6 bg-gray-50 min-h-screen">
-      <Typography variant="h5" fontWeight="bold" className="mb-6">
+    <Box className="p-6 bg-gray-200 min-h-screen">
+      <Typography variant="h5" fontWeight="bold" className="mb-6 flex justify-start" sx={{ fontSize: "1.5rem" }}>
         Post a new job
       </Typography>
 
-      <Stepper activeStep={currentStep} alternativeLabel className="mb-8">
-        {steps.map((label, index) => (
-          <Step key={index}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+
+      <div className='mt-2 pt-6 h-auto bg-white rounded-lg'>
+        <Stepper activeStep={currentStep} alternativeLabel className="mb-8">
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </div>
+
 
       {currentStep === 0 &&
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box className="bg-white p-6 rounded shadow">
+          <Box className="bg-white p-6 flex justify-start flex-col items-start rounded shadow">
             {/* Job Details Section */}
-            <Typography variant="h6" className="mb-2">
+            <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem"}}>
               Job details
             </Typography>
-            <Typography variant="body2" className="text-gray-600 mb-2">
+            <Typography variant="body2" className="mb-2" sx={{color: "gray", fontSize: "0.8rem"}}>
               We use this information to find the best candidates for the job.
             </Typography>
 
-            <Box className="mt-4">
-              <Typography className="text-sm font-medium">
+            <Box className="mt-4 flex justify-start flex-col items-start" >
+              <Typography sx={{fontWeight: 500, fontSize: "0.9rem", color:  "#464343"}}>
                 Company you belong to <strong>GAME OF TRADING ASS.</strong>
               </Typography>
 
-              <Box className="flex items-center gap-2 mt-4">
+              <Box className="flex items-center w-full gap-2 mt-4">
                 <Controller
                   name="companyName"
                   control={control}
+                  
                   rules={{ required: 'Company name is required' }}
                   render={({ field }) => (
                     <>
@@ -184,16 +189,17 @@ const PostJob = () => {
                         {...field}
                         label="Company you're hiring for"
                         fullWidth
+                        size='small'
                         error={!!errors.companyName}
                         helperText={errors.companyName?.message}
                       />
-                      <Button variant="text">Change</Button>
+                      <Button variant="text" sx={{color: "green", fontSize: "1rem", fontWeight: 700}}>Change</Button>
                     </>
                   )}
                 />
               </Box>
 
-              <Box className="mt-4">
+              <Box className="mt-4 w-1/2">
                 <Controller
                   name="jobTitle"
                   control={control}
@@ -202,7 +208,7 @@ const PostJob = () => {
                     <TextField
                       {...field}
                       label="Eg. Accounant"
-
+                      size='small'
                       fullWidth
                       error={!!errors.jobTitle}
                       helperText={errors.jobTitle?.message}
@@ -211,26 +217,34 @@ const PostJob = () => {
                 />
               </Box>
 
-              <Box className="mt-6">
+              <Box className="mt-6 flex flex-col items-start">
                 <Typography className="mb-2 font-medium">Type of Job *</Typography>
                 <Controller
-                  name="jobType"
-                  control={control}
-                  rules={{ required: 'Job type is required' }}
-                  render={({ field }) => (
-                    <ToggleButtonGroup
-                      exclusive
-                      {...field}
-                      onChange={(e, value) => value && field.onChange(value)}
-                      className="flex flex-wrap"
-                    >
-                      <ToggleButton value="full-time">Full Time</ToggleButton>
-                      <ToggleButton value="part-time">Part Time</ToggleButton>
-                      <ToggleButton value="contract">Contract</ToggleButton>
-                      <ToggleButton value="internship">Internship</ToggleButton>
-                    </ToggleButtonGroup>
-                  )}
-                />
+  name="jobType"
+  control={control}
+  rules={{ required: 'Job type is required' }}
+  render={({ field }) => (
+    <div className="flex flex-wrap gap-4">
+      {["full-time", "part-time", "internship", "contract"].map((type) => {
+       
+        return (
+          <div
+            key={type}
+            onClick={() => field.onChange(type)}
+            className={`cursor-pointer px-4 py-2 rounded-full border ${
+              field.value === type
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+            }`}
+          >
+            {type.replace("-", " ")}
+          </div>
+        );
+      })}
+    </div>
+  )}
+/>
+
               </Box>
 
               <Box className="mt-4">

@@ -24,7 +24,7 @@ const UnlockedCandidates = () => {
   };
 
   return (
-    <div className="flex flex-col w-full ml-auto p-4 pl-60 bg-gray-50">
+    <div className="flex flex-col w-full p-4 bg-gray-50">
   {/* Header */}
   <div className="flex justify-between items-center mb-6">
     <h1 className="text-2xl font-bold">Unlocked Candidates</h1>
@@ -32,7 +32,7 @@ const UnlockedCandidates = () => {
       <Button variant="contained" color="primary" className="mr-4">
         <Download size={20} /> Download Excel
       </Button>
-      <div className="text-sm">46 candidates</div>
+      <div className="text-lg ml-2 font-bold ">46 candidates</div>
     </div>
   </div>
 

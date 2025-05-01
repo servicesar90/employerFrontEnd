@@ -5,7 +5,7 @@ const ApplicationsReportCard = () => {
 
     const navigate= useNavigate();
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm w-full max-w-md">
+    <div className="bg-white border border-gray-200 rounded-lg p-6 alig shadow-sm w-full max-w-md">
       <div className="flex items-start gap-4">
         {/* Icon */}
         <div className="bg-gray-100 p-2 rounded-md">

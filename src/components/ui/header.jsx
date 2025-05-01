@@ -1,21 +1,22 @@
 import { Menu, HelpCircle, Database } from "lucide-react";
 
-const Header = () => {
+const Header = ({onMenuClick}) => {
   return (
     <header className="w-full flex items-center justify-between px-6 py-3 bg-white shadow-sm">
       {/* Left: Logo and Menu */}
       <div className="flex items-center gap-4">
-        <Menu className="w-6 h-6 text-gray-700 cursor-pointer" />
+        <Menu className="w-6 h-6 text-gray-700 cursor-pointer"
+        onClick={onMenuClick} />
         <h1 className="text-2xl font-semibold text-gray-800">
-          apna<span className="text-green-500">Hire</span>
+          Talent<span className="text-green-500">Nest</span>
         </h1>
       </div>
 
       {/* Right: Actions */}
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
-          <Database className="w-5 h-5 text-gray-600" />
-          <span>Available Credits</span>
+          {/* <Database className="w-5 h-5 text-gray-600" /> */}
+          {/* <span>Available Credits</span> */}
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
           <HelpCircle className="w-5 h-5 text-gray-600" />
@@ -31,3 +32,6 @@ const Header = () => {
 };
 
 export default Header;
+
+
+

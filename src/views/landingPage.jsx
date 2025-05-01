@@ -28,14 +28,14 @@ function LoginPageWithPopup() {
           </div>
           <div className="flex items-center flex-row gap-4 pl-4">
             <button
-              onClick={()=>setShowLoginModal(true)}
+              onClick={()=>setShowLoginModal(!showLoginModal)}
               className="text-[#36A85C] bg-white px-4 py-1 rounded text-sm font-semibold"
             >
               Employer Login
             </button>
 
             <button
-              onClick={() => setShowLoginModal(true)}
+              onClick={() => setShowLoginModal(!showLoginModal)}
               className="bg-[#36A85C] text-white px-4 py-1 rounded text-sm font-semibold"
             >
               Candidate Login

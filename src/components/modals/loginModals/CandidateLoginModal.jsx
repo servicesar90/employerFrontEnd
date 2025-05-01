@@ -3,6 +3,7 @@ import { handlelogin } from "../../../API/ApiFunctions.jsx";
 
 export default function CandidateLoginModal({ onClose, mobile, setMobile }) {
   const [countryCode, setCountryCode] = useState("+91");
+  const [showModal, setShowModal]= useState(true);
 
 
   const handleChangeMobile = async (e) => {
@@ -26,13 +27,15 @@ export default function CandidateLoginModal({ onClose, mobile, setMobile }) {
 
   const isValidMobile = /^\d{10}$/.test(mobile);
 
+  console.log(showModal)
 
+if(!showModal) return null
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full max-w-md p-6 shadow-lg relative">
         <button
-          onClick={onClose}
+          onClick={()=>setShowModal(!showModal)}
           className="absolute top-2 right-3 text-gray-500 hover:text-gray-700 text-xl"
         >
           &times;
