@@ -7,8 +7,6 @@ import {
   Stepper,
   Step,
   StepLabel,
-  ToggleButtonGroup,
-  ToggleButton,
   Checkbox,
   FormControlLabel,
   FormControl,
@@ -18,6 +16,7 @@ import {
   Radio
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
+import { Plus, X } from 'lucide-react';
 
 const steps = ['Job details', '', '', '', ''];
 
@@ -154,7 +153,7 @@ const PostJob = () => {
         <Stepper activeStep={currentStep} alternativeLabel className="mb-8">
           {steps.map((label, index) => (
             <Step key={index}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel >{label}</StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -179,7 +178,11 @@ const PostJob = () => {
               </Typography>
             </Box>
 
-            <Box className="flex items-center w-full gap-2 mt-4">
+            <Box className="flex items-center flex-col w-full gap-2 mt-4">
+            <Typography variant="h6" className="self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+              Company You are Hiring For
+            </Typography>
+            <Box className="flex items-start flex-row w-full gap-2 mt-2">
               <Controller
                 name="companyName"
                 control={control}
@@ -198,9 +201,14 @@ const PostJob = () => {
                   </>
                 )}
               />
+              </Box>
             </Box>
 
-            <Box className="mt-4 w-1/2">
+            <Box className="mt-4 w-1/2 flex flex-col items-start">
+            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+            Job title / Designation
+            </Typography>
+            <Box className="flex items-start flex-row w-full gap-2 mt-2">
               <Controller
                 name="jobTitle"
                 control={control}
@@ -216,10 +224,13 @@ const PostJob = () => {
                   />
                 )}
               />
+              </Box>
             </Box>
 
             <Box className="mt-6 flex flex-col items-start">
-              <Typography className="mb-2 font-medium">Type of Job *</Typography>
+            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+            Type of Job
+            </Typography>
               <Controller
                 name="jobType"
                 control={control}
@@ -337,15 +348,15 @@ const PostJob = () => {
 
           {/* Pay Type Section */}
           <Box className="bg-white p-6 mt-2 flex justify-start flex-col items-start rounded shadow">
-          <Typography className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>Compensation</Typography>
+            <Typography className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>Compensation</Typography>
             <Typography className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>Job postings with right salary & incentives will help you find the right candidates.</Typography>
             <Box className="mt-6 flex flex-col items-start">
               <Typography className="mb-2 font-medium">What is the pay type? *</Typography>
 
               <Controller
-                 name="payType"
-                 control={control}
-                 rules={{ required: 'Pay type is required' }}
+                name="payType"
+                control={control}
+                rules={{ required: 'Pay type is required' }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
                     {["fixed-only", "fixed-incentive", "incentive-only"].map((type) => {
@@ -370,7 +381,7 @@ const PostJob = () => {
                   </div>
                 )}
               />
-            
+
               {errors.payType && (
                 <Typography variant="caption" color="error">
                   {errors.payType.message}
@@ -378,163 +389,186 @@ const PostJob = () => {
               )}
             </Box>
 
-              <div className='w-full flex flex-row'>
-              <div className='w-1/2 flex flex-row'>
-            {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
-              <Box className="mt-6 w-1/2">
-                <Typography className="mt-4 mb-2  font-medium">Minimum Salary</Typography>
-                <Controller
-                  name="minimumSalary"
-                  control={control}
-                  rules={{
-                    required: 'Minimum Salary is required',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'Only numeric values are allowed',
-                    },
-                    validate: (value) => {
-                      const numericValue = Number(value);
-                      if (numericValue < 1000) {
-                        return "Minimum salary should be at least ₹1000";
-                      }
-                      if (numericValue > 10000000) {
-                        return "Salary cannot exceed ₹1 crore";
-                      }
-                      return true;
-                    },
-                  }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      value={field.value || ""}
-                      label="Minimum Salary"
-                      type="tel"
-                      size='small'
-                      fullWidth
-                      placeholder="Enter Minimum Salary"
-                      error={!!errors.minimumSalary}
-                      helperText={errors.minimumSalary?.message}
+            <div className='w-full flex flex-row'>
+              <div className={`${selectedPayType === "incentive-only" ? "hidden" : "w-1/2 flex flex-row"}`}>
+                {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
+                  <Box className="mt-6 w-1/2">
+                    <Typography className="mt-4 mb-2  font-medium">Minimum Salary</Typography>
+                    <Controller
+                      name="minimumSalary"
+                      control={control}
+                      rules={{
+                        required: 'Minimum Salary is required',
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: 'Only numeric values are allowed',
+                        },
+                        validate: (value) => {
+                          const numericValue = Number(value);
+                          if (numericValue < 1000) {
+                            return "Minimum salary should be at least ₹1000";
+                          }
+                          if (numericValue > 10000000) {
+                            return "Salary cannot exceed ₹1 crore";
+                          }
+                          return true;
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          value={field.value || ""}
+                          label="Minimum Salary"
+                          type="tel"
+                          size='small'
+                          fullWidth
+                          placeholder="Enter Minimum Salary"
+                          error={!!errors.minimumSalary}
+                          helperText={errors.minimumSalary?.message}
+                        />
+                      )}
                     />
-                  )}
-                />
 
-              </Box>
-            )}
+                  </Box>
+                )}
 
-            {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
-              <Box className="mt-6 w-1/2">
-                <Typography className="mt-4 mb-2 font-medium">Maximum Salary</Typography>
-                <Controller
-                  name="maximumSalary"
-                  control={control}
-                  rules={{
-                    required: 'Maximum Salary is required',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'Only numeric values are allowed',
-                    },
-                    validate: (value) => {
-                      const numericValue = Number(value);
-                      const minSalary = Number(getValues('minimumSalary'));
+                {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
+                  <Box className="mt-6 w-1/2">
+                    <Typography className="mt-4 mb-2 font-medium">Maximum Salary</Typography>
+                    <Controller
+                      name="maximumSalary"
+                      control={control}
+                      rules={{
+                        required: 'Maximum Salary is required',
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: 'Only numeric values are allowed',
+                        },
+                        validate: (value) => {
+                          const numericValue = Number(value);
+                          const minSalary = Number(getValues('minimumSalary'));
 
-                      if (numericValue < 1000) {
-                        return "Maximum salary should be at least ₹1000";
-                      }
-                      if (numericValue > 100000000) {
-                        return "Salary cannot exceed ₹10 crore";
-                      }
-                      if (minSalary && numericValue <= minSalary) {
-                        return "Maximum salary must be greater than minimum salary";
-                      }
-                      return true;
-                    },
-                  }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Maximum Salary"
-                      fullWidth
-                      size='small'
-                      placeholder="Enter Minimum Salary"
-                      error={!!errors.maximumSalary}
-                      helperText={errors.maximumSalary?.message}
+                          if (numericValue < 1000) {
+                            return "Maximum salary should be at least ₹1000";
+                          }
+                          if (numericValue > 100000000) {
+                            return "Salary cannot exceed ₹10 crore";
+                          }
+                          if (minSalary && numericValue <= minSalary) {
+                            return "Maximum salary must be greater than minimum salary";
+                          }
+                          return true;
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Maximum Salary"
+                          fullWidth
+                          size='small'
+                          placeholder="Enter Minimum Salary"
+                          error={!!errors.maximumSalary}
+                          helperText={errors.maximumSalary?.message}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </Box>
-            )}
-            
-            </div>
-
-            {( selectedPayType === "fixed-incentive") && (
-              <Box className="flex items-end justify-end"><span className='font-bold text-[1.5rem] m-2'>+</span></Box>
-)}
-           
-            {(selectedPayType === "incentive-only" || selectedPayType === "fixed-incentive") && (
-              
-              <Box className={`${selectedPayType === "incentive-only" ? "": "relative"} mt-6 w-1/2`}>
-                <Typography className="mt-4 mb-2 font-medium">Incentive</Typography>
-                <Controller
-                  name="incentive"
-                  control={control}
-                  rules={{
-                    required: 'Incentive is required',
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: 'Only numeric values are allowed',
-                    },
-                  }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      value={field.value || ""} // Ensures it's always controlled
-                      label="Incentive"
-                      fullWidth
-                      size='small'
-                      placeholder="Enter Incentive"
-                      error={!!errors.incentive}
-                      helperText={errors.incentive?.message}
-                    />
-                  )}
-                />
-
-              </Box>
-            )}
+                  </Box>
+                )}
 
               </div>
-            
-            
+
+              {(selectedPayType === "fixed-incentive") && (
+                <Box className="flex items-end justify-end"><span className='font-bold text-[1.5rem] m-2'>+</span></Box>
+              )}
+
+              {(selectedPayType === "incentive-only" || selectedPayType === "fixed-incentive") && (
+
+                <Box className="mt-6 w-1/2">
+                  <Typography className="mt-4 mb-2 font-medium">Incentive</Typography>
+                  <Controller
+                    name="incentive"
+                    control={control}
+                    rules={{
+                      required: 'Incentive is required',
+                      pattern: {
+                        value: /^[0-9]+$/,
+                        message: 'Only numeric values are allowed',
+                      },
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        value={field.value || ""} // Ensures it's always controlled
+                        label="Incentive"
+                        fullWidth
+                        size='small'
+                        placeholder="Enter Incentive"
+                        error={!!errors.incentive}
+                        helperText={errors.incentive?.message}
+                      />
+                    )}
+                  />
+
+                </Box>
+              )}
+
+            </div>
+
+
 
 
             {/* Perks Section */}
-            <Box className="mt-6">
+            <Box className="mt-6 flex flex-col items-start">
               <Typography className="mb-2 font-medium">Do you offer any additional perks?</Typography>
-              <FormGroup row>
+              <FormGroup row className='mt-4' sx={{ gap: 1 }}>
                 <Controller
                   name="perks"
                   control={control}
-                  render={({ field }) =>
-                    PERKS.map((perk) => (
-                      <FormControlLabel
-                        key={perk}
-                        control={
-                          <Checkbox
-                            value={perk}
-                            checked={field.value.includes(perk)}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(
-                                field.value.includes(value)
-                                  ? field.value.filter((v) => v !== value)
-                                  : [...field.value, value]
-                              );
+                  render={({ field }) => (
+                    <>
+                      {PERKS.map((perk) => {
+                        const selected = field.value.includes(perk);
+                        return (
+                          <Box
+                            key={perk}
+                            onClick={() => {
+                              const newValue = selected
+                                ? field.value.filter((v) => v !== perk)
+                                : [...field.value, perk];
+                              field.onChange(newValue);
                             }}
-                          />
-                        }
-                        label={perk}
-                      />
-                    ))
-                  }
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              px: 1.5,
+                              py: 0.75,
+                              borderRadius: "999px",
+                              border: "1px solid",
+                              borderColor: selected ? "darkgreen" : "grey.400",
+                              backgroundColor: selected ? "green" : "transparent",
+                              color: selected ? "white" : "text.primary",
+                              cursor: "pointer",
+                              userSelect: "none",
+                              fontSize: "0.875rem",
+                              fontWeight: 500,
+                              transition: "all 0.2s",
+                              "&:hover": {
+                                backgroundColor: selected ? "lightgreen" : "grey.100",
+                              },
+                            }}
+                          >
+
+                            {perk}
+                            {selected ? (
+                              <X className="ml-2 font-semibold" size={16} />
+                            ) : (
+                              <Plus className="ml-2 font-semibold" size={16} />
+                            )}
+                          </Box>
+                        );
+                      })}
+                    </>
+                  )}
                 />
               </FormGroup>
             </Box>
@@ -546,22 +580,31 @@ const PostJob = () => {
                 name="joiningfee"
                 control={control}
                 render={({ field }) => (
-                  <ToggleButtonGroup
-                    exclusive
-                    {...field}
-                    onChange={(e, value) => {
-                      if (value) {
-                        field.onChange(value);
-                        setjoiningfee(value);
-                      }
-                    }
-                    }
-                  >
-                    <ToggleButton value="true">Yes</ToggleButton>
-                    <ToggleButton value="false">No</ToggleButton>
-                  </ToggleButtonGroup>
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    {["yes", "no"].map((type) => {
+
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => {
+                            field.onChange(type == "yes" ? "true" : "false")
+                            setjoiningfee(type == "yes" ? "true" : "false")
+                          }
+                          }
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                            ? "bg-green-600 text-white border-green-900"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                        >
+                          {type.replace("-", " ")}
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
               />
+
+
               {errors.joiningfee && (
                 <Typography variant="caption" color="error">
                   {errors.joiningfee.message}
@@ -571,7 +614,7 @@ const PostJob = () => {
 
             {joiningFees === "true" &&
               <>
-                <Box className="mt-6">
+                <Box className="mt-6 w-1/2 flex flex-col items-start">
                   <Typography className="mt-4 mb-2 font-medium">Fee Amount</Typography>
                   <Controller
                     name="joiningFeeAmount"
@@ -588,6 +631,7 @@ const PostJob = () => {
                         {...field}
                         label="Joining Fee Amount"
                         fullWidth
+                        size='small'
                         placeholder="Enter Fee Amount"
                         error={!!errors.joiningFeeAmount}
                         helperText={errors.joiningFeeAmount?.message}
@@ -596,31 +640,36 @@ const PostJob = () => {
                   />
                 </Box>
 
-                <Box className="mt-4">
+                <Box className="mt-4 flex flex-col items-start">
+                  <Typography className="mt-4 mb-2 font-medium">What is this fee for?</Typography>
                   <Controller
-                    name="joiningFeesAmountReason"
+                    name="joiningfee"
                     control={control}
                     render={({ field }) => (
-                      <ToggleButtonGroup
-                        exclusive
-                        {...field}
-                        onChange={(e, value) => {
-                          if (value) {
-                            field.onChange(value);
-                            setjoiningFeesReason(value)
-                          }
-                        }
-                        }
-                      >
-                        <ToggleButton value="inventory-charge">Inventory Charge</ToggleButton>
-                        <ToggleButton value="security-deposit">Security Deposit</ToggleButton>
-                        <ToggleButton value="registration-fees">Registration Fees</ToggleButton>
-                        <ToggleButton value="commission">Commission</ToggleButton>
-                        <ToggleButton value="IRDA-exam">IRDA Exam</ToggleButton>
-                        <ToggleButton value="other-reason">Other Reason</ToggleButton>
-                      </ToggleButtonGroup>
+                      <div className="flex flex-wrap gap-4 mt-2">
+                        {["inventory-charge", "security-deposit", "registration-fees", "commission", "IRDA-exam", "other-reason"].map((type) => {
+
+                          return (
+                            <div
+                              key={type}
+                              onClick={() => {
+                                field.onChange(type)
+                                setjoiningFeesReason(type)
+                              }
+                              }
+                              className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                                ? "bg-green-600 text-white border-green-900"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                                }`}
+                            >
+                              {type.replace("-", " ")}
+                            </div>
+                          );
+                        })}
+                      </div>
                     )}
                   />
+
                   {errors.joiningFeeAmountTime && (
                     <Typography variant="caption" color="error">
                       {errors.joiningFeeAmountTime.message}
@@ -629,8 +678,10 @@ const PostJob = () => {
                 </Box>
 
                 {(joiningFeesReason === "inventory-charge" || joiningFeesReason === "registration-fees" || joiningFeesReason === "other-reason") &&
-                  <Box className="mt-6">
-                    <Typography className="mt-4 mb-2 font-medium">Menton {joiningFeesReason} Here</Typography>
+
+
+                  <Box className="mt-6 w-full flex flex-col items-start">
+                    <Typography className="mt-4 mb-2 font-medium">Mention {joiningFeesReason} Here</Typography>
                     <Controller
                       name="joiningFeesAmountReasonDetail"
                       control={control}
@@ -640,6 +691,7 @@ const PostJob = () => {
                           {...field}
                           label="joining fees amount reason Amount"
                           fullWidth
+                          size='small'
                           placeholder="Mention the Reason"
                           error={!!errors.joiningFeesAmountReason}
                           helperText={errors.joiningFeesAmountReason?.message}
@@ -650,46 +702,60 @@ const PostJob = () => {
 
                 }
 
-                <Box className="mt-4">
+                <Box className="mt-4 flex flex-col items-start">
+                  <Typography className="mt-4 mb-2 font-medium">When should the fee be paid?</Typography>
                   <Controller
                     name="joiningFeeAmountTime"
                     control={control}
                     render={({ field }) => (
-                      <ToggleButtonGroup
-                        exclusive
-                        {...field}
-                        onChange={(e, value) => {
-                          if (value) {
-                            field.onChange(value);
+                      <div className="flex flex-wrap gap-4 mt-2">
+                        {["before-interview", "after-interview", "deducted-from-salary"].map((type) => {
 
-                          }
-                        }
-                        }
-                      >
-                        <ToggleButton value="before-interview">Before The Interview</ToggleButton>
-                        <ToggleButton value="after-interview">After Job Confirmation</ToggleButton>
-                        <ToggleButton value="deducted-from-salary">Deducted From Salary</ToggleButton>
-                      </ToggleButtonGroup>
+                          return (
+                            <div
+                              key={type}
+                              onClick={() => {
+                                field.onChange(type)
+
+                              }
+                              }
+                              className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                                ? "bg-green-600 text-white border-green-900"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                                }`}
+                            >
+                              {type.replace("-", " ")}
+                            </div>
+                          );
+                        })}
+                      </div>
                     )}
                   />
+
                   {errors.joiningFeeAmountTime && (
                     <Typography variant="caption" color="error">
                       {errors.joiningFeeAmountTime.message}
                     </Typography>
                   )}
                 </Box>
+
+
               </>
             }
 
-            <Box className="mt-6">
+          </Box>
+
+          <Box className="bg-white p-6 mt-2 flex justify-center flex-col items-center rounded shadow">
+
+            <Box className="mt-2">
               <Button
                 variant="contained"
-                color="primary"
+                sx={{ backgroundColor: "green", color: "white" }}
                 onClick={handleSubmit(() => {
                   setCurrentStep((prev) => prev + 1); // only runs if form is valid
                 })}
               >
-                Submit Job Details
+                Continue
               </Button>
             </Box>
           </Box>
@@ -703,36 +769,50 @@ const PostJob = () => {
 
       {currentStep === 1 &&
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box className="bg-white p-6 rounded shadow space-y-6">
+
+          <Box className="bg-white p-6 rounded shadow space-y-6 flex flex-col items-start">
+
+            <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>
+              Basic Requirements
+            </Typography>
+            <Typography variant="body2" className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>
+              We’ll use these requirement details to make your job visible to the right candidates.
+            </Typography>
 
             {/* Minimum Education */}
-            <FormControl fullWidth>
-              <FormLabel className="mb-2">Minimum Education *</FormLabel>
+            <FormControl fullWidth className='flex flex-col items-start'>
+              <FormLabel className="mt-6">Minimum Education *</FormLabel>
+
               <Controller
                 name="education"
                 control={control}
-                rules={{ required: 'Education is required' }}
                 render={({ field }) => (
-                  <ToggleButtonGroup
-                    exclusive
-                    {...field}
-                    onChange={(e, value) => {
-                      if (value) {
-                        field.onChange(value);
-                        setEducation(value);
-                      }
-                    }
-                    }
-                    className="flex flex-wrap gap-2"
-                  >
-                    {educationOptions.map((option) => (
-                      <ToggleButton key={option} value={option}>
-                        {option}
-                      </ToggleButton>
-                    ))}
-                  </ToggleButtonGroup>
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    {educationOptions.map((type) => {
+
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => {
+                            field.onChange(type)
+                            setEducation(type)
+                          }
+                          }
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                            ? "bg-green-600 text-white border-green-900"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                        >
+                          {type.replace("-", " ")}
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
               />
+
+
+
               {errors.education && (
                 <Typography color="error" variant="caption">
                   {errors.education.message}
@@ -741,27 +821,37 @@ const PostJob = () => {
             </FormControl>
 
             {/* English Level */}
-            <FormControl fullWidth>
-              <FormLabel className="mb-2">English level required *</FormLabel>
+            <FormControl fullWidth className='flex flex-col items-start'>
+              <FormLabel className="mt-6">English level required *</FormLabel>
+
               <Controller
                 name="english"
                 control={control}
-                rules={{ required: 'English level is required' }}
                 render={({ field }) => (
-                  <ToggleButtonGroup
-                    exclusive
-                    {...field}
-                    onChange={(e, value) => value && field.onChange(value)}
-                    className="flex gap-2"
-                  >
-                    {englishLevels.map((level) => (
-                      <ToggleButton key={level} value={level}>
-                        {level}
-                      </ToggleButton>
-                    ))}
-                  </ToggleButtonGroup>
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    {englishLevels.map((type) => {
+
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => {
+                            field.onChange(type)
+
+                          }
+                          }
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                            ? "bg-green-600 text-white border-green-900"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                        >
+                          {type.replace("-", " ")}
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
               />
+
               {errors.english && (
                 <Typography color="error" variant="caption">
                   {errors.english.message}
@@ -770,33 +860,37 @@ const PostJob = () => {
             </FormControl>
 
             {/* Experience */}
-            <FormControl fullWidth>
-              <FormLabel className="mb-2">Total experience required *</FormLabel>
+            <FormControl fullWidth className='flex flex-col items-start'>
+              <FormLabel className="mt-6">Total experience required *</FormLabel>
               <Controller
                 name="experience"
                 control={control}
-                rules={{ required: 'Experience is required' }}
                 render={({ field }) => (
-                  <ToggleButtonGroup
-                    exclusive
-                    {...field}
-                    onChange={(e, value) => {
-                      if (value) {
-                        field.onChange(value);
-                        setExperience(value)
-                      }
-                    }
-                    }
-                    className="flex gap-2"
-                  >
-                    {experienceOptions.map((opt) => (
-                      <ToggleButton key={opt} value={opt}>
-                        {opt}
-                      </ToggleButton>
-                    ))}
-                  </ToggleButtonGroup>
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    {experienceOptions.map((type) => {
+
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => {
+                            field.onChange(type)
+                            setExperience(type)
+                          }
+                          }
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                            ? "bg-green-600 text-white border-green-900"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                        >
+                          {type.replace("-", " ")}
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
               />
+
+
               {errors.experience && (
                 <Typography color="error" variant="caption">
                   {errors.experience.message}
@@ -805,33 +899,39 @@ const PostJob = () => {
             </FormControl>
 
             {experienceLevel === "Experienced Only" &&
-              <FormControl fullWidth>
-                <FormLabel className="mb-2">Experience Level</FormLabel>
+              <FormControl fullWidth className='flex flex-col items-start'>
+                <FormLabel className="mt-6">Experience Level</FormLabel>
+
                 <Controller
                   name="experienceLevel"
                   control={control}
                   rules={{ required: 'Experience Level is required' }}
                   render={({ field }) => (
-                    <ToggleButtonGroup
-                      exclusive
-                      {...field}
-                      onChange={(e, value) => {
-                        if (value) {
-                          field.onChange(value);
+                    <div className="flex flex-wrap gap-4 mt-2">
+                      {experienceLevelOptions.map((type) => {
 
-                        }
-                      }
-                      }
-                      className="flex gap-2"
-                    >
-                      {experienceLevelOptions.map((opt) => (
-                        <ToggleButton key={opt} value={opt}>
-                          {opt}
-                        </ToggleButton>
-                      ))}
-                    </ToggleButtonGroup>
+                        return (
+                          <div
+                            key={type}
+                            onClick={() => {
+                              field.onChange(type)
+
+                            }
+                            }
+                            className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                              ? "bg-green-600 text-white border-green-900"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                              }`}
+                          >
+                            {type.replace("-", " ")}
+                          </div>
+                        );
+                      })}
+                    </div>
                   )}
                 />
+
+
                 {errors.experienceLevel && (
                   <Typography color="error" variant="caption">
                     {errors.experienceLevel.message}
@@ -840,178 +940,246 @@ const PostJob = () => {
               </FormControl>
             }
 
+          </Box>
+
+          <Box className="bg-white p-6 rounded mt-4 shadow space-y-6 ">
+
             {/* Optional Additional Requirements */}
-            <FormGroup className="space-y-4">
-              <Typography variant="subtitle1" className="mt-4 font-medium">
+            <FormGroup className="space-y-4 flex flex-col items-start">
+              <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>
                 Additional Requirements (Optional)
               </Typography>
+              <Typography variant="body2" className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>
+                Add additional requirement so that we can help you find the right candidates
+              </Typography>
+
 
               <Controller
                 name="additionalRequirements"
                 control={control}
                 defaultValue={[]}
-                render={({ field }) => (
-                  <ToggleButtonGroup
-                    value={field.value}
-                    onChange={(e, newVal) => {
-                      const latest = newVal.filter((v) => !field.value.includes(v));
-                      const removed = field.value.filter((v) => !newVal.includes(v));
-
-                      latest.forEach((val) => toggleField(val));
-                      removed.forEach((val) => {
-                        toggleField(val);
-
-                      });
-
-                      field.onChange(newVal);
-
-                    }}
-                    className="flex gap-2 flex-wrap"
-                  >
-                    {(educationLevel === 'Diploma' ||
+                render={({ field }) => {
+                  const options =
+                    (educationLevel === 'Diploma' ||
                       educationLevel === 'Graduate' ||
-                      educationLevel === 'Post Graduate') && (
-                        <ToggleButton value="specialization">Specialization</ToggleButton>
-                      )}
-                    <ToggleButton value="gender">Gender</ToggleButton>
-                    <ToggleButton value="age">Age</ToggleButton>
-                    <ToggleButton value="distance">Distance</ToggleButton>
-                    <ToggleButton value="languages">Regional Language</ToggleButton>
-                    <ToggleButton value="skills">Skills</ToggleButton>
-                  </ToggleButtonGroup>
-                )}
+                      educationLevel === 'Post Graduate'
+                      ? ["specialization",
+                        "gender",
+                        "age",
+                        "distance",
+                        "languages",
+                        "skills"]
+                      :
+                      ["gender",
+                        "age",
+                        "distance",
+                        "languages",
+                        "skills"])
+                    ;
+
+                  const labels = {
+                    specialization: "Specialization",
+                    gender: "Gender",
+                    age: "Age",
+                    distance: "Distance",
+                    languages: "Regional Language",
+                    skills: "Skills",
+                  };
+
+                  return (
+                    <Box className="flex flex-wrap mt-4 gap-2">
+                      {options.map((val) => {
+                        const selected = field.value.includes(val);
+
+                        return (
+                          <Box
+                            key={val}
+                            onClick={() => {
+                              const newValue = selected
+                                ? field.value.filter((v) => v !== val)
+                                : [...field.value, val];
+
+                              toggleField(val); // maintain existing behavior
+                              field.onChange(newValue);
+                            }}
+                            className={`px-4 py-1.5 rounded-full cursor-pointer text-sm font-medium transition border ${selected
+                              ? "bg-blue-100 text-blue-700 border-blue-500"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                              }`}
+                          >
+                            {labels[val]}
+                          </Box>
+                        );
+                      })}
+                    </Box>
+                  );
+                }}
               />
 
-              {expanded.map((fieldKey) => (
-                <Box key={fieldKey} className="mt-4">
-                  <Typography className="mb-1 font-medium">{fieldKey} Options</Typography>
-                  <Controller
-                    name={fieldKey}
-                    control={control}
-                    render={({ field }) => (
-                      <ToggleButtonGroup
-                        value={field.value || ''}
-                        exclusive
-                        onChange={(e, val) => {
-                          if (val) {
-                            field.onChange(val)
-                          }
-                        }
-                        }
-                      >
-                        {ADDITIONAL_FIELDS[fieldKey].map((option) => (
-                          <ToggleButton key={option} value={option}>
-                            {option}
-                          </ToggleButton>
-                        ))}
-                      </ToggleButtonGroup>
-                    )}
-                  />
-                </Box>
-              ))}
             </FormGroup>
 
 
 
-            {/* Job Description */}
-            <Controller
-              name="jobDescription"
-              control={control}
-              rules={{ required: 'Job description is required' }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Job Description"
-                  multiline
-                  rows={4}
-                  fullWidth
-                  error={!!errors.jobDescription}
-                  helperText={errors.jobDescription?.message}
-                />
-              )}
-            />
-
-            <Box className="pt-4">
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit(() => {
-                  setCurrentStep((prev) => prev + 1); // only runs if form is valid
-                })}
+            {expanded.map((fieldKey) => (
+              <Box
+                key={fieldKey}
+                className="mt-6 border-t border-gray-300 py-4 flex flex-col items-start"
               >
-                Submit Requirements
-              </Button>
-            </Box>
+                <Typography className="mb-1 font-medium">
+                  {fieldKey} Options
+                </Typography>
+
+                <Controller
+                  name={fieldKey}
+                  control={control}
+                  render={({ field }) => (
+                    <div className="flex flex-wrap gap-4 mt-2">
+                      {ADDITIONAL_FIELDS[fieldKey].map((type) => {
+                        return (
+                          <div
+                            key={type}
+                            onClick={() => {
+                              field.onChange(type);
+                            }}
+                            className={`cursor-pointer px-6 py-1 rounded-full border transition ${field.value === type
+                              ? "bg-green-600 text-white border-green-900"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                              }`}
+                          >
+                            {type.replace("-", " ")}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                />
+              </Box>
+            ))}
+
           </Box>
+
+          <Box className="bg-white p-6 rounded mt-4 shadow space-y-6 flex flex-col items-start">
+
+            <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>
+              Job Description
+            </Typography>
+            <Typography variant="body2" className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>
+              Describe the responsibilities of this job and other specific requirements here.
+            </Typography>
+
+
+            {/* Job Description */}
+            <Box className="mt-6 w-full">
+              <Controller
+                name="jobDescription"
+                control={control}
+                rules={{ required: 'Job description is required' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Job Description"
+                    multiline
+                    rows={4}
+                    fullWidth
+                    error={!!errors.jobDescription}
+                    helperText={errors.jobDescription?.message}
+                  />
+                )}
+              />
+            </Box>
+
+          </Box>
+
+
+
+          <Box className="bg-white p-6 rounded mt-4 shadow space-y-6 flex flex-col items-center">
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "green" }}
+              onClick={handleSubmit(() => {
+                setCurrentStep((prev) => prev + 1); // only runs if form is valid
+              })}
+            >
+              Continue
+            </Button>
+          </Box>
+
         </form>
       }
 
       {currentStep === 2 &&
-        <Box className="p-6 bg-gray-50 min-h-screen">
-          <Typography variant="h5" fontWeight="bold" className="mb-6">
-            Interviewer Information
-          </Typography>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Box className="bg-white p-6 rounded shadow space-y-6">
 
-              {/* Walk-in Interview */}
-              <FormControl component="fieldset" fullWidth>
-                <FormLabel className="mb-2">
-                  Is this a walk-in interview? *
-                </FormLabel>
-                <Controller
-                  name="walkIn"
-                  control={control}
-                  rules={{ required: 'Please select an option' }}
-                  render={({ field }) => (
-                    <RadioGroup
-                      {...field}
-                      row
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setWalkIn(value);
-                        field.onChange(value);
-                      }}
-                    >
-                      <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-                      <FormControlLabel value="no" control={<Radio />} label="No" />
-                    </RadioGroup>
-                  )}
-                />
-                {errors.walkIn && (
-                  <Typography color="error" variant="caption">
-                    {errors.walkIn.message}
-                  </Typography>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box className="bg-white p-6 rounded shadow space-y-6 flex flex-col items-start">
+
+            <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>
+              Interview method and address
+            </Typography>
+            <Typography variant="body2" className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>
+              Let candidates know how interview will be conducted for this job.
+            </Typography>
+
+            {/* Walk-in Interview */}
+            <FormControl component="fieldset" fullWidth className='flex flex-col items-start'>
+              <FormLabel className="mt-6">
+                Is this a walk-in interview? *
+              </FormLabel>
+              <Controller
+                name="walkIn"
+                control={control}
+                rules={{ required: 'Please select an option' }}
+                render={({ field }) => (
+                  <RadioGroup
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setWalkIn(value);
+                      field.onChange(value);
+                    }}
+                  >
+                    <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                    <FormControlLabel value="no" control={<Radio />} label="No" />
+                  </RadioGroup>
                 )}
-              </FormControl>
+              />
+              {errors.walkIn && (
+                <Typography color="error" variant="caption">
+                  {errors.walkIn.message}
+                </Typography>
+              )}
+            </FormControl>
 
 
-              {walkIn === "yes" &&
-                <>
-                  <FormControl fullWidth className="mt-4">
-                    <FormLabel>Walk-in Interview address *</FormLabel>
-                    <Controller
-                      name="walkInAddress"
-                      control={control}
-                      rules={{ required: "Address is required" }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          placeholder="Enter full address"
-                          error={!!errors.walkInAddress}
-                          helperText={errors.walkInAddress?.message}
-                        />
-                      )}
-                    />
-                  </FormControl>
+            {walkIn === "yes" &&
+              <>
+                <FormControl fullWidth className='flex flex-col items-start'>
+                  <FormLabel className='mt-6'>Walk-in Interview address *</FormLabel>
+                  <Controller
+                    name="walkInAddress"
+                    control={control}
+                    rules={{ required: "Address is required" }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        placeholder="Enter full address"
+                        size="small"
+                        fullWidth
+                        error={!!errors.walkInAddress}
+                        helperText={errors.walkInAddress?.message}
+                      />
+                    )}
+                  />
+                </FormControl>
 
 
 
-                  {/* Walk-in Start and End Date */}
-                  <Box className="flex gap-4 mt-4">
+                {/* Walk-in Start and End Date */}
+                <Box className="flex flex-row w-full gap-4 mt-4">
+
+                  <div className='w-1/2'>
                     <FormControl fullWidth>
-                      <FormLabel>Walk-in Start date *</FormLabel>
+                      <FormLabel className='self-start'>Walk-in Start date *</FormLabel>
                       <Controller
                         name="walkInStartDate"
                         control={control}
@@ -1020,15 +1188,20 @@ const PostJob = () => {
                           <TextField
                             {...field}
                             type="date"
+                            size='small'
+                            fullWidth
                             error={!!errors.walkInStartDate}
                             helperText={errors.walkInStartDate?.message}
                           />
                         )}
                       />
                     </FormControl>
+                  </div>
 
+
+                  <div className='w-1/2'>
                     <FormControl fullWidth>
-                      <FormLabel>Walk-in End Date *</FormLabel>
+                      <FormLabel className='self-start'>Walk-in End Date *</FormLabel>
                       <Controller
                         name="walkInEndDate"
                         control={control}
@@ -1037,137 +1210,134 @@ const PostJob = () => {
                           <TextField
                             {...field}
                             type="date"
-
+                            size='small'
+                            fullWidth
                             error={!!errors.walkInEndDate}
                             helperText={errors.walkInEndDate?.message}
                           />
                         )}
                       />
                     </FormControl>
-                  </Box>
+                  </div>
 
-                  {/* Walk-in Timings */}
-                  <Box className="flex gap-4 mt-4">
-                    <FormControl fullWidth>
-                      <FormLabel>Walk-in Start Time *</FormLabel>
-                      <Controller
-                        name="walkInStartTime"
-                        control={control}
-                        rules={{ required: "Start time is required" }}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            type="time"
+                </Box>
 
-                            error={!!errors.walkInStartTime}
-                            helperText={errors.walkInStartTime?.message}
-                          />
-                        )}
-                      />
-                    </FormControl>
-
-                    <FormControl fullWidth>
-                      <FormLabel>Walk-in End Time *</FormLabel>
-                      <Controller
-                        name="walkInEndTime"
-                        control={control}
-                        rules={{ required: "End time is required" }}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            type="time"
-                            value={field.value || ""} // 👈 ensure it's always controlled
-                            InputLabelProps={{ shrink: true }}
-                            error={!!errors.walkInEndTime}
-                            helperText={errors.walkInEndTime?.message}
-                          />
-                        )}
-                      />
-                    </FormControl>
-                  </Box>
-
-                  {/* Other Instructions */}
-                  <FormControl fullWidth className="mt-4">
-                    <FormLabel>Other Instructions</FormLabel>
+                {/* Walk-in Timings */}
+                <Box className="flex gap-4 mt-4 w-1/2">
+                  <FormControl fullWidth>
+                    <FormLabel className='self-start'>Walk-in Start Time *</FormLabel>
                     <Controller
-                      name="walkInInstructions"
+                      name="walkInStartTime"
                       control={control}
+                      rules={{ required: "Start time is required" }}
+
                       render={({ field }) => (
                         <TextField
                           {...field}
-                          multiline
-                          rows={3}
-                          placeholder="e.g. Bring ID card, CV, Resume etc."
-                          inputProps={{ maxLength: 300 }}
-                          helperText={`${field.value?.length || 0}/300`}
+                          type="text"
+                          size="small"
+                          fullWidth
+                          error={!!errors.walkInStartTime}
+                          helperText={errors.walkInStartTime?.message}
                         />
                       )}
                     />
                   </FormControl>
-                </>
-              }
 
 
+                </Box>
 
-              {/* Communication Preferences */}
-              <Box className="bg-blue-50 p-3 rounded border border-blue-200">
-                <Typography variant="body2">
-                  📥 Leads information will be accessible on Apna portal and can be{' '}
-                  <strong>downloaded in excel format</strong>
-                </Typography>
-              </Box>
-
-              <FormControl component="fieldset" fullWidth>
-                <FormLabel className="mt-4 mb-2">
-                  Do you want candidates to contact you via Call / WhatsApp after they apply? *
-                </FormLabel>
-                <Controller
-                  name="contactPreference"
-                  control={control}
-                  rules={{ required: 'Please select your preference' }}
-                  render={({ field }) => (
-                    <RadioGroup
-                      {...field}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(value);
-                        if (value) {
-                          setContactPermission(value);
-                        }
-                      }}
-                    >
-                      <FormControlLabel
-                        value="self"
-                        control={<Radio />}
-                        label="Yes, to myself"
+                {/* Other Instructions */}
+                <FormControl fullWidth className="mt-4">
+                  <FormLabel className='self-start'>Other Instructions</FormLabel>
+                  <Controller
+                    name="walkInInstructions"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        multiline
+                        rows={3}
+                        placeholder="e.g. Bring ID card, CV, Resume etc."
+                        inputProps={{ maxLength: 300 }}
+                        helperText={`${field.value?.length || 0}/300`}
                       />
-                      <FormControlLabel
-                        value="other"
-                        control={<Radio />}
-                        label="Yes, to other recruiter"
-                      />
-                      <FormControlLabel
-                        value="no"
-                        control={<Radio />}
-                        label="No, I will contact candidates first"
-                      />
-                    </RadioGroup>
-                  )}
-                />
-                {errors.contactPreference && (
-                  <Typography color="error" variant="caption">
-                    {errors.contactPreference.message}
-                  </Typography>
+                    )}
+                  />
+                </FormControl>
+              </>
+            }
+
+          </Box>
+          <Box className="bg-white p-6 mt-4 rounded shadow space-y-6 flex flex-col items-start">
+
+
+            <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>
+              Communication Preferences
+            </Typography>
+            {/* Communication Preferences */}
+            <Box className="bg-blue-50 p-3 mt-4 rounded border border-blue-200">
+              <Typography variant="body2">
+                📥 Leads information will be accessible on Apna portal and can be{' '}
+                <strong>downloaded in excel format</strong>
+              </Typography>
+            </Box>
+
+            <FormControl component="fieldset" fullWidth>
+              <FormLabel className="mt-4 mb-2 self-start">
+                Do you want candidates to contact you via Call / WhatsApp after they apply? *
+              </FormLabel>
+              <Controller
+                name="contactPreference"
+                control={control}
+                rules={{ required: 'Please select your preference' }}
+                render={({ field }) => (
+                  <RadioGroup
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value);
+                      if (value) {
+                        setContactPermission(value);
+                      }
+                    }}
+                  >
+                    <FormControlLabel
+                      value="self"
+                      control={<Radio />}
+                      label="Yes, to myself"
+                    />
+                    <FormControlLabel
+                      value="other"
+                      control={<Radio />}
+                      label="Yes, to other recruiter"
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio />}
+                      label="No, I will contact candidates first"
+                    />
+                  </RadioGroup>
                 )}
-              </FormControl>
+              />
+              {errors.contactPreference && (
+                <Typography color="error" variant="caption">
+                  {errors.contactPreference.message}
+                </Typography>
+              )}
+            </FormControl>
 
-              {contactpermission === "other" && (
-                <FormGroup className="space-y-4">
-                  <Typography variant="subtitle1" className="font-medium">
-                    Fill other recruiter details
+            {contactpermission === "other" && (
+              <FormGroup className="space-y-4 flex flex-col w-full items-start">
+                <Typography variant="subtitle1" className="font-medium self-start">
+                  Fill other recruiter details
+                </Typography>
+
+                {/* Recruiter's Name */}
+                <Box className="w-1/2 flex flex-col mt-2 items-start">
+                  <Typography variant="subtitle1" className="font-medium self-start">
+                    Recruiter's Name
                   </Typography>
-
-                  {/* Recruiter's Name */}
                   <Controller
                     name="otherRecruiterName"
                     control={control}
@@ -1176,6 +1346,7 @@ const PostJob = () => {
                       <TextField
                         {...field}
                         fullWidth
+                        size='small'
                         value={field.value || ""}
                         label="Recruiter's Name"
                         placeholder="Enter Full Name"
@@ -1184,8 +1355,12 @@ const PostJob = () => {
                       />
                     )}
                   />
+                </Box>
 
-                  {/* Recruiter's WhatsApp No. */}
+                <Box className="w-1/2 flex flex-col mt-2 items-start">
+                  <Typography variant="subtitle1" className="font-medium self-start">
+                    Recruiter’s Whatsapp No.
+                  </Typography>
                   <Controller
                     name="otherRecruiterNumber"
                     control={control}
@@ -1200,6 +1375,7 @@ const PostJob = () => {
                       <TextField
                         {...field}
                         fullWidth
+                        size='small'
                         value={field.value || ""}
                         label="Recruiter's WhatsApp No."
                         placeholder="Enter Number"
@@ -1208,8 +1384,12 @@ const PostJob = () => {
                       />
                     )}
                   />
+                </Box>
 
-                  {/* Recruiter's Email ID */}
+                <Box className="w-1/2 flex flex-col mt-2 items-start">
+                  <Typography variant="subtitle1" className="font-medium self-start">
+                    Recruiter’s Email ID *
+                  </Typography>
                   <Controller
                     name="otherRecruiterEmail"
                     control={control}
@@ -1224,6 +1404,7 @@ const PostJob = () => {
                       <TextField
                         {...field}
                         fullWidth
+                        size='small'
                         value={field.value || ""}
                         label="Recruiter's Email ID"
                         placeholder="Enter Email"
@@ -1232,99 +1413,122 @@ const PostJob = () => {
                       />
                     )}
                   />
-                </FormGroup>
-              )}
+                </Box>
 
-              {(contactpermission === "self" || contactpermission === "other") &&
-                <>
-                  <FormControl component="fieldset" fullWidth>
-                    <FormLabel className="mt-4 mb-2">
-                      Which candidates should be able to contact you ?
-                    </FormLabel>
-                    <Controller
-                      name="candidateType"
-                      control={control}
-                      rules={{ required: 'Please select your preference' }}
-                      render={({ field }) => (
-                        <RadioGroup
-                          {...field}
 
-                        >
-                          <FormControlLabel
-                            value="all candidate"
-                            control={<Radio />}
-                            label="All candidates"
-                          />
-                          <FormControlLabel
-                            value="matched-candidate"
-                            control={<Radio />}
-                            label="Only matched candidates (~60% of all candidates)"
-                          />
 
-                        </RadioGroup>
-                      )}
-                    />
-                    {errors.contactPreference && (
-                      <Typography color="error" variant="caption">
-                        {errors.contactPreference.message}
-                      </Typography>
+              </FormGroup>
+            )}
+
+            {(contactpermission === "self" || contactpermission === "other") &&
+              <>
+                <FormControl component="fieldset" fullWidth>
+                  <FormLabel className="mt-4 mb-2 self-start">
+                    Which candidates should be able to contact you ?
+                  </FormLabel>
+                  <Controller
+                    name="candidateType"
+                    control={control}
+                    rules={{ required: 'Please select your preference' }}
+                    render={({ field }) => (
+                      <RadioGroup
+                        {...field}
+
+                      >
+                        <FormControlLabel
+                          value="all candidate"
+                          control={<Radio />}
+                          label="All candidates"
+                        />
+                        <FormControlLabel
+                          value="matched-candidate"
+                          control={<Radio />}
+                          label="Only matched candidates (~60% of all candidates)"
+                        />
+
+                      </RadioGroup>
                     )}
-                  </FormControl>
+                  />
+                  {errors.contactPreference && (
+                    <Typography color="error" variant="caption">
+                      {errors.contactPreference.message}
+                    </Typography>
+                  )}
+                </FormControl>
 
-                  {(contactpermission === "no" || contactpermission === "self" || contactpermission === "other") &&
-                    <FormControl component="fieldset" fullWidth>
-                      <FormLabel className="mt-4 mb-2">
-                        Every time you receive a candidate application,do you wantWhatsapp Alerts from Apna? *
-                      </FormLabel>
-                      <Controller
-                        name="notificationPreference"
-                        control={control}
-                        rules={{ required: 'Please select your preference' }}
-                        render={({ field }) => (
-                          <RadioGroup
-                            {...field}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(value);
-                              if (value === "self") {
-                                setContactPermission(value);
-                              }
-                            }}
-                          >
-                            <FormControlLabel
-                              value="yes"
-                              control={<Radio />}
-                              label="Yes, to other recruiter"
-                            />
-                            <FormControlLabel
-                              value="no"
-                              control={<Radio />}
-                              label="No, send me summary once a day"
-                            />
+              </>
 
-                          </RadioGroup>
-                        )}
-                      />
-                      {errors.contactPreference && (
-                        <Typography color="error" variant="caption">
-                          {errors.contactPreference.message}
-                        </Typography>
-                      )}
-                    </FormControl>
-                  }
+            }
+          </Box>
 
-                </>
-              }
+          <Box className="bg-white p-6 mt-4 rounded shadow space-y-6 flex flex-col items-start">
+
+            {(contactpermission === "no" || contactpermission === "self" || contactpermission === "other") &&
+              <>
+                <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>
+                  Communication Preferences
+                </Typography>
+                <FormControl component="fieldset" fullWidth>
+                  <FormLabel className="mt-4 mb-2 self-start">
+                    Every time you receive a candidate application,do you wantWhatsapp Alerts from Apna? *
+                  </FormLabel>
+                  <Controller
+                    name="notificationPreference"
+                    control={control}
+                    rules={{ required: 'Please select your preference' }}
+                    render={({ field }) => (
+                      <RadioGroup
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          field.onChange(value);
+                          if (value === "self") {
+                            setContactPermission(value);
+                          }
+                        }}
+                      >
+                        <FormControlLabel
+                          value="yes"
+                          control={<Radio />}
+                          label="Yes, to other recruiter"
+                        />
+                        <FormControlLabel
+                          value="no"
+                          control={<Radio />}
+                          label="No, send me summary once a day"
+                        />
+
+                      </RadioGroup>
+                    )}
+                  />
+                  {errors.contactPreference && (
+                    <Typography color="error" variant="caption">
+                      {errors.contactPreference.message}
+                    </Typography>
+                  )}
+                </FormControl>
+              </>
+            }
 
 
-              <Box className="pt-4">
-                <Button type='submit' variant="contained" color="primary">
-                  Save Interview Info
-                </Button>
-              </Box>
-            </Box>
-          </form>
-        </Box>
+          </Box>
+
+
+
+          <Box className="bg-white p-6 rounded mt-4 shadow space-y-6 flex flex-col items-center">
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "green" }}
+              onClick={handleSubmit(() => {
+                setCurrentStep((prev) => prev + 1); // only runs if form is valid
+              })}
+            >
+              Continue
+            </Button>
+          </Box>
+
+        </form>
+
       }
 
     </Box>
