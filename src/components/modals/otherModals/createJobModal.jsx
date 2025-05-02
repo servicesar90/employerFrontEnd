@@ -163,490 +163,537 @@ const PostJob = () => {
 
       {currentStep === 0 &&
         <form onSubmit={handleSubmit(onSubmit)}>
+
           <Box className="bg-white p-6 flex justify-start flex-col items-start rounded shadow">
             {/* Job Details Section */}
-            <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem"}}>
+            <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>
               Job details
             </Typography>
-            <Typography variant="body2" className="mb-2" sx={{color: "gray", fontSize: "0.8rem"}}>
+            <Typography variant="body2" className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>
               We use this information to find the best candidates for the job.
             </Typography>
 
             <Box className="mt-4 flex justify-start flex-col items-start" >
-              <Typography sx={{fontWeight: 500, fontSize: "0.9rem", color:  "#464343"}}>
+              <Typography sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#464343" }}>
                 Company you belong to <strong>GAME OF TRADING ASS.</strong>
               </Typography>
+            </Box>
 
-              <Box className="flex items-center w-full gap-2 mt-4">
-                <Controller
-                  name="companyName"
-                  control={control}
-                  
-                  rules={{ required: 'Company name is required' }}
-                  render={({ field }) => (
-                    <>
-                      <TextField
-                        {...field}
-                        label="Company you're hiring for"
-                        fullWidth
-                        size='small'
-                        error={!!errors.companyName}
-                        helperText={errors.companyName?.message}
-                      />
-                      <Button variant="text" sx={{color: "green", fontSize: "1rem", fontWeight: 700}}>Change</Button>
-                    </>
-                  )}
-                />
-              </Box>
+            <Box className="flex items-center w-full gap-2 mt-4">
+              <Controller
+                name="companyName"
+                control={control}
+                rules={{ required: 'Company name is required' }}
+                render={({ field }) => (
+                  <>
+                    <TextField
+                      {...field}
+                      label="Company you're hiring for"
+                      fullWidth
+                      size='small'
+                      error={!!errors.companyName}
+                      helperText={errors.companyName?.message}
+                    />
+                    <Button variant="text" sx={{ color: "green", fontSize: "1rem", fontWeight: 700 }}>Change</Button>
+                  </>
+                )}
+              />
+            </Box>
 
-              <Box className="mt-4 w-1/2">
-                <Controller
-                  name="jobTitle"
+            <Box className="mt-4 w-1/2">
+              <Controller
+                name="jobTitle"
+                control={control}
+                rules={{ required: 'Job title is required' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Eg. Accounant"
+                    size='small'
+                    fullWidth
+                    error={!!errors.jobTitle}
+                    helperText={errors.jobTitle?.message}
+                  />
+                )}
+              />
+            </Box>
+
+            <Box className="mt-6 flex flex-col items-start">
+              <Typography className="mb-2 font-medium">Type of Job *</Typography>
+              <Controller
+                name="jobType"
+                control={control}
+                rules={{ required: 'Job type is required' }}
+                render={({ field }) => (
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    {["full-time", "part-time", "internship", "contract"].map((type) => {
+
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => field.onChange(type)}
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                            ? "bg-green-600 text-white border-green-900"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                        >
+                          {type.replace("-", " ")}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              />
+
+            </Box>
+
+            <Box className="mt-4">
+              <Controller
+                name="nightShift"
+                control={control}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={<Checkbox {...field} checked={field.value} />}
+                    label="This is a night shift job"
+                  />
+                )}
+              />
+            </Box>
+
+          </Box>
+
+          <Box className="bg-white p-6 mt-2 flex justify-start flex-col items-start rounded shadow">
+
+            {/* Location Type Section */}
+
+            <Typography className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>Location</Typography>
+            <Typography className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>Let candidates know where they will be working from.</Typography>
+            <Box className="mt-6 flex items-start flex-col">
+              <Typography className="mb-2 font-medium">Work location type *</Typography>
+              <Controller
+                name="workLocationType"
+                control={control}
+                rules={{ required: 'Location type is required' }}
+                render={({ field }) => (
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    {["work-from-office", "work-from-home", "field-job"].map((type) => {
+
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => {
+                            field.onChange(type)
+                            setSelectedLocationType(type)
+                          }
+                          }
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                            ? "bg-green-600 text-white border-green-900"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                        >
+                          {type.replace("-", " ")}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              />
+
+              {errors.workLocationType && (
+                <Typography variant="caption" color="error">
+                  {errors.workLocationType.message}
+                </Typography>
+              )}
+
+            </Box>
+
+            {selectedLocationType && (
+              <Box className="mt-6 w-1/2 flex items-start flex-col">
+                <Typography className="mt-4 mb-2 font-medium">
+                  {selectedLocationType === "work-from-office"
+                    ? "Office Address"
+                    : selectedLocationType === "work-from-home"
+                      ? "Job City"
+                      : "Which area will the candidates be working in?"}
+                </Typography> <Controller
+                  name="location"
                   control={control}
-                  rules={{ required: 'Job title is required' }}
+                  rules={{ required: 'Location is required' }}
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="Eg. Accounant"
+                      fullWidth
+                      size="small"
+                      placeholder="Enter job location"
+                      error={!!errors.location}
+                      helperText={errors.location?.message}
+                    />
+                  )}
+                />
+              </Box>
+
+            )}
+          </Box>
+
+          {/* Pay Type Section */}
+          <Box className="bg-white p-6 mt-2 flex justify-start flex-col items-start rounded shadow">
+          <Typography className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>Compensation</Typography>
+            <Typography className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>Job postings with right salary & incentives will help you find the right candidates.</Typography>
+            <Box className="mt-6 flex flex-col items-start">
+              <Typography className="mb-2 font-medium">What is the pay type? *</Typography>
+
+              <Controller
+                 name="payType"
+                 control={control}
+                 rules={{ required: 'Pay type is required' }}
+                render={({ field }) => (
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    {["fixed-only", "fixed-incentive", "incentive-only"].map((type) => {
+
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => {
+                            field.onChange(type)
+                            setSelectedPayType(type)
+                          }
+                          }
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                            ? "bg-green-600 text-white border-green-900"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                        >
+                          {type.replace("-", " ")}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              />
+            
+              {errors.payType && (
+                <Typography variant="caption" color="error">
+                  {errors.payType.message}
+                </Typography>
+              )}
+            </Box>
+
+              <div className='w-full flex flex-row'>
+              <div className='w-1/2 flex flex-row'>
+            {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
+              <Box className="mt-6 w-1/2">
+                <Typography className="mt-4 mb-2  font-medium">Minimum Salary</Typography>
+                <Controller
+                  name="minimumSalary"
+                  control={control}
+                  rules={{
+                    required: 'Minimum Salary is required',
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Only numeric values are allowed',
+                    },
+                    validate: (value) => {
+                      const numericValue = Number(value);
+                      if (numericValue < 1000) {
+                        return "Minimum salary should be at least ₹1000";
+                      }
+                      if (numericValue > 10000000) {
+                        return "Salary cannot exceed ₹1 crore";
+                      }
+                      return true;
+                    },
+                  }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      value={field.value || ""}
+                      label="Minimum Salary"
+                      type="tel"
                       size='small'
                       fullWidth
-                      error={!!errors.jobTitle}
-                      helperText={errors.jobTitle?.message}
+                      placeholder="Enter Minimum Salary"
+                      error={!!errors.minimumSalary}
+                      helperText={errors.minimumSalary?.message}
+                    />
+                  )}
+                />
+
+              </Box>
+            )}
+
+            {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
+              <Box className="mt-6 w-1/2">
+                <Typography className="mt-4 mb-2 font-medium">Maximum Salary</Typography>
+                <Controller
+                  name="maximumSalary"
+                  control={control}
+                  rules={{
+                    required: 'Maximum Salary is required',
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Only numeric values are allowed',
+                    },
+                    validate: (value) => {
+                      const numericValue = Number(value);
+                      const minSalary = Number(getValues('minimumSalary'));
+
+                      if (numericValue < 1000) {
+                        return "Maximum salary should be at least ₹1000";
+                      }
+                      if (numericValue > 100000000) {
+                        return "Salary cannot exceed ₹10 crore";
+                      }
+                      if (minSalary && numericValue <= minSalary) {
+                        return "Maximum salary must be greater than minimum salary";
+                      }
+                      return true;
+                    },
+                  }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Maximum Salary"
+                      fullWidth
+                      size='small'
+                      placeholder="Enter Minimum Salary"
+                      error={!!errors.maximumSalary}
+                      helperText={errors.maximumSalary?.message}
                     />
                   )}
                 />
               </Box>
+            )}
+            
+            </div>
 
-              <Box className="mt-6 flex flex-col items-start">
-                <Typography className="mb-2 font-medium">Type of Job *</Typography>
+            {( selectedPayType === "fixed-incentive") && (
+              <Box className="flex items-end justify-end"><span className='font-bold text-[1.5rem] m-2'>+</span></Box>
+)}
+           
+            {(selectedPayType === "incentive-only" || selectedPayType === "fixed-incentive") && (
+              
+              <Box className={`${selectedPayType === "incentive-only" ? "": "relative"} mt-6 w-1/2`}>
+                <Typography className="mt-4 mb-2 font-medium">Incentive</Typography>
                 <Controller
-  name="jobType"
-  control={control}
-  rules={{ required: 'Job type is required' }}
-  render={({ field }) => (
-    <div className="flex flex-wrap gap-4">
-      {["full-time", "part-time", "internship", "contract"].map((type) => {
-       
-        return (
-          <div
-            key={type}
-            onClick={() => field.onChange(type)}
-            className={`cursor-pointer px-4 py-2 rounded-full border ${
-              field.value === type
-                ? "bg-blue-600 text-white border-blue-600"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-            }`}
-          >
-            {type.replace("-", " ")}
-          </div>
-        );
-      })}
-    </div>
-  )}
-/>
-
-              </Box>
-
-              <Box className="mt-4">
-                <Controller
-                  name="nightShift"
+                  name="incentive"
                   control={control}
+                  rules={{
+                    required: 'Incentive is required',
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Only numeric values are allowed',
+                    },
+                  }}
                   render={({ field }) => (
-                    <FormControlLabel
-                      control={<Checkbox {...field} checked={field.value} />}
-                      label="This is a night shift job"
+                    <TextField
+                      {...field}
+                      value={field.value || ""} // Ensures it's always controlled
+                      label="Incentive"
+                      fullWidth
+                      size='small'
+                      placeholder="Enter Incentive"
+                      error={!!errors.incentive}
+                      helperText={errors.incentive?.message}
                     />
                   )}
                 />
-              </Box>
 
-              {/* Location Type Section */}
-              <Box className="mt-6">
-                <Typography className="mb-2 font-medium">Work location type *</Typography>
+              </Box>
+            )}
+
+              </div>
+            
+            
+
+
+            {/* Perks Section */}
+            <Box className="mt-6">
+              <Typography className="mb-2 font-medium">Do you offer any additional perks?</Typography>
+              <FormGroup row>
                 <Controller
-                  name="workLocationType"
+                  name="perks"
                   control={control}
-                  rules={{ required: 'Location type is required' }}
-                  render={({ field }) => (
-                    <ToggleButtonGroup
-                      exclusive
-                      {...field}
-                      onChange={(e, value) => {
-                        value && field.onChange(value)
-                        setSelectedLocationType(value)
-
-                      }}
-                    >
-                      <ToggleButton value="work-from-office">Work From Office</ToggleButton>
-                      <ToggleButton value="work-from-home">Work From Home</ToggleButton>
-                      <ToggleButton value="field-job">Field Job</ToggleButton>
-                    </ToggleButtonGroup>
-                  )}
+                  render={({ field }) =>
+                    PERKS.map((perk) => (
+                      <FormControlLabel
+                        key={perk}
+                        control={
+                          <Checkbox
+                            value={perk}
+                            checked={field.value.includes(perk)}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(
+                                field.value.includes(value)
+                                  ? field.value.filter((v) => v !== value)
+                                  : [...field.value, value]
+                              );
+                            }}
+                          />
+                        }
+                        label={perk}
+                      />
+                    ))
+                  }
                 />
-                {errors.workLocationType && (
-                  <Typography variant="caption" color="error">
-                    {errors.workLocationType.message}
-                  </Typography>
-                )}
-              </Box>
+              </FormGroup>
+            </Box>
 
-              {selectedLocationType && (
-                <Box className="mt-6">
-                  <Typography className="mt-4 mb-2 font-medium">
-                    {selectedLocationType === "work-from-office"
-                      ? "Office Address"
-                      : selectedLocationType === "work-from-home"
-                        ? "Job City"
-                        : "Which area will the candidates be working in?"}
-                  </Typography> <Controller
-                    name="location"
-                    control={control}
-                    rules={{ required: 'Location is required' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        placeholder="Enter job location"
-                        error={!!errors.location}
-                        helperText={errors.location?.message}
-                      />
-                    )}
-                  />
-                </Box>
-
-              )}
-              {/* Pay Type Section */}
-              <Box className="mt-6">
-                <Typography className="mb-2 font-medium">What is the pay type? *</Typography>
-                <Controller
-                  name="payType"
-                  control={control}
-                  rules={{ required: 'Pay type is required' }}
-                  render={({ field }) => (
-                    <ToggleButtonGroup
-                      exclusive
-                      {...field}
-                      onChange={(e, value) => {
-                        if (value) {
-                          field.onChange(value);
-                          setSelectedPayType(value);
-                        }
+            {/* joiningFees section */}
+            <Box className="mt-4">
+              <Typography className="mb-2 font-medium">Is there any joining fee or deposit required from the candidate?</Typography>
+              <Controller
+                name="joiningfee"
+                control={control}
+                render={({ field }) => (
+                  <ToggleButtonGroup
+                    exclusive
+                    {...field}
+                    onChange={(e, value) => {
+                      if (value) {
+                        field.onChange(value);
+                        setjoiningfee(value);
                       }
-                      }
-                    >
-                      <ToggleButton value="fixed-only">Fixed Only</ToggleButton>
-                      <ToggleButton value="fixed-incentive">Fixed + Incentive</ToggleButton>
-                      <ToggleButton value="incentive-only">Incentive Only</ToggleButton>
-                    </ToggleButtonGroup>
-                  )}
-                />
-                {errors.payType && (
-                  <Typography variant="caption" color="error">
-                    {errors.payType.message}
-                  </Typography>
-                )}
-              </Box>
-
-              {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
-                <Box className="mt-6">
-                  <Typography className="mt-4 mb-2 font-medium">Minimum Salary</Typography>
-                  <Controller
-                    name="minimumSalary"
-                    control={control}
-                    rules={{
-                      required: 'Minimum Salary is required',
-                      pattern: {
-                        value: /^[0-9]+$/,
-                        message: 'Only numeric values are allowed',
-                      },
-                      validate: (value) => {
-                        const numericValue = Number(value);
-                        if (numericValue < 1000) {
-                          return "Minimum salary should be at least ₹1000";
-                        }
-                        if (numericValue > 10000000) {
-                          return "Salary cannot exceed ₹1 crore";
-                        }
-                        return true;
-                      },
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        value={field.value || ""}
-                        label="Minimum Salary"
-                        type="tel"
-                        fullWidth
-                        placeholder="Enter Minimum Salary"
-                        error={!!errors.minimumSalary}
-                        helperText={errors.minimumSalary?.message}
-                      />
-                    )}
-                  />
-
-                </Box>
-              )}
-
-              {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
-                <Box className="mt-6">
-                  <Typography className="mt-4 mb-2 font-medium">Maximum Salary</Typography>
-                  <Controller
-                    name="maximumSalary"
-                    control={control}
-                    rules={{
-                      required: 'Maximum Salary is required',
-                      pattern: {
-                        value: /^[0-9]+$/,
-                        message: 'Only numeric values are allowed',
-                      },
-                      validate: (value) => {
-                        const numericValue = Number(value);
-                        const minSalary = Number(getValues('minimumSalary'));
-
-                        if (numericValue < 1000) {
-                          return "Maximum salary should be at least ₹1000";
-                        }
-                        if (numericValue > 100000000) {
-                          return "Salary cannot exceed ₹10 crore";
-                        }
-                        if (minSalary && numericValue <= minSalary) {
-                          return "Maximum salary must be greater than minimum salary";
-                        }
-                        return true;
-                      },
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label="Maximum Salary"
-                        fullWidth
-                        placeholder="Enter Minimum Salary"
-                        error={!!errors.maximumSalary}
-                        helperText={errors.maximumSalary?.message}
-                      />
-                    )}
-                  />
-                </Box>
-              )}
-
-              {(selectedPayType === "incentive-only" || selectedPayType === "fixed-incentive") && (
-                <Box className="mt-6">
-                  <Typography className="mt-4 mb-2 font-medium">Incentive</Typography>
-                  <Controller
-                    name="incentive"
-                    control={control}
-                    rules={{
-                      required: 'Incentive is required',
-                      pattern: {
-                        value: /^[0-9]+$/,
-                        message: 'Only numeric values are allowed',
-                      },
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        value={field.value || ""} // Ensures it's always controlled
-                        label="Incentive"
-                        fullWidth
-                        placeholder="Enter Incentive"
-                        error={!!errors.incentive}
-                        helperText={errors.incentive?.message}
-                      />
-                    )}
-                  />
-
-                </Box>
-              )}
-
-
-              {/* Perks Section */}
-              <Box className="mt-6">
-                <Typography className="mb-2 font-medium">Do you offer any additional perks?</Typography>
-                <FormGroup row>
-                  <Controller
-                    name="perks"
-                    control={control}
-                    render={({ field }) =>
-                      PERKS.map((perk) => (
-                        <FormControlLabel
-                          key={perk}
-                          control={
-                            <Checkbox
-                              value={perk}
-                              checked={field.value.includes(perk)}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                field.onChange(
-                                  field.value.includes(value)
-                                    ? field.value.filter((v) => v !== value)
-                                    : [...field.value, value]
-                                );
-                              }}
-                            />
-                          }
-                          label={perk}
-                        />
-                      ))
                     }
-                  />
-                </FormGroup>
-              </Box>
-
-              {/* joiningFees section */}
-              <Box className="mt-4">
-                <Typography className="mb-2 font-medium">Is there any joining fee or deposit required from the candidate?</Typography>
-                <Controller
-                  name="joiningfee"
-                  control={control}
-                  render={({ field }) => (
-                    <ToggleButtonGroup
-                      exclusive
-                      {...field}
-                      onChange={(e, value) => {
-                        if (value) {
-                          field.onChange(value);
-                          setjoiningfee(value);
-                        }
-                      }
-                      }
-                    >
-                      <ToggleButton value="true">Yes</ToggleButton>
-                      <ToggleButton value="false">No</ToggleButton>
-                    </ToggleButtonGroup>
-                  )}
-                />
-                {errors.joiningfee && (
-                  <Typography variant="caption" color="error">
-                    {errors.joiningfee.message}
-                  </Typography>
+                    }
+                  >
+                    <ToggleButton value="true">Yes</ToggleButton>
+                    <ToggleButton value="false">No</ToggleButton>
+                  </ToggleButtonGroup>
                 )}
-              </Box>
+              />
+              {errors.joiningfee && (
+                <Typography variant="caption" color="error">
+                  {errors.joiningfee.message}
+                </Typography>
+              )}
+            </Box>
 
-              {joiningFees === "true" &&
-                <>
+            {joiningFees === "true" &&
+              <>
+                <Box className="mt-6">
+                  <Typography className="mt-4 mb-2 font-medium">Fee Amount</Typography>
+                  <Controller
+                    name="joiningFeeAmount"
+                    control={control}
+                    rules={{
+                      required: "Amount is Required",
+                      pattern: {
+                        value: /^[0-9]+$/,
+                        message: 'Only numeric values are allowed',
+                      },
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Joining Fee Amount"
+                        fullWidth
+                        placeholder="Enter Fee Amount"
+                        error={!!errors.joiningFeeAmount}
+                        helperText={errors.joiningFeeAmount?.message}
+                      />
+                    )}
+                  />
+                </Box>
+
+                <Box className="mt-4">
+                  <Controller
+                    name="joiningFeesAmountReason"
+                    control={control}
+                    render={({ field }) => (
+                      <ToggleButtonGroup
+                        exclusive
+                        {...field}
+                        onChange={(e, value) => {
+                          if (value) {
+                            field.onChange(value);
+                            setjoiningFeesReason(value)
+                          }
+                        }
+                        }
+                      >
+                        <ToggleButton value="inventory-charge">Inventory Charge</ToggleButton>
+                        <ToggleButton value="security-deposit">Security Deposit</ToggleButton>
+                        <ToggleButton value="registration-fees">Registration Fees</ToggleButton>
+                        <ToggleButton value="commission">Commission</ToggleButton>
+                        <ToggleButton value="IRDA-exam">IRDA Exam</ToggleButton>
+                        <ToggleButton value="other-reason">Other Reason</ToggleButton>
+                      </ToggleButtonGroup>
+                    )}
+                  />
+                  {errors.joiningFeeAmountTime && (
+                    <Typography variant="caption" color="error">
+                      {errors.joiningFeeAmountTime.message}
+                    </Typography>
+                  )}
+                </Box>
+
+                {(joiningFeesReason === "inventory-charge" || joiningFeesReason === "registration-fees" || joiningFeesReason === "other-reason") &&
                   <Box className="mt-6">
-                    <Typography className="mt-4 mb-2 font-medium">Fee Amount</Typography>
+                    <Typography className="mt-4 mb-2 font-medium">Menton {joiningFeesReason} Here</Typography>
                     <Controller
-                      name="joiningFeeAmount"
+                      name="joiningFeesAmountReasonDetail"
                       control={control}
-                      rules={{
-                        required: "Amount is Required",
-                        pattern: {
-                          value: /^[0-9]+$/,
-                          message: 'Only numeric values are allowed',
-                        },
-                      }}
+                      rules={{ required: 'Fees Reason is required' }}
                       render={({ field }) => (
                         <TextField
                           {...field}
-                          label="Joining Fee Amount"
+                          label="joining fees amount reason Amount"
                           fullWidth
-                          placeholder="Enter Fee Amount"
-                          error={!!errors.joiningFeeAmount}
-                          helperText={errors.joiningFeeAmount?.message}
+                          placeholder="Mention the Reason"
+                          error={!!errors.joiningFeesAmountReason}
+                          helperText={errors.joiningFeesAmountReason?.message}
                         />
                       )}
                     />
                   </Box>
 
-                  <Box className="mt-4">
-                    <Controller
-                      name="joiningFeesAmountReason"
-                      control={control}
-                      render={({ field }) => (
-                        <ToggleButtonGroup
-                          exclusive
-                          {...field}
-                          onChange={(e, value) => {
-                            if (value) {
-                              field.onChange(value);
-                              setjoiningFeesReason(value)
-                            }
+                }
+
+                <Box className="mt-4">
+                  <Controller
+                    name="joiningFeeAmountTime"
+                    control={control}
+                    render={({ field }) => (
+                      <ToggleButtonGroup
+                        exclusive
+                        {...field}
+                        onChange={(e, value) => {
+                          if (value) {
+                            field.onChange(value);
+
                           }
-                          }
-                        >
-                          <ToggleButton value="inventory-charge">Inventory Charge</ToggleButton>
-                          <ToggleButton value="security-deposit">Security Deposit</ToggleButton>
-                          <ToggleButton value="registration-fees">Registration Fees</ToggleButton>
-                          <ToggleButton value="commission">Commission</ToggleButton>
-                          <ToggleButton value="IRDA-exam">IRDA Exam</ToggleButton>
-                          <ToggleButton value="other-reason">Other Reason</ToggleButton>
-                        </ToggleButtonGroup>
-                      )}
-                    />
-                    {errors.joiningFeeAmountTime && (
-                      <Typography variant="caption" color="error">
-                        {errors.joiningFeeAmountTime.message}
-                      </Typography>
+                        }
+                        }
+                      >
+                        <ToggleButton value="before-interview">Before The Interview</ToggleButton>
+                        <ToggleButton value="after-interview">After Job Confirmation</ToggleButton>
+                        <ToggleButton value="deducted-from-salary">Deducted From Salary</ToggleButton>
+                      </ToggleButtonGroup>
                     )}
-                  </Box>
+                  />
+                  {errors.joiningFeeAmountTime && (
+                    <Typography variant="caption" color="error">
+                      {errors.joiningFeeAmountTime.message}
+                    </Typography>
+                  )}
+                </Box>
+              </>
+            }
 
-                  {(joiningFeesReason === "inventory-charge" || joiningFeesReason === "registration-fees" || joiningFeesReason === "other-reason") &&
-                    <Box className="mt-6">
-                      <Typography className="mt-4 mb-2 font-medium">Menton {joiningFeesReason} Here</Typography>
-                      <Controller
-                        name="joiningFeesAmountReasonDetail"
-                        control={control}
-                        rules={{ required: 'Fees Reason is required' }}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="joining fees amount reason Amount"
-                            fullWidth
-                            placeholder="Mention the Reason"
-                            error={!!errors.joiningFeesAmountReason}
-                            helperText={errors.joiningFeesAmountReason?.message}
-                          />
-                        )}
-                      />
-                    </Box>
-
-                  }
-
-                  <Box className="mt-4">
-                    <Controller
-                      name="joiningFeeAmountTime"
-                      control={control}
-                      render={({ field }) => (
-                        <ToggleButtonGroup
-                          exclusive
-                          {...field}
-                          onChange={(e, value) => {
-                            if (value) {
-                              field.onChange(value);
-
-                            }
-                          }
-                          }
-                        >
-                          <ToggleButton value="before-interview">Before The Interview</ToggleButton>
-                          <ToggleButton value="after-interview">After Job Confirmation</ToggleButton>
-                          <ToggleButton value="deducted-from-salary">Deducted From Salary</ToggleButton>
-                        </ToggleButtonGroup>
-                      )}
-                    />
-                    {errors.joiningFeeAmountTime && (
-                      <Typography variant="caption" color="error">
-                        {errors.joiningFeeAmountTime.message}
-                      </Typography>
-                    )}
-                  </Box>
-                </>
-              }
-
-              <Box className="mt-6">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit(() => {
-                    setCurrentStep((prev) => prev + 1); // only runs if form is valid
-                  })}
-                >
-                  Submit Job Details
-                </Button>
-              </Box>
+            <Box className="mt-6">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit(() => {
+                  setCurrentStep((prev) => prev + 1); // only runs if form is valid
+                })}
+              >
+                Submit Job Details
+              </Button>
             </Box>
           </Box>
+
         </form>
       }
 
