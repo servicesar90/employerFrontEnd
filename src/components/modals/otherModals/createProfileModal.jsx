@@ -2,6 +2,9 @@ import { Circle, FileQuestion, LogOut } from "lucide-react";
 import React from "react";
 import { Checkbox, FormControlLabel, Box, TextField, Paper, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
+import { createProfile } from "../../../API/ApiFunctions";
+import { motion } from "framer-motion";
+const AnimatedCircle = motion(Circle);
 const companySizes = [
   "0-50",
   "51-100",
@@ -13,6 +16,20 @@ const companySizes = [
 
 
 function UnigrowOnboardingForm() {
+
+  const circles = [0, 1, 2, 3];
+
+const circleVariants = {
+  animate: (i) => ({
+    opacity: [0.2, 1, 0.2],
+    transition: {
+      repeat: Infinity,
+      duration: 1.2,
+      ease: "easeInOut",
+      delay: i * 0.2,
+    },
+  }),
+};
 
 
   const { register, control, setValue, watch, handleSubmit } = useForm({
@@ -27,9 +44,9 @@ function UnigrowOnboardingForm() {
 
   const employeeNumber = watch("employeeNumber");
 
-  const onsubmit = (data) => {
+  const onsubmit = async(data) => {
     console.log("data", data)
-
+    await createProfile()
   }
 
   return (
@@ -40,7 +57,7 @@ function UnigrowOnboardingForm() {
       />
       <main className="flex flex-row mx-auto w-full max-w-none h-screen max-md:flex-col max-md:max-w-[991px] max-sm:max-w-screen-sm">
         {/* Sidebar Content */}
-        <aside className="box-border p-5 text-white bg-gray-800 w-[471px] max-md:w-full max-md:h-auto max-sm:hidden" aria-label="Unigrow features">
+        <aside className="box-border p-5 text-white bg-gray-700 w-[471px] max-md:w-full max-md:h-auto max-sm:hidden" aria-label="Unigrow features">
           <header>
             <h1 className="mb-5 text-xl font-black text-center">
               Unigrow Talent
@@ -51,8 +68,16 @@ function UnigrowOnboardingForm() {
           </header>
 
           <div className="flex gap-1.5 justify-center mb-5" role="navigation" aria-label="Feature navigation">
-            <Circle /><Circle /><Circle /><Circle />
-          </div>
+  {circles.map((i) => (
+    <AnimatedCircle
+      key={i}
+      custom={i}
+      variants={circleVariants}
+      animate="animate"
+      className="w-4 h-4 text-green-300"
+    />
+  ))}
+</div>
 
           <section aria-labelledby="database-section">
             <h3 id="database-section" className="mb-2.5 text-xl font-bold text-center">Database</h3>
@@ -139,6 +164,7 @@ function UnigrowOnboardingForm() {
                 label="Number of Employees"
                 fullWidth
                 variant="outlined"
+                disabled
                 size="small"
                 {...register("employeeNumber")}
                 slotProps={{inputLabel: {

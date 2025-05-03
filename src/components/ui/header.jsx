@@ -1,6 +1,11 @@
 import { Menu, HelpCircle, Database } from "lucide-react";
+import { useRef, useState } from "react";
+import MenuProfileModal from "../modals/otherModals/menuProfileModal";
 
 const Header = ({onMenuClick}) => {
+
+  const [showProfileModal, setShowprofileModal] = useState(false);
+  const avatarRef= useRef();
   return (
     <header className="w-full flex items-center justify-between px-6 py-3 bg-white shadow-sm">
       {/* Left: Logo and Menu */}
@@ -23,10 +28,14 @@ const Header = ({onMenuClick}) => {
           <span>Support</span>
         </div>
         {/* Avatar circle */}
-        <div className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center font-bold text-sm cursor-pointer">
+        <div ref={avatarRef} onClick={()=> setShowprofileModal(true)} className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center font-bold text-sm cursor-pointer">
           R
         </div>
       </div>
+
+      {showProfileModal && 
+      <MenuProfileModal open={showProfileModal} anchor={avatarRef.current} handleClose={()=> setShowprofileModal(false)} />
+      }
     </header>
   );
 };

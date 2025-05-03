@@ -13,7 +13,7 @@ export default function CandidateLoginModal({ onClose, mobile, setMobile }) {
       setMobile(value);
 
       if (value.length === 10) {
-        const response = await handlelogin({ phone: (value).toString(), role: "employee" });
+        const response = await handlelogin({ phone: (value).toString(), role: "employer" });
         console.log("response", response);
         if (response.status == 200) {
           setMobile(value);

@@ -35,7 +35,7 @@ export default function Routess() {
         <Routes>
             <Route path='/' element={<Layout />}>
                 <Route index element={<LoginPageWithPopup />} />
-                <Route path="/createProfile" element={<UnigrowOnboardingForm />} />
+                <Route path="/createProfile" element={<ProtectedRoute><UnigrowOnboardingForm /></ProtectedRoute>} />
                 <Route path='/employerHome' element={<ProtectedRoute><EmployerHome /></ProtectedRoute>}>
                     
                     <Route path='Jobs' element={<Jobs />} />

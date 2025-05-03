@@ -38,7 +38,7 @@ export default function OtpModal({  onClose, mobile }) {
     // If OTP is 4 digits long, do something
     if (newOtp.length === 4 ) {
       
-      const response= await handleOtp({phone:mobile,role:"employee",otp:(newOtp).toString()})
+      const response= await handleOtp({phone:mobile,role:"employer",otp:(newOtp).toString()})
       console.log("response",response);
 
       if(response){
@@ -47,7 +47,7 @@ export default function OtpModal({  onClose, mobile }) {
           navigate("/employerHome/jobs")
         }else{
         
-          navigate("/profile")
+          navigate("/createprofile")
         }
         onClose()
       }else{

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -13,10 +13,14 @@ import {
   FormLabel,
   FormGroup,
   RadioGroup,
-  Radio
+  Radio,
+  Card,
+  CardContent
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { Plus, X } from 'lucide-react';
+import { ArrowBigLeft, ArrowDown, ArrowLeft, ArrowLeftIcon, Award, BriefcaseBusiness, ChartArea, ChevronDown, ChevronUp, Edit, Handshake, Pencil, Plus, SearchCheckIcon, X } from 'lucide-react';
+import { postJob } from '../../../API/ApiFunctions';
+import { useNavigate } from 'react-router-dom';
 
 const steps = ['Job details', '', '', '', ''];
 
@@ -67,6 +71,14 @@ const experienceOptions = ['Any', 'Experienced Only', 'Fresher Only'];
 
 const experienceLevelOptions = ["6 Months", "1 year", "2 year", "3 year", "4 year", "5 year", "5+ year",]
 
+const DetailRow = ({ label, value }) => (
+  <div className="flex">
+    <div className="w-1/3 text-gray-600 text-left font-bold">{label}</div>
+    <div className="w-2/3 text-gray-900 text-left">{value}</div>
+  </div>
+);
+
+
 const PostJob = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedLocationType, setSelectedLocationType] = useState(null);
@@ -78,6 +90,18 @@ const PostJob = () => {
   const [expanded, setExpanded] = useState([]);
   const [walkIn, setWalkIn] = useState(null);
   const [contactpermission, setContactPermission] = useState(null);
+  const [showJobDetailpreview, setShowJobDetailpreview] = useState(false);
+  const [showCandidateRequirementsPreview, setShowCandidateRequirementPreview]= useState(false);
+  const [shownterviewDetailPreview, setShowInterviewDetailPreview]= useState(false);
+
+
+useEffect(()=>{
+  const user= localStorage.getItem("User");
+
+        // const userDetail= JSON.stringify(user);
+        console.log("user",user);
+       
+},[])
 
   const {
     handleSubmit,
@@ -86,47 +110,50 @@ const PostJob = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      companyName: '',
-      jobTitle: '',
+      companyName: null,
+      jobTitle: null,
+      jobRoles:null,
       jobType: 'Full Time',
       nightShift: false,
-      workLocationType: '',
-      location: "",
-      payType: '',
-      minimumSalary: "",
-      maximumSalary: "",
-      incentive: "",
+      workLocationType: null,
+      location: null,
+      payType: null,
+      minimumSalary: null,
+      maximumSalary: null,
+      incentive: null,
       perks: [],
-      joiningfee: "",
-      joiningFeeAmount: "",
-      joiningFeesAmountReason: "",
-      joiningFeesAmountReasonDetail: "",
-      joiningFeeAmountTime: "",
-      education: '',
-      english: '',
-      experience: '',
-      experienceLevel: "",
-      specialization: "",
-      gender: '',
-      age: '',
-      languages: '',
-      distance: '',
-      skills: '',
-      jobDescription: '',
-      walkIn: '',
-      walkInAddress: "",
-      walkInStartDate: "",
-      walkInEndDate: "",
-      walkInStartTime: "",
-      walkInInstructions: "",
-      contactPreference: '',
-      otherRecruiterName: "",
-      otherRecruiterNumber: "",
-      otherRecruiterEmail: "",
-      candidateType: "",
-      notificationPreference: ""
+      joiningfee: null,
+      joiningFeeAmount: null,
+      joiningFeesAmountReason: null,
+      joiningFeesAmountReasonDetail: null,
+      joiningFeeAmountTime: null,
+      education: null,
+      english: null,
+      experience: null,
+      experienceLevel: null,
+      specialization: null,
+      gender: null,
+      age: null,
+      languages: null,
+      distance: null,
+      skills: null,
+      jobDescription: null,
+      walkIn: null,
+      walkInAddress: null,
+      walkInStartDate: null,
+      walkInEndDate: null,
+      walkInStartTime: null,
+      walkInInstructions: null,
+      contactPreference: null,
+      otherRecruiterName: null,
+      otherRecruiterNumber: null,
+      otherRecruiterEmail: null,
+      candidateType: null,
+      notificationPreference: null
     },
   });
+
+  const values= getValues()
 
   const toggleField = (field) => {
     if (expanded.includes(field)) {
@@ -137,14 +164,24 @@ const PostJob = () => {
     }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async(data) => {
 
     console.log('Form Submitted:', data);
+
+    await postJob()
   };
 
+  const navigate= useNavigate()
+
   return (
-    <Box className="p-6 bg-gray-200 min-h-screen">
-      <Typography variant="h5" fontWeight="bold" className="mb-6 flex justify-start" sx={{ fontSize: "1.5rem" }}>
+    <Box className="p-6 pt-0 bg-gray-200 min-h-screen">
+
+      <div className='w-full fixed bg-white flex flex-row justify-between rounded-lg shadow-md'>
+        <div className='flex flex-row gap-4 text-lg font-bold p-4'><ArrowLeft onClick={()=> navigate("/employerHome/jobs")} />Jobs</div>
+      </div>
+
+      <div className="h-[64px]" />
+      <Typography variant="h5" fontWeight="bold" className="mb-6 flex justify-start" sx={{ fontSize: "1.5rem", margin: "10px" }}>
         Post a new job
       </Typography>
 
@@ -227,6 +264,29 @@ const PostJob = () => {
               </Box>
             </Box>
 
+            <Box className="mt-4 w-1/2 flex flex-col items-start">
+            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+            Job Role
+            </Typography>
+            <Box className="flex items-start flex-row w-full gap-2 mt-2">
+              <Controller
+                name="jobRoles"
+                control={control}
+               
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Eg. Accont managment"
+                    size='small'
+                    fullWidth
+                    error={!!errors.jobRoles}
+                    helperText={errors.jobRoles?.message}
+                  />
+                )}
+              />
+              </Box>
+            </Box>
+
             <Box className="mt-6 flex flex-col items-start">
             <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
             Type of Job
@@ -280,7 +340,9 @@ const PostJob = () => {
             <Typography className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>Location</Typography>
             <Typography className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>Let candidates know where they will be working from.</Typography>
             <Box className="mt-6 flex items-start flex-col">
-              <Typography className="mb-2 font-medium">Work location type *</Typography>
+            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+            Work Location Type
+            </Typography>
               <Controller
                 name="workLocationType"
                 control={control}
@@ -320,7 +382,8 @@ const PostJob = () => {
 
             {selectedLocationType && (
               <Box className="mt-6 w-1/2 flex items-start flex-col">
-                <Typography className="mt-4 mb-2 font-medium">
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+            
                   {selectedLocationType === "work-from-office"
                     ? "Office Address"
                     : selectedLocationType === "work-from-home"
@@ -351,7 +414,7 @@ const PostJob = () => {
             <Typography className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>Compensation</Typography>
             <Typography className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>Job postings with right salary & incentives will help you find the right candidates.</Typography>
             <Box className="mt-6 flex flex-col items-start">
-              <Typography className="mb-2 font-medium">What is the pay type? *</Typography>
+            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>What is the pay type? *</Typography>
 
               <Controller
                 name="payType"
@@ -393,7 +456,7 @@ const PostJob = () => {
               <div className={`${selectedPayType === "incentive-only" ? "hidden" : "w-1/2 flex flex-row"}`}>
                 {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
                   <Box className="mt-6 w-1/2">
-                    <Typography className="mt-4 mb-2  font-medium">Minimum Salary</Typography>
+                    <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Minimum Salary</Typography>
                     <Controller
                       name="minimumSalary"
                       control={control}
@@ -434,7 +497,7 @@ const PostJob = () => {
 
                 {(selectedPayType === "fixed-only" || selectedPayType === "fixed-incentive") && (
                   <Box className="mt-6 w-1/2">
-                    <Typography className="mt-4 mb-2 font-medium">Maximum Salary</Typography>
+                    <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Maximum Salary</Typography>
                     <Controller
                       name="maximumSalary"
                       control={control}
@@ -484,7 +547,7 @@ const PostJob = () => {
               {(selectedPayType === "incentive-only" || selectedPayType === "fixed-incentive") && (
 
                 <Box className="mt-6 w-1/2">
-                  <Typography className="mt-4 mb-2 font-medium">Incentive</Typography>
+                  <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Incentive</Typography>
                   <Controller
                     name="incentive"
                     control={control}
@@ -519,7 +582,7 @@ const PostJob = () => {
 
             {/* Perks Section */}
             <Box className="mt-6 flex flex-col items-start">
-              <Typography className="mb-2 font-medium">Do you offer any additional perks?</Typography>
+            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Do you offer any additional perks?</Typography>
               <FormGroup row className='mt-4' sx={{ gap: 1 }}>
                 <Controller
                   name="perks"
@@ -575,20 +638,21 @@ const PostJob = () => {
 
             {/* joiningFees section */}
             <Box className="mt-4">
-              <Typography className="mb-2 font-medium">Is there any joining fee or deposit required from the candidate?</Typography>
+            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Is there any joining fee or deposit required from the candidate?</Typography>
               <Controller
                 name="joiningfee"
                 control={control}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
-                    {["yes", "no"].map((type) => {
+                    {["true", "false"].map((type) => {
 
                       return (
                         <div
                           key={type}
+                          
                           onClick={() => {
-                            field.onChange(type == "yes" ? "true" : "false")
-                            setjoiningfee(type == "yes" ? "true" : "false")
+                            field.onChange(type)
+                            setjoiningfee(type)
                           }
                           }
                           className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
@@ -596,7 +660,7 @@ const PostJob = () => {
                             : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
                             }`}
                         >
-                          {type.replace("-", " ")}
+                          {type==="true"? "yes": "no"}
                         </div>
                       );
                     })}
@@ -615,7 +679,7 @@ const PostJob = () => {
             {joiningFees === "true" &&
               <>
                 <Box className="mt-6 w-1/2 flex flex-col items-start">
-                  <Typography className="mt-4 mb-2 font-medium">Fee Amount</Typography>
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Fee Amount</Typography>
                   <Controller
                     name="joiningFeeAmount"
                     control={control}
@@ -641,9 +705,9 @@ const PostJob = () => {
                 </Box>
 
                 <Box className="mt-4 flex flex-col items-start">
-                  <Typography className="mt-4 mb-2 font-medium">What is this fee for?</Typography>
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>What is this fee for?</Typography>
                   <Controller
-                    name="joiningfee"
+                    name="joiningFeesAmountReason"
                     control={control}
                     render={({ field }) => (
                       <div className="flex flex-wrap gap-4 mt-2">
@@ -681,7 +745,7 @@ const PostJob = () => {
 
 
                   <Box className="mt-6 w-full flex flex-col items-start">
-                    <Typography className="mt-4 mb-2 font-medium">Mention {joiningFeesReason} Here</Typography>
+                    <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Mention {joiningFeesReason} Here</Typography>
                     <Controller
                       name="joiningFeesAmountReasonDetail"
                       control={control}
@@ -703,7 +767,7 @@ const PostJob = () => {
                 }
 
                 <Box className="mt-4 flex flex-col items-start">
-                  <Typography className="mt-4 mb-2 font-medium">When should the fee be paid?</Typography>
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>When should the fee be paid?</Typography>
                   <Controller
                     name="joiningFeeAmountTime"
                     control={control}
@@ -781,7 +845,7 @@ const PostJob = () => {
 
             {/* Minimum Education */}
             <FormControl fullWidth className='flex flex-col items-start'>
-              <FormLabel className="mt-6">Minimum Education *</FormLabel>
+              <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Minimum Education *</FormLabel>
 
               <Controller
                 name="education"
@@ -822,7 +886,7 @@ const PostJob = () => {
 
             {/* English Level */}
             <FormControl fullWidth className='flex flex-col items-start'>
-              <FormLabel className="mt-6">English level required *</FormLabel>
+              <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>English level required *</FormLabel>
 
               <Controller
                 name="english"
@@ -861,7 +925,7 @@ const PostJob = () => {
 
             {/* Experience */}
             <FormControl fullWidth className='flex flex-col items-start'>
-              <FormLabel className="mt-6">Total experience required *</FormLabel>
+              <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Total experience required *</FormLabel>
               <Controller
                 name="experience"
                 control={control}
@@ -900,7 +964,7 @@ const PostJob = () => {
 
             {experienceLevel === "Experienced Only" &&
               <FormControl fullWidth className='flex flex-col items-start'>
-                <FormLabel className="mt-6">Experience Level</FormLabel>
+                <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Experience Level</FormLabel>
 
                 <Controller
                   name="experienceLevel"
@@ -1092,7 +1156,18 @@ const PostJob = () => {
 
 
 
-          <Box className="bg-white p-6 rounded mt-4 shadow space-y-6 flex flex-col items-center">
+          <Box className="bg-white p-6 rounded mt-4 gap-4 justify-center shadow space-y-6 flex flex-row ">
+          <Button
+              variant="outlined"
+              color='green'
+              
+              onClick={() => {
+                setCurrentStep((prev) => prev - 1); // only runs if form is valid
+              }}
+            >
+              Back
+            </Button>
+            
             <Button
               variant="contained"
               sx={{ backgroundColor: "green" }}
@@ -1122,7 +1197,7 @@ const PostJob = () => {
 
             {/* Walk-in Interview */}
             <FormControl component="fieldset" fullWidth className='flex flex-col items-start'>
-              <FormLabel className="mt-6">
+              <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                 Is this a walk-in interview? *
               </FormLabel>
               <Controller
@@ -1154,7 +1229,7 @@ const PostJob = () => {
             {walkIn === "yes" &&
               <>
                 <FormControl fullWidth className='flex flex-col items-start'>
-                  <FormLabel className='mt-6'>Walk-in Interview address *</FormLabel>
+                  <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Walk-in Interview address *</FormLabel>
                   <Controller
                     name="walkInAddress"
                     control={control}
@@ -1179,7 +1254,7 @@ const PostJob = () => {
 
                   <div className='w-1/2'>
                     <FormControl fullWidth>
-                      <FormLabel className='self-start'>Walk-in Start date *</FormLabel>
+                      <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Walk-in Start date *</FormLabel>
                       <Controller
                         name="walkInStartDate"
                         control={control}
@@ -1201,7 +1276,7 @@ const PostJob = () => {
 
                   <div className='w-1/2'>
                     <FormControl fullWidth>
-                      <FormLabel className='self-start'>Walk-in End Date *</FormLabel>
+                      <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Walk-in End Date *</FormLabel>
                       <Controller
                         name="walkInEndDate"
                         control={control}
@@ -1225,7 +1300,7 @@ const PostJob = () => {
                 {/* Walk-in Timings */}
                 <Box className="flex gap-4 mt-4 w-1/2">
                   <FormControl fullWidth>
-                    <FormLabel className='self-start'>Walk-in Start Time *</FormLabel>
+                    <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Walk-in Start Time *</FormLabel>
                     <Controller
                       name="walkInStartTime"
                       control={control}
@@ -1249,7 +1324,7 @@ const PostJob = () => {
 
                 {/* Other Instructions */}
                 <FormControl fullWidth className="mt-4">
-                  <FormLabel className='self-start'>Other Instructions</FormLabel>
+                  <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Other Instructions</FormLabel>
                   <Controller
                     name="walkInInstructions"
                     control={control}
@@ -1284,7 +1359,7 @@ const PostJob = () => {
             </Box>
 
             <FormControl component="fieldset" fullWidth>
-              <FormLabel className="mt-4 mb-2 self-start">
+              <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                 Do you want candidates to contact you via Call / WhatsApp after they apply? *
               </FormLabel>
               <Controller
@@ -1329,13 +1404,13 @@ const PostJob = () => {
 
             {contactpermission === "other" && (
               <FormGroup className="space-y-4 flex flex-col w-full items-start">
-                <Typography variant="subtitle1" className="font-medium self-start">
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                   Fill other recruiter details
                 </Typography>
 
                 {/* Recruiter's Name */}
                 <Box className="w-1/2 flex flex-col mt-2 items-start">
-                  <Typography variant="subtitle1" className="font-medium self-start">
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                     Recruiter's Name
                   </Typography>
                   <Controller
@@ -1358,7 +1433,7 @@ const PostJob = () => {
                 </Box>
 
                 <Box className="w-1/2 flex flex-col mt-2 items-start">
-                  <Typography variant="subtitle1" className="font-medium self-start">
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                     Recruiter’s Whatsapp No.
                   </Typography>
                   <Controller
@@ -1387,7 +1462,7 @@ const PostJob = () => {
                 </Box>
 
                 <Box className="w-1/2 flex flex-col mt-2 items-start">
-                  <Typography variant="subtitle1" className="font-medium self-start">
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                     Recruiter’s Email ID *
                   </Typography>
                   <Controller
@@ -1423,7 +1498,7 @@ const PostJob = () => {
             {(contactpermission === "self" || contactpermission === "other") &&
               <>
                 <FormControl component="fieldset" fullWidth>
-                  <FormLabel className="mt-4 mb-2 self-start">
+                  <FormLabel className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                     Which candidates should be able to contact you ?
                   </FormLabel>
                   <Controller
@@ -1465,7 +1540,7 @@ const PostJob = () => {
 
             {(contactpermission === "no" || contactpermission === "self" || contactpermission === "other") &&
               <>
-                <Typography variant="h6" className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>
+               <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                   Communication Preferences
                 </Typography>
                 <FormControl component="fieldset" fullWidth>
@@ -1515,7 +1590,17 @@ const PostJob = () => {
 
 
 
-          <Box className="bg-white p-6 rounded mt-4 shadow space-y-6 flex flex-col items-center">
+          <Box className="bg-white p-6 rounded mt-4 gap-4 shadow space-y-6 flex flex-row justify-center">
+          <Button
+              variant="outlined"
+              color='green'
+              onClick={() => {
+                setCurrentStep((prev) => prev - 1); // only runs if form is valid
+              }}
+            >
+              Back
+            </Button>
+           
             <Button
               variant="contained"
               sx={{ backgroundColor: "green" }}
@@ -1531,7 +1616,121 @@ const PostJob = () => {
 
       }
 
-    </Box>
+    
+    {currentStep===3 && (
+      <div className=" w-full">
+
+        <div className='w-full borderb-gray bg-white flex p-4 flex-row justify-between'>
+          <div className='flex flex-row gap-4'>
+           <BriefcaseBusiness />
+            <h3 className='font-bold text-lg'>JobDetails</h3>
+          </div>
+          <div className='flex flex-row gap-4'>
+          <Pencil onClick={() => setCurrentStep(0)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
+            {showJobDetailpreview ? <ChevronUp onClick={()=>setShowJobDetailpreview(!showJobDetailpreview)}/> : <ChevronDown onClick={()=>setShowJobDetailpreview(!showJobDetailpreview)} />}
+            
+          </div>
+        </div>
+     
+{showJobDetailpreview && 
+  <Card variant="outlined">
+        <CardContent className="p-6">
+      
+
+          <div className="space-y-4 text-sm">
+            <DetailRow label="Company name" value={values.companyName} />
+            <DetailRow label="Job title" value={values.jobTitle} />
+            <DetailRow label="Job role/ category" value={values.jobRoles} />
+            <DetailRow label="Job type" value={values.jobType}/>
+            <DetailRow label="Is Night Shift" value={values.nightShift}/>
+            <DetailRow label="Work type" value={values.workLocationType} />
+            <DetailRow label="Job location" value={values.location} />
+           
+            <DetailRow
+              label="Monthly Salary | Pay Type"
+              value={`${values.minimumSalary}-${values.maximumSalary} ${values.incentive!==""?`incentive-${values.incentive}`:""} per month (${values.payType})`}
+            />
+            <DetailRow label="Additional perks" value={values.perks} />
+            <DetailRow label="Joining Fee" value={`${values.joiningfee==="true"? `${values.joiningFeeAmount} for ${values.joiningFeesAmountReason}(${values.joiningFeesAmountReasonDetail}) at ${values.joiningFeeAmountTime}`:"No"}`} />
+          </div>
+        </CardContent>
+      </Card>
+}
+      
+
+      <div className='w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between'>
+          <div className='flex flex-row gap-4'>
+            <Award />
+            <h3 className='font-bold text-lg'>Candidate Requirement</h3>
+          </div>
+          <div className='flex flex-row gap-4'>
+          <Pencil onClick={()=> setCurrentStep(1)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
+            {showCandidateRequirementsPreview ? <ChevronUp onClick={()=>setShowCandidateRequirementPreview(!showCandidateRequirementsPreview)}/> : <ChevronDown onClick={()=>setShowCandidateRequirementPreview(!showCandidateRequirementsPreview)} />}
+            
+          </div>
+        </div>
+     
+    {showCandidateRequirementsPreview && 
+    <Card variant="outlined">
+    <CardContent className="p-6">
+  
+
+      <div className="space-y-4 text-sm">
+        <DetailRow label="Minimum Education" value={values.education} />
+        <DetailRow label="Experience Required" value={`${values.experienceLevel}(${values.experience})`} />
+        <DetailRow label="English" value={values.english} />
+        {expanded.map((type)=>(<DetailRow label={type} value={values[type]} />))}
+        
+       
+       
+        
+      </div>
+    </CardContent>
+  </Card>
+    }
+      
+
+      <div className='w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between'>
+          <div className='flex flex-row gap-4'>
+            <Handshake />
+            <h3 className='font-bold text-lg'>Interview Information</h3>
+          </div>
+          <div className='flex flex-row gap-4'>
+          <Pencil onClick={()=> setCurrentStep(2)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
+            {shownterviewDetailPreview ? <ChevronUp onClick={()=>setShowInterviewDetailPreview(!shownterviewDetailPreview)}/> : <ChevronDown onClick={()=>setShowInterviewDetailPreview(!shownterviewDetailPreview)} />}
+            
+          </div>
+        </div>
+     
+{shownterviewDetailPreview && 
+ <Card variant="outlined">
+ <CardContent className="p-6">
+
+
+   <div className="space-y-4 text-sm">
+     <DetailRow label="Is this a walk-in interview ?" value={`${values.walkIn==="yes"? `Address-${values.walkInAddress} from ${values.walkInStartDate}-${values.walkInEndDate} on ${values.walkInStartDate}`:"No"}`} />
+     <DetailRow label="Communication" value={values.contactPreference} />
+     {contactpermission === "other" && <DetailRow label="HR Detail" value={`${values.otherRecruiterName}, email: ${values.otherRecruiterEmail}, number ${values.otherRecruiterNumber}`} />}
+     
+     <DetailRow label="Can candidates contact" value={values.candidateType} />
+     <DetailRow label="Whatsapp alert" value={values.notificationPreference} />
+    
+   </div>
+ </CardContent>
+</Card>
+}
+     
+
+      <div className="flex justify-between mt-6">
+        <Button variant="outlined">Back</Button>
+        <Button variant="contained" color="success" onClick={handleSubmit(onSubmit)}>
+          Continue
+        </Button>
+      </div>
+    </div>
+    )}
+
+</Box>
   );
 };
 
