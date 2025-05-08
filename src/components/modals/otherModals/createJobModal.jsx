@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { ArrowBigLeft, ArrowDown, ArrowLeft, ArrowLeftIcon, Award, BriefcaseBusiness, ChartArea, ChevronDown, ChevronUp, Edit, Handshake, Pencil, Plus, SearchCheckIcon, X } from 'lucide-react';
-import { postJob } from '../../../API/ApiFunctions';
+import { getProfile, postJob } from '../../../API/ApiFunctions';
 import { useNavigate } from 'react-router-dom';
 
 const steps = ['Job details', '', '', '', ''];
@@ -62,7 +62,7 @@ const ADDITIONAL_FIELDS = {
   languages: ['Hindi', 'English', 'Tamil'],
   skills: ['Communication', 'Sales', 'Excel'],
   age: ['18-25', '26-35', '36+'],
-  specialization: ['Marketing', 'Finance', 'HR'],
+  educationSpecialization: ['Marketing', 'Finance', 'HR'],
 };
 
 const englishLevels = ['No English', 'Basic English', 'Good English'];
@@ -93,24 +93,33 @@ const PostJob = () => {
   const [showJobDetailpreview, setShowJobDetailpreview] = useState(false);
   const [showCandidateRequirementsPreview, setShowCandidateRequirementPreview]= useState(false);
   const [shownterviewDetailPreview, setShowInterviewDetailPreview]= useState(false);
+  const [data, setData] = useState(null);
+  const [changeSelected, setSelectedChange]= useState(true)
 
+const navigate= useNavigate();
 
 useEffect(()=>{
-  const user= localStorage.getItem("User");
+  const getData= async()=>{
+    const response= await getProfile();
+    if(response){
+      setData(response.data.data)
+    }
+  }
 
-        // const userDetail= JSON.stringify(user);
-        console.log("user",user);
-       
+  getData()
 },[])
+
+console.log(data?.company.companyName)
 
   const {
     handleSubmit,
     control,
     getValues,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      companyName: null,
+      companyName: data?.company.companyName || "",
       jobTitle: null,
       jobRoles:null,
       jobType: 'Full Time',
@@ -131,7 +140,7 @@ useEffect(()=>{
       english: null,
       experience: null,
       experienceLevel: null,
-      specialization: null,
+      educationSpecialization: null,
       gender: null,
       age: null,
       languages: null,
@@ -153,6 +162,14 @@ useEffect(()=>{
     },
   });
 
+  useEffect(() => {
+    if (data?.company?.companyName) {
+      reset({
+        companyName: data.company.companyName,
+      });
+    }
+  }, [data, reset]);
+
   const values= getValues()
 
   const toggleField = (field) => {
@@ -168,10 +185,16 @@ useEffect(()=>{
 
     console.log('Form Submitted:', data);
 
-    await postJob()
+    const response= await postJob(data);
+
+    if(response){
+      alert("job Post succesfully")
+      navigate("/employerHome/jobs")
+    }else{
+      alert("Could not post job")
+    }
   };
 
-  const navigate= useNavigate()
 
   return (
     <Box className="p-6 pt-0 bg-gray-200 min-h-screen">
@@ -211,7 +234,7 @@ useEffect(()=>{
 
             <Box className="mt-4 flex justify-start flex-col items-start" >
               <Typography sx={{ fontWeight: 500, fontSize: "0.9rem", color: "#464343" }}>
-                Company you belong to <strong>GAME OF TRADING ASS.</strong>
+                Company you belong to <strong>{data?.company.companyName}</strong>
               </Typography>
             </Box>
 
@@ -228,13 +251,13 @@ useEffect(()=>{
                   <>
                     <TextField
                       {...field}
-                      label="Company you're hiring for"
                       fullWidth
+                      disabled={changeSelected}
                       size='small'
                       error={!!errors.companyName}
                       helperText={errors.companyName?.message}
                     />
-                    <Button variant="text" sx={{ color: "green", fontSize: "1rem", fontWeight: 700 }}>Change</Button>
+                    <Button onClick={()=>setSelectedChange(!changeSelected)} variant="text" sx={{ color: "green", fontSize: "1rem", fontWeight: 700 }}>Change</Button>
                   </>
                 )}
               />
@@ -322,10 +345,13 @@ useEffect(()=>{
               <Controller
                 name="nightShift"
                 control={control}
+                rules={{ required: 'Job type is required' }}
                 render={({ field }) => (
                   <FormControlLabel
                     control={<Checkbox {...field} checked={field.value} />}
                     label="This is a night shift job"
+                    error={!!errors.nightShift}
+                    helperText={errors.nightShift?.message}
                   />
                 )}
               />
@@ -642,6 +668,10 @@ useEffect(()=>{
               <Controller
                 name="joiningfee"
                 control={control}
+                rules={{
+                  required: 'Please choose any one',
+                 
+                }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
                     {["true", "false"].map((type) => {
@@ -709,6 +739,10 @@ useEffect(()=>{
                   <Controller
                     name="joiningFeesAmountReason"
                     control={control}
+                    rules={{
+                      required: 'Please choose any one',
+                     
+                    }}
                     render={({ field }) => (
                       <div className="flex flex-wrap gap-4 mt-2">
                         {["inventory-charge", "security-deposit", "registration-fees", "commission", "IRDA-exam", "other-reason"].map((type) => {
@@ -734,9 +768,9 @@ useEffect(()=>{
                     )}
                   />
 
-                  {errors.joiningFeeAmountTime && (
+                  {errors.joiningFeesAmountReason && (
                     <Typography variant="caption" color="error">
-                      {errors.joiningFeeAmountTime.message}
+                      {errors.joiningFeesAmountReason.message}
                     </Typography>
                   )}
                 </Box>
@@ -757,8 +791,8 @@ useEffect(()=>{
                           fullWidth
                           size='small'
                           placeholder="Mention the Reason"
-                          error={!!errors.joiningFeesAmountReason}
-                          helperText={errors.joiningFeesAmountReason?.message}
+                          error={!!errors.joiningFeesAmountReasonDetail}
+                          helperText={errors.joiningFeesAmountReasonDetail?.message}
                         />
                       )}
                     />
@@ -771,6 +805,7 @@ useEffect(()=>{
                   <Controller
                     name="joiningFeeAmountTime"
                     control={control}
+                    rules={{ required: 'Amount Time is required' }}
                     render={({ field }) => (
                       <div className="flex flex-wrap gap-4 mt-2">
                         {["before-interview", "after-interview", "deducted-from-salary"].map((type) => {
@@ -850,6 +885,7 @@ useEffect(()=>{
               <Controller
                 name="education"
                 control={control}
+                rules={{ required: 'Minimum education is required' }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
                     {educationOptions.map((type) => {
@@ -891,6 +927,7 @@ useEffect(()=>{
               <Controller
                 name="english"
                 control={control}
+                rules={{ required: 'English Level is required' }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
                     {englishLevels.map((type) => {
@@ -929,6 +966,7 @@ useEffect(()=>{
               <Controller
                 name="experience"
                 control={control}
+                rules={{ required: 'Experience is required' }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
                     {experienceOptions.map((type) => {
@@ -1027,7 +1065,7 @@ useEffect(()=>{
                     (educationLevel === 'Diploma' ||
                       educationLevel === 'Graduate' ||
                       educationLevel === 'Post Graduate'
-                      ? ["specialization",
+                      ? ["educationSpecialization",
                         "gender",
                         "age",
                         "distance",
@@ -1042,7 +1080,7 @@ useEffect(()=>{
                     ;
 
                   const labels = {
-                    specialization: "Specialization",
+                    educationSpecialization: "educationSpecialization",
                     gender: "Gender",
                     age: "Age",
                     distance: "Distance",
@@ -1110,7 +1148,7 @@ useEffect(()=>{
                               : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
                               }`}
                           >
-                            {type.replace("-", " ")}
+                            {type}
                           </div>
                         );
                       })}
@@ -1137,7 +1175,7 @@ useEffect(()=>{
               <Controller
                 name="jobDescription"
                 control={control}
-                rules={{ required: 'Job description is required' }}
+                
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -1145,8 +1183,7 @@ useEffect(()=>{
                     multiline
                     rows={4}
                     fullWidth
-                    error={!!errors.jobDescription}
-                    helperText={errors.jobDescription?.message}
+                   
                   />
                 )}
               />
@@ -1390,11 +1427,13 @@ useEffect(()=>{
                     <FormControlLabel
                       value="no"
                       control={<Radio />}
+                      disabled={walkIn==="no"}
                       label="No, I will contact candidates first"
                     />
                   </RadioGroup>
                 )}
               />
+              {walkIn==="no" && <p>This Option is only valid for walk in</p>}
               {errors.contactPreference && (
                 <Typography color="error" variant="caption">
                   {errors.contactPreference.message}
@@ -1524,9 +1563,9 @@ useEffect(()=>{
                       </RadioGroup>
                     )}
                   />
-                  {errors.contactPreference && (
+                  {errors.candidateType && (
                     <Typography color="error" variant="caption">
-                      {errors.contactPreference.message}
+                      {errors.candidateType.message}
                     </Typography>
                   )}
                 </FormControl>
@@ -1576,9 +1615,9 @@ useEffect(()=>{
                       </RadioGroup>
                     )}
                   />
-                  {errors.contactPreference && (
+                  {errors.notificationPreference && (
                     <Typography color="error" variant="caption">
-                      {errors.contactPreference.message}
+                      {errors.notificationPreference.message}
                     </Typography>
                   )}
                 </FormControl>
@@ -1722,7 +1761,7 @@ useEffect(()=>{
      
 
       <div className="flex justify-between mt-6">
-        <Button variant="outlined">Back</Button>
+        <Button onClick={()=> setCurrentStep((prev)=> prev-1)} variant="outlined">Back</Button>
         <Button variant="contained" color="success" onClick={handleSubmit(onSubmit)}>
           Continue
         </Button>

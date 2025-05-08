@@ -31,10 +31,11 @@ export const createProfile = async (data)=>{
         const headers = {
             Authorization: `Bearer ${token}`
           };
+    
+          
         const response= await axios.post(createProfileApi, data, {headers});
 
-        console.log("response", response)
-      
+        return response;
     
     }catch(err){
         console.log("error response",err);
@@ -43,7 +44,27 @@ export const createProfile = async (data)=>{
     }
 }
 
+export const getProfile = async()=>{
+    try{
+        const token = localStorage.getItem('TokenId')
+        
+        const headers = {
+            Authorization: `Bearer ${token}`
+          };
+    
+          
+        const response= await axios.get(createProfileApi, {headers});
+
+        return response;
+    }
+    catch(e){
+        console.log("errorResponse", e)
+    }
+}
+
 export const postJob = async (data)=>{
+
+    console.log("data from function", data)
     try{
         const token = localStorage.getItem('TokenId')
         
@@ -52,7 +73,7 @@ export const postJob = async (data)=>{
           };
         const response= await axios.post(jobPostApi, data, {headers});
 
-        console.log("response", response)
+        return response;
       
     
     }catch(err){

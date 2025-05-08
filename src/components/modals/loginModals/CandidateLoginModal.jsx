@@ -27,7 +27,6 @@ export default function CandidateLoginModal({ onClose, mobile, setMobile }) {
 
   const isValidMobile = /^\d{10}$/.test(mobile);
 
-  console.log(showModal)
 
 if(!showModal) return null
 

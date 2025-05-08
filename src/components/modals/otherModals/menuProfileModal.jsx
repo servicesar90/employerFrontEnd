@@ -1,7 +1,7 @@
 import { Avatar, Menu, MenuItem, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const MenuProfileModal = ({ open, anchor, handleClose }) => {
+const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
 
     const navigate = useNavigate();
 
@@ -10,6 +10,7 @@ const MenuProfileModal = ({ open, anchor, handleClose }) => {
         navigate("/");
     }
 
+    const user= JSON.parse(localStorage.getItem("User"))
 
     return (
         <Menu
@@ -34,10 +35,10 @@ const MenuProfileModal = ({ open, anchor, handleClose }) => {
                     <Avatar className="bg-purple-700">A</Avatar>
                     <div>
                         <Typography className="font-medium text-gray-900">
-                            Aditya Jain
+                            {data?.name}
                         </Typography>
                         <Typography className="text-sm text-gray-500">
-                            9540441958
+                            {user?.phone}
                         </Typography>
                     </div>
                 </div>

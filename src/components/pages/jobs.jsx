@@ -1,13 +1,17 @@
 import React from 'react'
 import { Button, Card, CardContent } from '@mui/material';
 import { Plus, FileText } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { employer } from '../../assets/data';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import JobCard from '../ui/cards/jobCards';
 
 export default function Jobs() {
     const navigate = useNavigate();
-    const jobs = employer.jobs;
+    
+    const data= useOutletContext()
+
+    console.log(data)
+
+    const jobs= data?.Jobs;
 
     if (jobs.length > 0) {
         return (
@@ -31,7 +35,7 @@ export default function Jobs() {
                                    
                                     {jobs.map((job, index) => (
                                         <div key={index} onClick={() => navigate(`/employerHome/jobsDetail/${job.id}`)}>
-                                            <JobCard title={job.jobTitle} status={job.jobActivity.status} location={job.location} postedOn={job.jobActivity.postedOn} recruiter={job.jobActivity.recruiter} appliedCount={job.jobActivity.appliedCount} pendingCount={job.jobActivity.pendingCount} dbMatches={job.jobActivity.pendingCount} showDuplicate={job.jobActivity.status === "Active"} />
+                                            <JobCard title={job.jobTitle} status="Active" location={job.location} postedOn={job.createdAt} recruiter="10" appliedCount="40" pendingCount="20" dbMatches="5" showDuplicate={false} />
                                         </div>
                                     ))}
                                 </div>

@@ -2,21 +2,26 @@ import { PlusCircle } from "lucide-react";
 import { Linkedin, Facebook, Instagram } from "lucide-react";
 import DynamicModal from "../modals/otherModals/dynamicModal";
 import { useState } from "react";
+import {  useOutletContext } from "react-router-dom";
 
 const CompanyProfile = () => {
 
   const [openModal, setOpenModal] = useState(false);
 const [modalField, setModalField] = useState(null);
 
+const data= useOutletContext();
+
+console.log(data)
+const company= data?.company;
 
   const fields = [
-    { label: "Company name", value: "Shan Webtech Private Limited" },
+    { label: "Company name", value: company.companyName },
     { label: "Founded", value: "Not available" },
     { label: "Website", value: "Not available" },
-    { label: "Company size", value: "Not available" },
+    { label: "Company size", value: company.numOfEmployees },
     { label: "Type of company", value: "Not available" },
-    { label: "Industry", value: "IT Services & Consulting, Software Product" },
-    { label: "About Company", value: "Not available" },
+    { label: "Industry", value: company.industry },
+    { label: "About Company", value: company.about },
   ];
 
   const showModal = (item) => {

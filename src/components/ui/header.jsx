@@ -2,7 +2,9 @@ import { Menu, HelpCircle, Database } from "lucide-react";
 import { useRef, useState } from "react";
 import MenuProfileModal from "../modals/otherModals/menuProfileModal";
 
-const Header = ({onMenuClick}) => {
+const Header = ({onMenuClick, data}) => {
+
+
 
   const [showProfileModal, setShowprofileModal] = useState(false);
   const avatarRef= useRef();
@@ -29,12 +31,13 @@ const Header = ({onMenuClick}) => {
         </div>
         {/* Avatar circle */}
         <div ref={avatarRef} onClick={()=> setShowprofileModal(true)} className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center font-bold text-sm cursor-pointer">
-          R
+        {data?.name ? data.name.charAt(0).toUpperCase() : ''}
+
         </div>
       </div>
 
       {showProfileModal && 
-      <MenuProfileModal open={showProfileModal} anchor={avatarRef.current} handleClose={()=> setShowprofileModal(false)} />
+      <MenuProfileModal open={showProfileModal} anchor={avatarRef.current} handleClose={()=> setShowprofileModal(false)} data={data} />
       }
     </header>
   );

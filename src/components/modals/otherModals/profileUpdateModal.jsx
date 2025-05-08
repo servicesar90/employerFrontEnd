@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { Button, Card, CardContent, TextField, Typography, Box, Grid } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import { useOutletContext } from 'react-router-dom';
 
 const ProfileUpdate = () => {
 
     const [isDisabled, setIsDisabled] = useState(true);
 
+    const employer= useOutletContext();
+
+    
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({
         defaultValues: {
-            name: 'Aditya Jain',
-            email: 'aj257453@gmail.com',
+            name: employer.name,
+            email: employer.email,
             mobile: '9540441958',
         },
     });
@@ -87,7 +91,7 @@ const ProfileUpdate = () => {
                                             label="Mobile"
                                             fullWidth
                                             type='tel'
-                                            disabled={isDisabled}
+                                            disabled
                                             error={!!errors.mobile}
                                             helperText={errors.mobile?.message}
                                             {...register('mobile', {

@@ -55,7 +55,7 @@ const SearchCandidatesForm = () => {
 
       <div className="bg-gray-100 rounded-lg p-1 flex mb-6">
         <button className="bg-white text-sm px-4 py-2 rounded-md font-medium">Search manually</button>
-        <button className="text-sm px-4 py-2 rounded-md font-medium hover:bg-white transition">Use apnaAI</button>
+
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -85,6 +85,7 @@ const SearchCandidatesForm = () => {
               {...field}
               label="Keywords"
               fullWidth
+              size='small'
               required
               error={!!fieldState.error}
               helperText={fieldState.error?.message}
@@ -93,17 +94,22 @@ const SearchCandidatesForm = () => {
         />
 
         {/* Location */}
-        <Controller
-          name="location"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Current city/region"
-              fullWidth
-            />
-          )}
-        />
+        <div className='mt-4'>
+          <Controller
+            name="location"
+            control={control}
+
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Current city/region"
+                fullWidth
+                size='small'
+              />
+            )}
+          />
+        </div>
+
 
         {/* Experience: Min / Max */}
         <div className="grid grid-cols-2 gap-4">
@@ -111,7 +117,7 @@ const SearchCandidatesForm = () => {
             name="minExperience"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="Minimum experience" select fullWidth>
+              <TextField {...field} label="Minimum experience" size='small' select fullWidth>
                 {[...Array(21).keys()].map((val) => (
                   <MenuItem key={val} value={val}>{val} years</MenuItem>
                 ))}
@@ -122,7 +128,7 @@ const SearchCandidatesForm = () => {
             name="maxExperience"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="Maximum experience" select fullWidth>
+              <TextField {...field} label="Maximum experience" size='small' select fullWidth>
                 {[...Array(21).keys()].map((val) => (
                   <MenuItem key={val} value={val}>{val} years</MenuItem>
                 ))}
@@ -137,7 +143,7 @@ const SearchCandidatesForm = () => {
             name="minSalary"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="Min. salary in lakhs" select fullWidth>
+              <TextField {...field} label="Min. salary in lakhs" size='small' select fullWidth>
                 {[...Array(51).keys()].map((val) => (
                   <MenuItem key={val} value={val}>{val} LPA</MenuItem>
                 ))}
@@ -148,7 +154,7 @@ const SearchCandidatesForm = () => {
             name="maxSalary"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="Max. salary in lakhs" select fullWidth>
+              <TextField {...field} label="Max. salary in lakhs" size='small' select fullWidth>
                 {[...Array(51).keys()].map((val) => (
                   <MenuItem key={val} value={val}>{val} LPA</MenuItem>
                 ))}

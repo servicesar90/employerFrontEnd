@@ -1,10 +1,11 @@
 import { Circle, FileQuestion, LogOut } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Checkbox, FormControlLabel, Box, TextField, Paper, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { createProfile } from "../../../API/ApiFunctions";
 import { motion } from "framer-motion";
-const AnimatedCircle = motion(Circle);
+import { useNavigate } from "react-router-dom";
+const AnimatedCircle = motion.create(Circle);
 const companySizes = [
   "0-50",
   "51-100",
@@ -17,19 +18,24 @@ const companySizes = [
 
 function UnigrowOnboardingForm() {
 
+  const [agrrement, setAgreeMent] = useState(false)
+
+
   const circles = [0, 1, 2, 3];
 
-const circleVariants = {
-  animate: (i) => ({
-    opacity: [0.2, 1, 0.2],
-    transition: {
-      repeat: Infinity,
-      duration: 1.2,
-      ease: "easeInOut",
-      delay: i * 0.2,
-    },
-  }),
-};
+  const navigate = useNavigate()
+
+  const circleVariants = {
+    animate: (i) => ({
+      opacity: [0.2, 1, 0.2],
+      transition: {
+        repeat: Infinity,
+        duration: 1.2,
+        ease: "easeInOut",
+        delay: i * 0.2,
+      },
+    }),
+  };
 
 
   const { register, control, setValue, watch, handleSubmit } = useForm({
@@ -42,12 +48,28 @@ const circleVariants = {
     }
   })
 
+
+
+  const logout = () => {
+    localStorage.removeItem("TokenId");
+    localStorage.removeItem("User");
+    navigate("/");
+  }
+
   const employeeNumber = watch("employeeNumber");
 
-  const onsubmit = async(data) => {
+  const onsubmit = async (data) => {
     console.log("data", data)
-    await createProfile()
+    const response = await createProfile(data);
+
+    if (response) {
+      const user= JSON.parse(localStorage.getItem("User"));
+      const newUser = { ...user, profile: true };
+      localStorage.setItem("User", JSON.stringify(newUser));
+      navigate("/employerHome/jobs")
+    }
   }
+
 
   return (
     <>
@@ -68,16 +90,16 @@ const circleVariants = {
           </header>
 
           <div className="flex gap-1.5 justify-center mb-5" role="navigation" aria-label="Feature navigation">
-  {circles.map((i) => (
-    <AnimatedCircle
-      key={i}
-      custom={i}
-      variants={circleVariants}
-      animate="animate"
-      className="w-4 h-4 text-green-300"
-    />
-  ))}
-</div>
+            {circles.map((i) => (
+              <AnimatedCircle
+                key={i}
+                custom={i}
+                variants={circleVariants}
+                animate="animate"
+                className="w-4 h-4 text-green-300"
+              />
+            ))}
+          </div>
 
           <section aria-labelledby="database-section">
             <h3 id="database-section" className="mb-2.5 text-xl font-bold text-center">Database</h3>
@@ -110,6 +132,7 @@ const circleVariants = {
             <button
               className="flex items-center"
               aria-label="Logout"
+              onClick={logout}
             >
               <LogOut />
             </button>
@@ -153,7 +176,7 @@ const circleVariants = {
                   <FormControlLabel
                     control={<Checkbox {...field} checked={field.value} />}
                     label="This is a consultancy (Hiring or staffing agency)"
-                    
+
                   />
                 )}
               />
@@ -167,9 +190,11 @@ const circleVariants = {
                 disabled
                 size="small"
                 {...register("employeeNumber")}
-                slotProps={{inputLabel: {
-                  shrink: true,
-                  }}}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  }
+                }}
               />
             </div>
 
@@ -195,7 +220,7 @@ const circleVariants = {
                     },
                   }}
                 >
-                  <Typography sx={{fontSize: "14px"}}>{option}</Typography>
+                  <Typography sx={{ fontSize: "14px" }}>{option}</Typography>
                 </Paper>
               ))}
             </Box>
@@ -207,23 +232,29 @@ const circleVariants = {
               <input
                 type="checkbox"
                 id="terms-checkbox"
-                className="w-4 h-4 m-5"
+                className="w-4 h-4"
                 aria-describedby="terms-label"
                 required
+                onChange={(e) => setAgreeMent(e.target.checked)}
               />
-              <label id="terms-label" htmlFor="terms-checkbox">
+              <label htmlFor="terms-checkbox" id="terms-label" className="cursor-pointer">
                 I Agree to Unigrow's{' '}
-                <a href="#" className="text-blue-500 hover:underline">Terms of Service</a>
-                {' '}and{' '}
+                <a href="#" className="text-blue-500 hover:underline">Terms of Service</a>{' '}
+                and{' '}
                 <a href="#" className="text-blue-500 hover:underline">Privacy Policy</a>
               </label>
             </div>
 
             <button
               type="submit"
-              className="p-2.5 w-full m-5 text-sm font-medium text-center text-white bg-blue-500 rounded-md cursor-pointer hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              disabled={!agrrement}
+              className={`p-2.5 w-full m-5 text-sm font-medium text-center text-white rounded-md cursor-pointer
+                ${!agrrement
+                  ? "bg-green-300 cursor-not-allowed"  // 👈 green color when disabled
+                  : "bg-green-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                }`}
               aria-label="Post a job"
-              
+
             >
               Post a job
             </button>

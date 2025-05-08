@@ -1,8 +1,5 @@
 import React from 'react';
 import { Route, Routes, Outlet } from 'react-router-dom';
-import Home from '../views/home';
-import Header from '../components/ui/navbar'
-import Footer from '../components/ui/footer'
 import EmployerHome from '../views/employerHome';
 import ProfileUpdate from '../components/modals/otherModals/profileUpdateModal';
 import Jobs from '../components/pages/jobs';
@@ -13,9 +10,10 @@ import UnlockedCandidates from '../components/pages/unlockCandidate';
 import ApplicationsReportCard from '../components/ui/cards/ReportCard';
 import DownloadApplicationsCard from '../components/modals/otherModals/reportDownloadModal';
 import LoginPageWithPopup from '../views/landingPage';
-import ProtectedRoute from './routeProtection';
+import {ProtectedRoute, RedirectedRoute, RedirectedRouteForHome, RedirectedRouteForLogin} from './routeProtection';
 import CompanyProfile from '../components/pages/companyDetail';
 import UnigrowOnboardingForm from '../components/modals/otherModals/createProfileModal';
+import SimplePaper from '../components/ui/cards/NewCard';
 
 
 function Layout() {
@@ -34,10 +32,10 @@ export default function Routess() {
     return (
         <Routes>
             <Route path='/' element={<Layout />}>
-                <Route index element={<LoginPageWithPopup />} />
-                <Route path="/createProfile" element={<ProtectedRoute><UnigrowOnboardingForm /></ProtectedRoute>} />
-                <Route path='/employerHome' element={<ProtectedRoute><EmployerHome /></ProtectedRoute>}>
-                    
+                <Route index element={<RedirectedRouteForLogin><LoginPageWithPopup /></RedirectedRouteForLogin>} />
+                <Route path="/createProfile" element={<RedirectedRoute><UnigrowOnboardingForm /></RedirectedRoute>} />
+                <Route path='/employerHome' element={<ProtectedRoute><RedirectedRouteForHome><EmployerHome /></RedirectedRouteForHome></ProtectedRoute>}>
+                     <Route index element={<Jobs />} />
                     <Route path='Jobs' element={<Jobs />} />
                     <Route path="jobsDetail/:id" element={<CandidateManagementPage />} />
                     <Route path='SearchCandidates' element={<SearchCandidatesForm />} />
@@ -49,7 +47,7 @@ export default function Routess() {
                 </Route>
 
                 <Route path='/jobsModal' element={<ProtectedRoute><PostJob /></ProtectedRoute>} />
-               
+               <Route path='/card' element={<SimplePaper />} />
                 
             </Route>
         </Routes>

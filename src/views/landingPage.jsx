@@ -35,8 +35,8 @@ function LoginPageWithPopup() {
             </button>
 
             <button
-              onClick={() => setShowLoginModal(!showLoginModal)}
-              className="bg-[#36A85C] text-white px-4 py-1 rounded text-sm font-semibold"
+              disabled
+              className="bg-gray-300 text-white px-4 py-1 rounded text-sm font-semibold"
             >
               Candidate Login
             </button>

@@ -6,6 +6,7 @@ import {
 import { Card, CardContent, Button, TextField } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { employer } from '../../assets/data';
+import SimplePaper from '../ui/cards/NewCard';
 
 const filters = [
   { label: 'Matched to job requirements (10)' },
@@ -199,7 +200,7 @@ const CandidateManagementPage = () => {
           <div className="text-sm text-gray-600 mb-2">Showing 13 candidates</div>
           {data?.candidatesData.map((candidate, index) => (
             <div key={index}>
-              <CandidateCard candidate={candidate} />
+              <SimplePaper candidate={candidate} />
             </div>
           ))}
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Building, Database, Notebook, UserSearch, Save, Unlock, X, ChevronDown, ChevronUp } from 'lucide-react';
 
-const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
+const Sidebar = ({ collapsed, mobileVisible, onCloseMobile, data }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [databaseOpen, setDatabaseOpen] = useState(false);
@@ -45,12 +45,12 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
             <img src={avatarUrl} alt="Avatar" className="w-8 h-8 rounded-[8px] object-cover" />
           ) : (
             <div className="w-8 h-8 rounded-[8px] bg-green-500 text-white flex items-center justify-center text-sm font-semibold">
-              {employerName.charAt(0).toUpperCase()}
+              {data?.company.companyName.charAt(0).toUpperCase()}
             </div>
           )}
           {showFull && (
-            <h1 className="text-xl font-bold">
-              Talent<span className="text-green-500">Nest</span>
+            <h1 className="text-xl font-semibold">
+            {data?.company.companyName}
             </h1>
           )}
         </div>

@@ -10,6 +10,7 @@ export default function Navbar() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [mobile, setMobile]= useState("");
   const [showOtp, setShowOtp] = useState(false);
+ 
 
   
 
@@ -131,7 +132,7 @@ export default function Navbar() {
           {/* Login Buttons */}
           <div className="flex items-center flex-row gap-4 pl-4">
             <button
-              onClick={()=>setShowLoginModal(true)}
+              onClick={()=>setShowLoginModal(!showLoginModal)}
               className="text-[#36A85C] bg-white px-4 py-1 rounded text-sm font-semibold"
             >
               Employer Login
@@ -148,17 +149,20 @@ export default function Navbar() {
       </nav>
 
       {showLoginModal && <CandidateLoginModal
-        mobile= {mobile}
-        setMobile={setMobile}
-        onClose={() => {
-          setShowLoginModal(false)
-          setShowOtp(true)
-        }
-        }
-      />}
-
-      {showOtp && <OtpModal mobile={mobile} onClose={()=>setShowOtp(false)}/>}
-
+              mobile= {mobile}
+              setMobile={setMobile}
+              onClose={() => {
+                setShowLoginModal(false)
+              }
+            }
+              onSubmit={()=>{
+                setShowOtp(true)
+              }
+            }
+              
+            />}
+      
+            {showOtp && <OtpModal mobile={mobile} onClose={()=>setShowOtp(false)}/>}
 
       
     </>

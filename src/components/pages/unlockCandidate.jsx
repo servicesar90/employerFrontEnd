@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Checkbox, FormControlLabel, Radio, RadioGroup, Pagination, Button } from '@mui/material';
 import {  Download } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import CandidateCard from '../ui/cards/candidateCard';
 import { candidates } from '../../assets/data';
+import SimplePaper from '../ui/cards/NewCard';
 
 const UnlockedCandidates = () => {
-  const navigate = useNavigate();
+ 
   const [filters, setFilters] = useState({
     unlockedBy: 'me',
     unlockedIn: '1',
@@ -91,9 +90,9 @@ const UnlockedCandidates = () => {
     </div>
 
     {/* Candidate Cards Section - 68% */}
-    <div className="w-[68%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+    <div className="w-[68%] grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-2">
       {candidates.map((candidate, index) => (
-        <CandidateCard key={index} candidate={candidate} />
+        <SimplePaper key={index} candidate={candidate} />
       ))}
     </div>
   </div>

@@ -1,0 +1,152 @@
+.card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  font-size: 1em;
+  width: 100%;
+  max-width: 800px;      /* prevents it from growing too big */
+  overflow: hidden;      /* hides anything that spills out */
+  box-sizing: border-box;/* includes padding/border in width */
+  word-wrap: break-word; 
+}
+
+.custom-card {
+  position: relative;
+  width: 800px;
+  
+  border: 1.5px solid #ccc;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  padding-left: 32px;
+  padding-right: 15px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+/* Checkbox in top-left corner */
+.corner-checkbox {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+}
+.card-top-section {
+  display: flex;
+}
+.candidate-name {
+  display: flex;
+}
+
+.right-info-section {
+  display: flex;
+
+  padding-left: 10px;
+}
+.info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: -10px;
+}
+.unlock-badge-section {
+  margin-left: 80px;
+}
+
+.current,
+.previous,
+.education,
+.pref-location,
+.skills,
+.languages {
+  display: flex;
+}
+.card-bottom-section {
+  max-width: 800px;
+  border-radius: 0px 0px 8px 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  box-sizing: border-box; /* includes padding/border in width */
+  word-wrap: break-word;
+  border-top: 0px;
+  border-bottom: 1.5px solid #ccc;
+  border-right: 1.5px solid #ccc;
+  border-left: 1.5px solid #ccc;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mid-section{
+  color: #425281;
+}
+
+
+
+@media(max-width:768px){
+  .mobileCardWrapper{
+    width: 100%;
+    height:auto;
+    box-sizing: border-box;
+    word-wrap:break-word;
+    border-bottom: 1px solid #ccc;
+    font-size: 0.9em;
+    
+  }
+ 
+
+  .line-info{
+  border-bottom: 0.5px solid #ccc;
+  border-top: 0.5px solid #ccc ;
+
+  }
+  .mobile-education,
+  .mobile-current-work,
+  .mobile-previous-work{
+    text-align: left;
+    
+    margin-left: 25px;
+    white-space:normal;
+    word-break: break-word;
+  }
+
+  .mobile-location,
+  .mobile-skills{
+    text-align: left;
+    margin-left: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap:5px;
+    
+
+  }
+
+  .mobile-contact-button{
+    text-align: left;
+    margin-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 10px ;
+  }
+
+  .mobile-card-bottom-section{
+    
+   
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-sizing: border-box; /* includes padding/border in width */
+    word-wrap: break-word;
+    border-top: 0px;
+    border-bottom: 1.5px solid #ccc;
+    
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+  }
+  
+
+}
+
