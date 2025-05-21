@@ -63,7 +63,7 @@ function UnigrowOnboardingForm() {
     const response = await createProfile(data);
 
     if (response) {
-      const user= JSON.parse(localStorage.getItem("User"));
+      const user = JSON.parse(localStorage.getItem("User"));
       const newUser = { ...user, profile: true };
       localStorage.setItem("User", JSON.stringify(newUser));
       navigate("/employerHome/jobs")
@@ -195,7 +195,20 @@ function UnigrowOnboardingForm() {
                     shrink: true,
                   }
                 }}
+                sx={{
+                  '& .MuiInputBase-input.Mui-disabled': {
+                    WebkitTextFillColor: 'black', // fixes Chrome-specific issue
+                    color: 'black',
+                  },
+                  '& .MuiInputLabel-root.Mui-disabled': {
+                    color: 'black',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)', // optional: default disabled border color
+                  }
+                }}
               />
+
             </div>
 
 

@@ -1,4 +1,4 @@
-  const base_url = "https://production.careernest.online";
+  const base_url = "https://backend.careernest.online";
 
 
 // LoginAPIs
@@ -9,3 +9,5 @@ export const otpApi = `${base_url}/api/v1/auth/verifysignin`
 export const jobPostApi = `${base_url}/api/v1/employer-job`
 
 export const createProfileApi = `${base_url}/api/v1/employer`
+
+export const applicationApi = `${base_url}/api/v1/apply`

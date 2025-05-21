@@ -9,7 +9,7 @@ const CompanyProfile = () => {
   const [openModal, setOpenModal] = useState(false);
 const [modalField, setModalField] = useState(null);
 
-const data= useOutletContext();
+const {data}= useOutletContext();
 
 console.log(data)
 const company= data?.company;

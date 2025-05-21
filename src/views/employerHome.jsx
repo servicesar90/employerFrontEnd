@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Header from '../components/ui/header';
 import Sidebar from '../components/ui/sidebar';
-import { Outlet } from 'react-router-dom';
-import { getProfile } from '../API/ApiFunctions';
+import { Outlet, useOutletContext } from 'react-router-dom';
+
 
 const EmployerHome = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileVisible, setMobileVisible] = useState(false);
-  const [data, setData] = useState(null);
+ const {data, jobs}= useOutletContext()
+
 
   const handleMenuClick = () => {
     if (window.innerWidth < 768) {
@@ -23,45 +24,27 @@ const EmployerHome = () => {
     }
   };
 
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getProfile();
-      if (response) {
-      
-        setData(response.data);
-      } else {
-        console.log("not getting data")
-      }
-
-    }
-
-    getData()
-  }, [])
-
-
-
-
 
   return (
     <div className='flex flex-col w-full'>
       <div className='flex flex-col w-full'>
-        <Header onMenuClick={handleMenuClick} data={data?.data} />
+        <Header onMenuClick={handleMenuClick} data={data} />
       </div>
 
 
       <div className="flex flex-row w-full" >
-        {/* <div className='flex w-[15rem]'> */}
+        <div className='flex w-[15vw]'>
         <Sidebar
           collapsed={isCollapsed}
           mobileVisible={mobileVisible}
           onCloseMobile={handleMenuClick}
-          data={data?.data} />
-        {/* </div> */}
+          data={data} />
+        </div> 
 
-        <div className="flex-1 w-[85rem] ">
+        <div className="flex-1 w-full lg:w-[85vw]  ">
 
-          {data?.data ? (
-            <Outlet context={data.data} />
+          {(data && jobs) ? (
+            <Outlet context={{data: data, jobs:jobs}} />
           ) : (
             <p>Loading...</p>
           )}

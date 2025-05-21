@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -18,9 +18,11 @@ import {
   CardContent
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { ArrowBigLeft, ArrowDown, ArrowLeft, ArrowLeftIcon, Award, BriefcaseBusiness, ChartArea, ChevronDown, ChevronUp, Edit, Handshake, Pencil, Plus, SearchCheckIcon, X } from 'lucide-react';
-import { getProfile, postJob } from '../../../API/ApiFunctions';
-import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Award, BriefcaseBusiness, ChevronDown, ChevronUp, Handshake, Pencil, Plus, X } from 'lucide-react';
+import { postJob } from '../../../API/ApiFunctions';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { showErrorToast, showSuccessToast } from '../../ui/toast';
+import JoditEditor from "jodit-react";
 
 const steps = ['Job details', '', '', '', ''];
 
@@ -91,25 +93,37 @@ const PostJob = () => {
   const [walkIn, setWalkIn] = useState(null);
   const [contactpermission, setContactPermission] = useState(null);
   const [showJobDetailpreview, setShowJobDetailpreview] = useState(false);
-  const [showCandidateRequirementsPreview, setShowCandidateRequirementPreview]= useState(false);
-  const [shownterviewDetailPreview, setShowInterviewDetailPreview]= useState(false);
-  const [data, setData] = useState(null);
-  const [changeSelected, setSelectedChange]= useState(true)
+  const [showCandidateRequirementsPreview, setShowCandidateRequirementPreview] = useState(false);
+  const [shownterviewDetailPreview, setShowInterviewDetailPreview] = useState(false);
+  const [changeSelected, setSelectedChange] = useState(true)
 
-const navigate= useNavigate();
+  const { id } = useParams();
+  const { data, jobs } = useOutletContext();
 
-useEffect(()=>{
-  const getData= async()=>{
-    const response= await getProfile();
-    if(response){
-      setData(response.data.data)
-    }
-  }
+  const navigate = useNavigate();
 
-  getData()
-},[])
+  const config = {
+    readonly: false,
+    toolbarSticky: false,
+    height: 300,
+    toolbar: true,
+    buttons: [
+      'bold',
+      'italic',
+      'underline',
+      '|',
+      'ul',
+      'ol',
+      '|',
+      'left',
+      'center',
+      'right',
+      '|',
+      'undo',
+      'redo'
+    ]
+  };
 
-console.log(data?.company.companyName)
 
   const {
     handleSubmit,
@@ -119,9 +133,9 @@ console.log(data?.company.companyName)
     formState: { errors },
   } = useForm({
     defaultValues: {
-      companyName: data?.company.companyName || "",
+      companyName: "",
       jobTitle: null,
-      jobRoles:null,
+      jobRoles: null,
       jobType: 'Full Time',
       nightShift: false,
       workLocationType: null,
@@ -162,15 +176,67 @@ console.log(data?.company.companyName)
     },
   });
 
-  useEffect(() => {
-    if (data?.company?.companyName) {
-      reset({
-        companyName: data.company.companyName,
-      });
-    }
-  }, [data, reset]);
+useEffect(() => {
+  if (!id || !jobs?.length) return;
 
-  const values= getValues()
+  const selectedJob = jobs.find((job) => job.id == id);
+  if (!selectedJob) return;
+
+  const currentValues = getValues();
+
+  // Optional: Avoid unnecessary reset if same values
+  if (selectedJob?.jobTitle !== currentValues.jobTitle) {
+    console.log(selectedJob.jobTitle);
+    reset({
+      companyName: data?.company.companyName,
+      jobTitle: selectedJob?.jobTitle || "fsijgdjfg",
+      jobRoles: selectedJob.jobRoles,
+      jobType: selectedJob.jobType || 'Full Time',
+      nightShift: selectedJob.nightShift ?? false,
+      workLocationType: selectedJob.workLocationType,
+      location: selectedJob.location,
+      payType: selectedJob.payType,
+      minimumSalary: selectedJob.minimumSalary,
+      maximumSalary: selectedJob.maximumSalary,
+      incentive: selectedJob.incentive,
+      perks: selectedJob.perks || [],
+      joiningfee: selectedJob.joiningfee,
+      joiningFeeAmount: selectedJob.joiningFeeAmount,
+      joiningFeesAmountReason: selectedJob.joiningFeesAmountReason,
+      joiningFeesAmountReasonDetail: selectedJob.joiningFeesAmountReasonDetail,
+      joiningFeeAmountTime: selectedJob.joiningFeeAmountTime,
+      education: selectedJob.education,
+      english: selectedJob.english,
+      experience: selectedJob.experience,
+      experienceLevel: selectedJob.experienceLevel,
+      educationSpecialization: selectedJob.educationSpecialization,
+      gender: selectedJob.gender,
+      age: selectedJob.age,
+      languages: selectedJob.languages,
+      distance: selectedJob.distance,
+      skills: selectedJob.skills,
+      jobDescription: selectedJob.jobDescription,
+      walkIn: selectedJob.walkIn,
+      walkInAddress: selectedJob.walkInAddress,
+      walkInStartDate: selectedJob.walkInStartDate,
+      walkInEndDate: selectedJob.walkInEndDate,
+      walkInStartTime: selectedJob.walkInStartTime,
+      walkInInstructions: selectedJob.walkInInstructions,
+      contactPreference: selectedJob.contactPreference,
+      otherRecruiterName: selectedJob.otherRecruiterName,
+      otherRecruiterNumber: selectedJob.otherRecruiterNumber,
+      otherRecruiterEmail: selectedJob.otherRecruiterEmail,
+      candidateType: selectedJob.candidateType,
+      notificationPreference: selectedJob.notificationPreference
+    });
+  }
+}, [data, jobs,reset]);
+
+
+
+
+
+  const values = getValues()
 
   const toggleField = (field) => {
     if (expanded.includes(field)) {
@@ -181,17 +247,17 @@ console.log(data?.company.companyName)
     }
   };
 
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
 
     console.log('Form Submitted:', data);
 
-    const response= await postJob(data);
+    const response = await postJob(data);
 
-    if(response){
-      alert("job Post succesfully")
+    if (response) {
+      showSuccessToast("job Post succesfully")
       navigate("/employerHome/jobs")
-    }else{
-      alert("Could not post job")
+    } else {
+      showErrorToast("Could not post job")
     }
   };
 
@@ -199,8 +265,8 @@ console.log(data?.company.companyName)
   return (
     <Box className="p-6 pt-0 bg-gray-200 min-h-screen">
 
-      <div className='w-full fixed bg-white flex flex-row justify-between rounded-lg shadow-md'>
-        <div className='flex flex-row gap-4 text-lg font-bold p-4'><ArrowLeft onClick={()=> navigate("/employerHome/jobs")} />Jobs</div>
+      <div className='w-full z-50 fixed bg-white flex flex-row justify-between rounded-lg shadow-md'>
+        <div className='flex flex-row gap-4 text-lg font-bold p-4'><ArrowLeft onClick={() => navigate("/employerHome/jobs")} />Jobs</div>
       </div>
 
       <div className="h-[64px]" />
@@ -239,88 +305,88 @@ console.log(data?.company.companyName)
             </Box>
 
             <Box className="flex items-center flex-col w-full gap-2 mt-4">
-            <Typography variant="h6" className="self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
-              Company You are Hiring For
-            </Typography>
-            <Box className="flex items-start flex-row w-full gap-2 mt-2">
-              <Controller
-                name="companyName"
-                control={control}
-                rules={{ required: 'Company name is required' }}
-                render={({ field }) => (
-                  <>
+              <Typography variant="h6" className="self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                Company You are Hiring For
+              </Typography>
+              <Box className="flex items-start flex-row w-full gap-2 mt-2">
+                <Controller
+                  name="companyName"
+                  control={control}
+                  rules={{ required: 'Company name is required' }}
+                  render={({ field }) => (
+                    <>
+                      <TextField
+                        {...field}
+                        fullWidth
+                        disabled={changeSelected}
+                        size='small'
+                        error={!!errors.companyName}
+                        helperText={errors.companyName?.message}
+                      />
+                      <Button onClick={() => setSelectedChange(!changeSelected)} variant="text" sx={{ color: "green", fontSize: "1rem", fontWeight: 700 }}>Change</Button>
+                    </>
+                  )}
+                />
+              </Box>
+            </Box>
+
+            <Box className="mt-4 w-1/2 flex flex-col items-start">
+              <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                Job title / Designation
+              </Typography>
+              <Box className="flex items-start flex-row w-full gap-2 mt-2">
+                <Controller
+                  name="jobTitle"
+                  control={control}
+                  rules={{ required: 'Job title is required' }}
+                  render={({ field }) => (
                     <TextField
                       {...field}
-                      fullWidth
-                      disabled={changeSelected}
+                      placeholder='Eg. Accountant'
                       size='small'
-                      error={!!errors.companyName}
-                      helperText={errors.companyName?.message}
+                      fullWidth
+                      error={!!errors.jobTitle}
+                      helperText={errors.jobTitle?.message}
                     />
-                    <Button onClick={()=>setSelectedChange(!changeSelected)} variant="text" sx={{ color: "green", fontSize: "1rem", fontWeight: 700 }}>Change</Button>
-                  </>
-                )}
-              />
+                  )}
+                />
               </Box>
             </Box>
 
             <Box className="mt-4 w-1/2 flex flex-col items-start">
-            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
-            Job title / Designation
-            </Typography>
-            <Box className="flex items-start flex-row w-full gap-2 mt-2">
-              <Controller
-                name="jobTitle"
-                control={control}
-                rules={{ required: 'Job title is required' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Eg. Accounant"
-                    size='small'
-                    fullWidth
-                    error={!!errors.jobTitle}
-                    helperText={errors.jobTitle?.message}
-                  />
-                )}
-              />
-              </Box>
-            </Box>
+              <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                Job Role
+              </Typography>
+              <Box className="flex items-start flex-row w-full gap-2 mt-2">
+                <Controller
+                  name="jobRoles"
+                  control={control}
 
-            <Box className="mt-4 w-1/2 flex flex-col items-start">
-            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
-            Job Role
-            </Typography>
-            <Box className="flex items-start flex-row w-full gap-2 mt-2">
-              <Controller
-                name="jobRoles"
-                control={control}
-               
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Eg. Accont managment"
-                    size='small'
-                    fullWidth
-                    error={!!errors.jobRoles}
-                    helperText={errors.jobRoles?.message}
-                  />
-                )}
-              />
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      placeholder="Eg. Accont managment"
+                      size='small'
+                      fullWidth
+                      error={!!errors.jobRoles}
+                      helperText={errors.jobRoles?.message}
+                    />
+                  )}
+                />
               </Box>
             </Box>
 
             <Box className="mt-6 flex flex-col items-start">
-            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
-            Type of Job
-            </Typography>
+              <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                Type of Job
+              </Typography>
               <Controller
                 name="jobType"
                 control={control}
                 rules={{ required: 'Job type is required' }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
-                    {["full-time", "part-time", "internship", "contract"].map((type) => {
+                    {["Full-Time", "Part-Time", "internship", "contract"].map((type) => {
 
                       return (
                         <div
@@ -350,7 +416,7 @@ console.log(data?.company.companyName)
                   <FormControlLabel
                     control={<Checkbox {...field} checked={field.value} />}
                     label="This is a night shift job"
-                    error={!!errors.nightShift}
+                    // error={!errors.nightShift}
                     helperText={errors.nightShift?.message}
                   />
                 )}
@@ -366,9 +432,9 @@ console.log(data?.company.companyName)
             <Typography className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>Location</Typography>
             <Typography className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>Let candidates know where they will be working from.</Typography>
             <Box className="mt-6 flex items-start flex-col">
-            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
-            Work Location Type
-            </Typography>
+              <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                Work Location Type
+              </Typography>
               <Controller
                 name="workLocationType"
                 control={control}
@@ -409,7 +475,7 @@ console.log(data?.company.companyName)
             {selectedLocationType && (
               <Box className="mt-6 w-1/2 flex items-start flex-col">
                 <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
-            
+
                   {selectedLocationType === "work-from-office"
                     ? "Office Address"
                     : selectedLocationType === "work-from-home"
@@ -440,7 +506,7 @@ console.log(data?.company.companyName)
             <Typography className="mb-2" sx={{ fontWeight: 700, fontSize: "1rem" }}>Compensation</Typography>
             <Typography className="mb-2" sx={{ color: "gray", fontSize: "0.8rem" }}>Job postings with right salary & incentives will help you find the right candidates.</Typography>
             <Box className="mt-6 flex flex-col items-start">
-            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>What is the pay type? *</Typography>
+              <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>What is the pay type? *</Typography>
 
               <Controller
                 name="payType"
@@ -448,7 +514,7 @@ console.log(data?.company.companyName)
                 rules={{ required: 'Pay type is required' }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
-                    {["fixed-only", "fixed-incentive", "incentive-only"].map((type) => {
+                    {["Fixed-only", "Fixed-incentive", "Incentive-only"].map((type) => {
 
                       return (
                         <div
@@ -608,7 +674,7 @@ console.log(data?.company.companyName)
 
             {/* Perks Section */}
             <Box className="mt-6 flex flex-col items-start">
-            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Do you offer any additional perks?</Typography>
+              <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Do you offer any additional perks?</Typography>
               <FormGroup row className='mt-4' sx={{ gap: 1 }}>
                 <Controller
                   name="perks"
@@ -664,13 +730,13 @@ console.log(data?.company.companyName)
 
             {/* joiningFees section */}
             <Box className="mt-4">
-            <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Is there any joining fee or deposit required from the candidate?</Typography>
+              <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Is there any joining fee or deposit required from the candidate?</Typography>
               <Controller
                 name="joiningfee"
                 control={control}
                 rules={{
                   required: 'Please choose any one',
-                 
+
                 }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
@@ -679,7 +745,7 @@ console.log(data?.company.companyName)
                       return (
                         <div
                           key={type}
-                          
+
                           onClick={() => {
                             field.onChange(type)
                             setjoiningfee(type)
@@ -690,7 +756,7 @@ console.log(data?.company.companyName)
                             : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
                             }`}
                         >
-                          {type==="true"? "yes": "no"}
+                          {type === "true" ? "yes" : "no"}
                         </div>
                       );
                     })}
@@ -709,7 +775,7 @@ console.log(data?.company.companyName)
             {joiningFees === "true" &&
               <>
                 <Box className="mt-6 w-1/2 flex flex-col items-start">
-                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Fee Amount</Typography>
+                  <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>Fee Amount</Typography>
                   <Controller
                     name="joiningFeeAmount"
                     control={control}
@@ -735,13 +801,13 @@ console.log(data?.company.companyName)
                 </Box>
 
                 <Box className="mt-4 flex flex-col items-start">
-                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>What is this fee for?</Typography>
+                  <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>What is this fee for?</Typography>
                   <Controller
                     name="joiningFeesAmountReason"
                     control={control}
                     rules={{
                       required: 'Please choose any one',
-                     
+
                     }}
                     render={({ field }) => (
                       <div className="flex flex-wrap gap-4 mt-2">
@@ -801,7 +867,7 @@ console.log(data?.company.companyName)
                 }
 
                 <Box className="mt-4 flex flex-col items-start">
-                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>When should the fee be paid?</Typography>
+                  <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>When should the fee be paid?</Typography>
                   <Controller
                     name="joiningFeeAmountTime"
                     control={control}
@@ -1171,19 +1237,17 @@ console.log(data?.company.companyName)
 
 
             {/* Job Description */}
+
             <Box className="mt-6 w-full">
               <Controller
                 name="jobDescription"
                 control={control}
-                
                 render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Job Description"
-                    multiline
-                    rows={4}
-                    fullWidth
-                   
+                  <JoditEditor
+                    value={field.value || ""}
+                    config={config}
+                    onBlur={field.onBlur}
+                    onChange={(newContent) => field.onChange(newContent)}
                   />
                 )}
               />
@@ -1194,17 +1258,17 @@ console.log(data?.company.companyName)
 
 
           <Box className="bg-white p-6 rounded mt-4 gap-4 justify-center shadow space-y-6 flex flex-row ">
-          <Button
+            <Button
               variant="outlined"
               color='green'
-              
+
               onClick={() => {
                 setCurrentStep((prev) => prev - 1); // only runs if form is valid
               }}
             >
               Back
             </Button>
-            
+
             <Button
               variant="contained"
               sx={{ backgroundColor: "green" }}
@@ -1427,13 +1491,13 @@ console.log(data?.company.companyName)
                     <FormControlLabel
                       value="no"
                       control={<Radio />}
-                      disabled={walkIn==="no"}
+                      disabled={walkIn === "no"}
                       label="No, I will contact candidates first"
                     />
                   </RadioGroup>
                 )}
               />
-              {walkIn==="no" && <p>This Option is only valid for walk in</p>}
+              {walkIn === "no" && <p>This Option is only valid for walk in</p>}
               {errors.contactPreference && (
                 <Typography color="error" variant="caption">
                   {errors.contactPreference.message}
@@ -1449,7 +1513,7 @@ console.log(data?.company.companyName)
 
                 {/* Recruiter's Name */}
                 <Box className="w-1/2 flex flex-col mt-2 items-start">
-                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                  <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                     Recruiter's Name
                   </Typography>
                   <Controller
@@ -1472,7 +1536,7 @@ console.log(data?.company.companyName)
                 </Box>
 
                 <Box className="w-1/2 flex flex-col mt-2 items-start">
-                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                  <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                     Recruiter’s Whatsapp No.
                   </Typography>
                   <Controller
@@ -1501,7 +1565,7 @@ console.log(data?.company.companyName)
                 </Box>
 
                 <Box className="w-1/2 flex flex-col mt-2 items-start">
-                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                  <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                     Recruiter’s Email ID *
                   </Typography>
                   <Controller
@@ -1579,7 +1643,7 @@ console.log(data?.company.companyName)
 
             {(contactpermission === "no" || contactpermission === "self" || contactpermission === "other") &&
               <>
-               <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                <Typography variant="h6" className="mb-2 self-start" sx={{ fontWeight: 700, fontSize: "0.9rem" }}>
                   Communication Preferences
                 </Typography>
                 <FormControl component="fieldset" fullWidth>
@@ -1604,7 +1668,7 @@ console.log(data?.company.companyName)
                         <FormControlLabel
                           value="yes"
                           control={<Radio />}
-                          label="Yes, to other recruiter"
+                          label={contactpermission === "self" ? "Yes, to myself" : "Yes, to other recruiter"}
                         />
                         <FormControlLabel
                           value="no"
@@ -1630,7 +1694,7 @@ console.log(data?.company.companyName)
 
 
           <Box className="bg-white p-6 rounded mt-4 gap-4 shadow space-y-6 flex flex-row justify-center">
-          <Button
+            <Button
               variant="outlined"
               color='green'
               onClick={() => {
@@ -1639,7 +1703,7 @@ console.log(data?.company.companyName)
             >
               Back
             </Button>
-           
+
             <Button
               variant="contained"
               sx={{ backgroundColor: "green" }}
@@ -1655,121 +1719,121 @@ console.log(data?.company.companyName)
 
       }
 
-    
-    {currentStep===3 && (
-      <div className=" w-full">
 
-        <div className='w-full borderb-gray bg-white flex p-4 flex-row justify-between'>
-          <div className='flex flex-row gap-4'>
-           <BriefcaseBusiness />
-            <h3 className='font-bold text-lg'>JobDetails</h3>
+      {currentStep === 3 && (
+        <div className=" w-full">
+
+          <div className='w-full borderb-gray bg-white flex p-4 flex-row justify-between'>
+            <div className='flex flex-row gap-4'>
+              <BriefcaseBusiness />
+              <h3 className='font-bold text-lg'>JobDetails</h3>
+            </div>
+            <div className='flex flex-row gap-4'>
+              <Pencil onClick={() => setCurrentStep(0)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
+              {showJobDetailpreview ? <ChevronUp onClick={() => setShowJobDetailpreview(!showJobDetailpreview)} /> : <ChevronDown onClick={() => setShowJobDetailpreview(!showJobDetailpreview)} />}
+
+            </div>
           </div>
-          <div className='flex flex-row gap-4'>
-          <Pencil onClick={() => setCurrentStep(0)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
-            {showJobDetailpreview ? <ChevronUp onClick={()=>setShowJobDetailpreview(!showJobDetailpreview)}/> : <ChevronDown onClick={()=>setShowJobDetailpreview(!showJobDetailpreview)} />}
-            
+
+          {showJobDetailpreview &&
+            <Card variant="outlined">
+              <CardContent className="p-6">
+
+
+                <div className="space-y-4 text-sm">
+                  <DetailRow label="Company name" value={values.companyName} />
+                  <DetailRow label="Job title" value={values.jobTitle} />
+                  <DetailRow label="Job role/ category" value={values.jobRoles} />
+                  <DetailRow label="Job type" value={values.jobType} />
+                  <DetailRow label="Is Night Shift" value={values.nightShift} />
+                  <DetailRow label="Work type" value={values.workLocationType} />
+                  <DetailRow label="Job location" value={values.location} />
+
+                  <DetailRow
+                    label="Monthly Salary | Pay Type"
+                    value={`${values.minimumSalary}-${values.maximumSalary} ${values.incentive !== "" ? `incentive-${values.incentive}` : ""} per month (${values.payType})`}
+                  />
+                  <DetailRow label="Additional perks" value={values.perks} />
+                  <DetailRow label="Joining Fee" value={`${values.joiningfee === "true" ? `${values.joiningFeeAmount} for ${values.joiningFeesAmountReason}(${values.joiningFeesAmountReasonDetail}) at ${values.joiningFeeAmountTime}` : "No"}`} />
+                </div>
+              </CardContent>
+            </Card>
+          }
+
+
+          <div className='w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between'>
+            <div className='flex flex-row gap-4'>
+              <Award />
+              <h3 className='font-bold text-lg'>Candidate Requirement</h3>
+            </div>
+            <div className='flex flex-row gap-4'>
+              <Pencil onClick={() => setCurrentStep(1)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
+              {showCandidateRequirementsPreview ? <ChevronUp onClick={() => setShowCandidateRequirementPreview(!showCandidateRequirementsPreview)} /> : <ChevronDown onClick={() => setShowCandidateRequirementPreview(!showCandidateRequirementsPreview)} />}
+
+            </div>
+          </div>
+
+          {showCandidateRequirementsPreview &&
+            <Card variant="outlined">
+              <CardContent className="p-6">
+
+
+                <div className="space-y-4 text-sm">
+                  <DetailRow label="Minimum Education" value={values.education} />
+                  <DetailRow label="Experience Required" value={`${values.experienceLevel}(${values.experience})`} />
+                  <DetailRow label="English" value={values.english} />
+                  {expanded.map((type) => (<DetailRow label={type} value={values[type]} />))}
+
+
+
+
+                </div>
+              </CardContent>
+            </Card>
+          }
+
+
+          <div className='w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between'>
+            <div className='flex flex-row gap-4'>
+              <Handshake />
+              <h3 className='font-bold text-lg'>Interview Information</h3>
+            </div>
+            <div className='flex flex-row gap-4'>
+              <Pencil onClick={() => setCurrentStep(2)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
+              {shownterviewDetailPreview ? <ChevronUp onClick={() => setShowInterviewDetailPreview(!shownterviewDetailPreview)} /> : <ChevronDown onClick={() => setShowInterviewDetailPreview(!shownterviewDetailPreview)} />}
+
+            </div>
+          </div>
+
+          {shownterviewDetailPreview &&
+            <Card variant="outlined">
+              <CardContent className="p-6">
+
+
+                <div className="space-y-4 text-sm">
+                  <DetailRow label="Is this a walk-in interview ?" value={`${values.walkIn === "yes" ? `Address-${values.walkInAddress} from ${values.walkInStartDate}-${values.walkInEndDate} on ${values.walkInStartDate}` : "No"}`} />
+                  <DetailRow label="Communication" value={values.contactPreference} />
+                  {contactpermission === "other" && <DetailRow label="HR Detail" value={`${values.otherRecruiterName}, email: ${values.otherRecruiterEmail}, number ${values.otherRecruiterNumber}`} />}
+
+                  <DetailRow label="Can candidates contact" value={values.candidateType} />
+                  <DetailRow label="Whatsapp alert" value={values.notificationPreference} />
+
+                </div>
+              </CardContent>
+            </Card>
+          }
+
+
+          <div className="flex justify-between mt-6">
+            <Button onClick={() => setCurrentStep((prev) => prev - 1)} variant="outlined">Back</Button>
+            <Button variant="contained" color="success" onClick={handleSubmit(onSubmit)}>
+              Continue
+            </Button>
           </div>
         </div>
-     
-{showJobDetailpreview && 
-  <Card variant="outlined">
-        <CardContent className="p-6">
-      
+      )}
 
-          <div className="space-y-4 text-sm">
-            <DetailRow label="Company name" value={values.companyName} />
-            <DetailRow label="Job title" value={values.jobTitle} />
-            <DetailRow label="Job role/ category" value={values.jobRoles} />
-            <DetailRow label="Job type" value={values.jobType}/>
-            <DetailRow label="Is Night Shift" value={values.nightShift}/>
-            <DetailRow label="Work type" value={values.workLocationType} />
-            <DetailRow label="Job location" value={values.location} />
-           
-            <DetailRow
-              label="Monthly Salary | Pay Type"
-              value={`${values.minimumSalary}-${values.maximumSalary} ${values.incentive!==""?`incentive-${values.incentive}`:""} per month (${values.payType})`}
-            />
-            <DetailRow label="Additional perks" value={values.perks} />
-            <DetailRow label="Joining Fee" value={`${values.joiningfee==="true"? `${values.joiningFeeAmount} for ${values.joiningFeesAmountReason}(${values.joiningFeesAmountReasonDetail}) at ${values.joiningFeeAmountTime}`:"No"}`} />
-          </div>
-        </CardContent>
-      </Card>
-}
-      
-
-      <div className='w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between'>
-          <div className='flex flex-row gap-4'>
-            <Award />
-            <h3 className='font-bold text-lg'>Candidate Requirement</h3>
-          </div>
-          <div className='flex flex-row gap-4'>
-          <Pencil onClick={()=> setCurrentStep(1)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
-            {showCandidateRequirementsPreview ? <ChevronUp onClick={()=>setShowCandidateRequirementPreview(!showCandidateRequirementsPreview)}/> : <ChevronDown onClick={()=>setShowCandidateRequirementPreview(!showCandidateRequirementsPreview)} />}
-            
-          </div>
-        </div>
-     
-    {showCandidateRequirementsPreview && 
-    <Card variant="outlined">
-    <CardContent className="p-6">
-  
-
-      <div className="space-y-4 text-sm">
-        <DetailRow label="Minimum Education" value={values.education} />
-        <DetailRow label="Experience Required" value={`${values.experienceLevel}(${values.experience})`} />
-        <DetailRow label="English" value={values.english} />
-        {expanded.map((type)=>(<DetailRow label={type} value={values[type]} />))}
-        
-       
-       
-        
-      </div>
-    </CardContent>
-  </Card>
-    }
-      
-
-      <div className='w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between'>
-          <div className='flex flex-row gap-4'>
-            <Handshake />
-            <h3 className='font-bold text-lg'>Interview Information</h3>
-          </div>
-          <div className='flex flex-row gap-4'>
-          <Pencil onClick={()=> setCurrentStep(2)} size={35} className="bg-green-100 text-black p-2 rounded-lg cursor-pointer" />
-            {shownterviewDetailPreview ? <ChevronUp onClick={()=>setShowInterviewDetailPreview(!shownterviewDetailPreview)}/> : <ChevronDown onClick={()=>setShowInterviewDetailPreview(!shownterviewDetailPreview)} />}
-            
-          </div>
-        </div>
-     
-{shownterviewDetailPreview && 
- <Card variant="outlined">
- <CardContent className="p-6">
-
-
-   <div className="space-y-4 text-sm">
-     <DetailRow label="Is this a walk-in interview ?" value={`${values.walkIn==="yes"? `Address-${values.walkInAddress} from ${values.walkInStartDate}-${values.walkInEndDate} on ${values.walkInStartDate}`:"No"}`} />
-     <DetailRow label="Communication" value={values.contactPreference} />
-     {contactpermission === "other" && <DetailRow label="HR Detail" value={`${values.otherRecruiterName}, email: ${values.otherRecruiterEmail}, number ${values.otherRecruiterNumber}`} />}
-     
-     <DetailRow label="Can candidates contact" value={values.candidateType} />
-     <DetailRow label="Whatsapp alert" value={values.notificationPreference} />
-    
-   </div>
- </CardContent>
-</Card>
-}
-     
-
-      <div className="flex justify-between mt-6">
-        <Button onClick={()=> setCurrentStep((prev)=> prev-1)} variant="outlined">Back</Button>
-        <Button variant="contained" color="success" onClick={handleSubmit(onSubmit)}>
-          Continue
-        </Button>
-      </div>
-    </div>
-    )}
-
-</Box>
+    </Box>
   );
 };
 

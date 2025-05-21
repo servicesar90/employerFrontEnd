@@ -7,13 +7,12 @@ import JobCard from '../ui/cards/jobCards';
 export default function Jobs() {
     const navigate = useNavigate();
     
-    const data= useOutletContext()
+    const { jobs}= useOutletContext()
 
-    console.log(data)
 
-    const jobs= data?.Jobs;
+  
 
-    if (jobs.length > 0) {
+    if (jobs?.length > 0) {
         return (
             <>
                 <div className="min-h-screen w-full bg-gray-100 p-6 rounded-xl">
@@ -21,7 +20,7 @@ export default function Jobs() {
                     <div className="max-w-6xl mx-auto">
                         <div className="flex items-center justify-between py-4">
                             <h1 className="text-2xl font-semibold text-gray-800">All Jobs({jobs.length})</h1>
-                            <Button variant="contained" onClick={() => navigate("/jobsModal")} color="success" sx={{
+                            <Button variant="contained" onClick={() => navigate(`/jobsModal/${null}`)} color="success" sx={{
                                 fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.9rem' },
                                 padding: { xs: '4px 10px', sm: '6px 14px', md: '8px 20px' },
                             }}>
@@ -34,8 +33,8 @@ export default function Jobs() {
                                 <div className="p-6 bg-gray-50 min-h-screen">
                                    
                                     {jobs.map((job, index) => (
-                                        <div key={index} onClick={() => navigate(`/employerHome/jobsDetail/${job.id}`)}>
-                                            <JobCard title={job.jobTitle} status="Active" location={job.location} postedOn={job.createdAt} recruiter="10" appliedCount="40" pendingCount="20" dbMatches="5" showDuplicate={false} />
+                                        <div key={index}>
+                                            <JobCard job={job}  />
                                         </div>
                                     ))}
                                 </div>
@@ -53,7 +52,7 @@ export default function Jobs() {
                 <div className="max-w-6xl mx-auto">
                     <div className="flex items-center justify-between py-4">
                         <h1 className="text-2xl font-semibold text-gray-800">Jobs</h1>
-                        <Button variant="contained" onClick={() => navigate("/jobsModal")} color="success" sx={{
+                        <Button variant="contained" onClick={() => navigate(`/jobsModal/${null}`)} color="success" sx={{
                             fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.9rem' },
                             padding: { xs: '4px 10px', sm: '6px 14px', md: '8px 20px' },
                         }}>
@@ -65,7 +64,7 @@ export default function Jobs() {
                         <CardContent className="p-10 text-center">
                             <h2 className="text-xl font-medium mb-8">Post your first job</h2>
                             <div className="flex flex-col lg:flex-row justify-center gap-10">
-                                <div className="flex flex-col items-center">
+                                <div onClick={()=>navigate(`/jobsModal/${null}`)} className="flex flex-col items-center">
                                     <div className="bg-blue-100 text-blue-600 p-4 rounded-full">
                                         <Plus size={28} />
                                     </div>

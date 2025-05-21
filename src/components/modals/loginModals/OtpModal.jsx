@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { X, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { handleOtp } from "../../../API/ApiFunctions.jsx";
+import { showErrorToast, showSuccessToast } from "../../ui/toast.jsx";
 
 
 export default function OtpModal({  onClose, mobile }) {
@@ -42,6 +43,7 @@ export default function OtpModal({  onClose, mobile }) {
       console.log("response",response);
 
       if(response){
+        showSuccessToast("Successfully Login")
         if(response.data.user.profile){
           
           navigate("/employerHome/jobs")
@@ -51,6 +53,7 @@ export default function OtpModal({  onClose, mobile }) {
         }
         onClose()
       }else{
+        showErrorToast("Login Failed")
         setOtp("")
         inputsRef.current[0]?.focus();
       }

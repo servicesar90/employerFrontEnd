@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { handlelogin } from "../../../API/ApiFunctions.jsx";
+import { showErrorToast } from "../../ui/toast.jsx";
 
 export default function CandidateLoginModal({ onClose, mobile, setMobile }) {
   const [countryCode, setCountryCode] = useState("+91");
@@ -19,6 +20,7 @@ export default function CandidateLoginModal({ onClose, mobile, setMobile }) {
           setMobile(value);
           onClose()
         } else {
+          showErrorToast("Could not login, Please try again")
           setMobile("")
         }
       }
