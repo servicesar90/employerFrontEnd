@@ -15,3 +15,15 @@
 .read-the-docs {
   color: #313030;
 }
+.quill-editor {
+  height: 200px;
+}
+
+.quill-editor .ql-container {
+  height: 100% !important;
+}
+
+.quill-editor .ql-editor {
+  height: 200px; /* or adjust for your padding needs */
+  overflow-y: auto;
+}

@@ -26,3 +26,12 @@
   }
 
 }
+.custom-quill .ql-container {
+  height: 100% !important;
+}
+
+.custom-quill .ql-editor {
+  height: 70px;
+  overflow-y: auto;
+}
+

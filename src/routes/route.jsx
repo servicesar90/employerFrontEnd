@@ -15,6 +15,8 @@ import CompanyProfile from '../components/pages/companyDetail';
 import UnigrowOnboardingForm from '../components/modals/otherModals/createProfileModal';
 import SimplePaper from '../components/ui/cards/NewCard';
 import { getJob, getProfile } from '../API/ApiFunctions';
+import SelectPlan from '../components/pages/SelectPlan';
+import Checkout from '../components/pages/Checkout'
 
 function Layout() {
  const [data, setData] = useState(null);
@@ -66,16 +68,20 @@ export default function Routess() {
             <Route path='/' element={<Layout />}>
                 <Route index element={<RedirectedRouteForLogin><LoginPageWithPopup /></RedirectedRouteForLogin>} />
                 <Route path="/createProfile" element={<RedirectedRoute><UnigrowOnboardingForm /></RedirectedRoute>} />
+                    
                 <Route path='/employerHome' element={<ProtectedRoute><RedirectedRouteForHome><EmployerHome /></RedirectedRouteForHome></ProtectedRoute>}>
                      <Route index element={<Jobs />} />
                     <Route path='jobs' element={<Jobs />} />
                     <Route path="jobsDetail/:id" element={<CandidateManagementPage />} />
                     <Route path='SearchCandidates' element={<SearchCandidatesForm />} />
-                    <Route path='UnlockedCandidates' element={<UnlockedCandidates />} />
+                    <Route path='UnlockedCandidates' element={<Jobs />} />
                     <Route path='Reports' element={<ApplicationsReportCard />} />
                     <Route path="downloadReport" element={<DownloadApplicationsCard />} />
                     <Route path='profile' element={<ProfileUpdate />} />
                     <Route path='company' element={<CompanyProfile />} />
+                    <Route path='checkout' element={<Checkout/>}/>
+                    <Route path='selectPlan' element={<SelectPlan/>}/>
+
                 </Route>
 
                 <Route path='/jobsModal/:id' element={<ProtectedRoute><PostJob /></ProtectedRoute>} />

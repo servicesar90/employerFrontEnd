@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Checkbox, FormControlLabel, Radio, RadioGroup, Pagination, Button } from '@mui/material';
 import {  Download } from 'lucide-react';
 import { candidates } from '../../assets/data';
@@ -6,12 +6,29 @@ import SimplePaper from '../ui/cards/NewCard';
 
 const UnlockedCandidates = () => {
  
+  const [data, setData] = useState(null)
   const [filters, setFilters] = useState({
     unlockedBy: 'me',
     unlockedIn: '1',
     hasCV: false,
   });
 
+   useEffect(() => {
+  
+      const getData = async()=>{
+        const response = await getJobById(id);
+        if(response){
+          setData(response.data.data[0])
+         
+           }else{
+          console.log("Couldn't fetch the data")
+        }
+      }
+  
+     
+        getData()
+      
+    }, []);
   
 
   const handleFilterChange = (e) => {
@@ -91,8 +108,8 @@ const UnlockedCandidates = () => {
 
     {/* Candidate Cards Section - 68% */}
     <div className="w-[68%] grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-2">
-      {candidates.map((candidate, index) => (
-        <SimplePaper key={index} candidate={candidate} />
+      {data?.jobApplications.map((candidate, index) => (
+        <SimplePaper key={index} candidate={candidate}  />
       ))}
     </div>
   </div>
