@@ -9,7 +9,6 @@ import SearchCandidatesForm from '../components/modals/otherModals/searchCandida
 import UnlockedCandidates from '../components/pages/unlockCandidate';
 import ApplicationsReportCard from '../components/ui/cards/ReportCard';
 import DownloadApplicationsCard from '../components/modals/otherModals/reportDownloadModal';
-import LoginPageWithPopup from '../views/landingPage';
 import { ProtectedRoute, RedirectedRoute, RedirectedRouteForHome, RedirectedRouteForLogin } from './routeProtection';
 import CompanyProfile from '../components/pages/companyDetail';
 import UnigrowOnboardingForm from '../components/modals/otherModals/createProfileModal';
@@ -17,6 +16,7 @@ import SimplePaper from '../components/ui/cards/NewCard';
 import { getJob, getProfile } from '../API/ApiFunctions';
 import SelectPlan from '../components/pages/SelectPlan';
 import Checkout from '../components/pages/Checkout'
+import LandingPage from '../views/landingPage';
 
 function Layout() {
   const [data, setData] = useState(null);
@@ -69,7 +69,7 @@ export default function Routess() {
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
-        <Route index element={<RedirectedRouteForLogin><LoginPageWithPopup /></RedirectedRouteForLogin>} />
+        <Route index element={<RedirectedRouteForLogin><LandingPage /></RedirectedRouteForLogin>} />
         <Route path="/createProfile" element={<RedirectedRoute><UnigrowOnboardingForm /></RedirectedRoute>} />
 
         <Route path='/employerHome' element={<ProtectedRoute><RedirectedRouteForHome><EmployerHome /></RedirectedRouteForHome></ProtectedRoute>}>

@@ -1,8 +1,7 @@
 import { Menu, HelpCircle, Database } from "lucide-react";
 import { useRef, useState } from "react";
 import MenuProfileModal from "../modals/otherModals/menuProfileModal";
-import { profilePicUpload } from "../../API/ApiFunctions";
-import UserForm from "../modals/otherModals/uploadFileModal";
+
 
 const Header = ({ onMenuClick, data, isDataChange }) => {
 

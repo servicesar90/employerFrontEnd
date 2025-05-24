@@ -7,19 +7,20 @@ import { Link } from "react-router-dom";
 export default function Navbar() {
   const [isJobsOpen, setIsJobsOpen] = useState(false);
   const [isCareerOpen, setIsCareerOpen] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [mobile, setMobile]= useState("");
-  const [showOtp, setShowOtp] = useState(false);
- 
 
-  
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [mobile, setMobile] = useState("");
+  const [showOtp, setShowOtp] = useState(false);
+
+
+
 
 
   return (
     <>
       <nav className="bg-[#3C78D8] shadow p-4 flex justify-between items-center relative">
         <Link to="/" className="text-xl font-bold text-white">
-          <img src="/LOGO.png" style={{width: "100px", padding: 0, margin:0}} alt="" />
+          <img src="/LOGO.png" style={{ width: "100px", padding: 0, margin: 0 }} alt="" />
         </Link>
 
         <div className="flex items-center space-x-8">
@@ -131,15 +132,17 @@ export default function Navbar() {
 
           {/* Login Buttons */}
           <div className="flex items-center flex-row gap-4 pl-4">
+
             <button
-              onClick={()=>setShowLoginModal(!showLoginModal)}
+              onClick={() => setShowLoginModal(true)}
               className="text-[#36A85C] bg-white px-4 py-1 rounded text-sm font-semibold"
             >
               Employer Login
             </button>
 
+
             <button
-              onClick={() => setShowLoginModal(true)}
+              disabled
               className="bg-[#36A85C] text-white px-4 py-1 rounded text-sm font-semibold"
             >
               Candidate Login
@@ -149,22 +152,18 @@ export default function Navbar() {
       </nav>
 
       {showLoginModal && <CandidateLoginModal
-              mobile= {mobile}
-              setMobile={setMobile}
-              onClose={() => {
-                setShowLoginModal(false)
-              }
-            }
-              onSubmit={()=>{
-                setShowOtp(true)
-              }
-            }
-              
-            />}
-      
-            {showOtp && <OtpModal mobile={mobile} onClose={()=>setShowOtp(false)}/>}
+        mobile={mobile}
+        setMobile={setMobile}
+        onClose={() => {
+          setShowLoginModal(false)
+          setShowOtp(true)
+        }
+        }
+      />}
 
-      
+      {showOtp && <OtpModal mobile={mobile} onClose={() => setShowOtp(false)} />}
+
+
     </>
   );
 }
