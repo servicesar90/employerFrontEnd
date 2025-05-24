@@ -2,15 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { BadgeCheck, MoreVertical, Copy, RefreshCcw } from 'lucide-react';
 import { Chip, Button, Menu, Paper, MenuItem, Avatar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { updateJobById } from '../../../API/ApiFunctions';
+import { getJob, updateJobById } from '../../../API/ApiFunctions';
 import { showErrorToast, showSuccessToast } from '../toast';
 
-const JobCard = ({ job }) => {
+const JobCard = ({ jobss }) => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const navigate = useNavigate()
   const modalRef = useRef();
   const [pendingCount, setPendingCount] = useState(null);
+  const [job, setJob] = useState(jobss);
 
   useEffect(() => {
     if (job?.JobApplications?.length) {
@@ -24,10 +25,39 @@ const JobCard = ({ job }) => {
     }
   }, [job]);
 
+
+  const updateJob = async (id) => {
+
+    const response = await getJob();
+    if (response) {
+      
+      const updateJob = response.data.data?.filter((job) => job.id == id);
+     
+      if (updateJob.length > 0) {
+        setJob(updateJob[0]);
+      }
+
+    } else {
+      console.log("not getting data")
+    }
+  }
+
+
+
   const expiredJob = async (id) => {
     const response = await updateJobById({ status: "E" }, id);
     if (response) {
-      window.location.reload()
+      updateJob(id)
+      showSuccessToast("Successfully Expired")
+    } else {
+      showErrorToast("could not Expired")
+    }
+  }
+
+  const activeJob = async (id) => {
+    const response = await updateJobById({ status: "A" }, id);
+    if (response) {
+      updateJob(id)
       showSuccessToast("Successfully Expired")
     } else {
       showErrorToast("could not Expired")
@@ -142,11 +172,22 @@ const JobCard = ({ job }) => {
           }}>
             <span className="text-sm text-gray-700">Edit Job</span>
           </MenuItem>
+
+          {job?.status !== "A" && (
+
+            <MenuItem onClick={() => {
+              setShowEditModal(false)
+              activeJob(job?.id)
+            }}>
+              <span className="text-sm text-green-700"> Active Job</span>
+            </MenuItem>
+          )}
+
           <MenuItem onClick={() => {
             setShowEditModal(false)
             expiredJob(job?.id)
           }}>
-            <span className="text-sm text-red-700">{job?.status=== "E"? "Delete":"Expire"} Job</span>
+            <span className="text-sm text-red-700">{job?.status === "E" ? "Delete" : "Expire"} Job</span>
           </MenuItem>
 
         </Menu>

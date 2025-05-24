@@ -9,9 +9,6 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile, data }) => {
   const [databaseOpen, setDatabaseOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
 
-  const employerName = "TalentNest";
-  const avatarUrl=''; // optional avatar URL
-
   const navItems = [
     { label: 'Jobs', icon: <Building size={20} />, route: '/employerHome/Jobs' },
     { label: 'Databases', icon: <Database size={20} /> },
@@ -41,8 +38,8 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile, data }) => {
       >
         {/* Logo & Avatar */}
         <div className={`px-2 mb-4 flex items-center ${showFull ? 'gap-3' : 'justify-center'}`}>
-          {avatarUrl ? (
-            <img src={avatarUrl} alt="Avatar" className="w-8 h-8 rounded-[8px] object-cover" />
+          {data?.company.logoUrl ? (
+            <img src={data?.company.logoUrl} alt="Logo" className="w-8 h-8 rounded-[8px] object-cover" />
           ) : (
             <div className="w-8 h-8 rounded-[8px] bg-green-500 text-white flex items-center justify-center text-sm font-semibold">
               {data?.company.companyName.charAt(0).toUpperCase()}

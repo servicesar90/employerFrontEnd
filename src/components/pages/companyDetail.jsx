@@ -1,40 +1,43 @@
 import { PlusCircle } from "lucide-react";
 import { Linkedin, Facebook, Instagram } from "lucide-react";
 import DynamicModal from "../modals/otherModals/dynamicModal";
-import { useState } from "react";
-import {  useOutletContext } from "react-router-dom";
+import {  useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import UserForm from "../modals/otherModals/uploadFileModal";
+import { logoUpload } from "../../API/ApiFunctions";
 
 const CompanyProfile = () => {
 
   const [openModal, setOpenModal] = useState(false);
-const [modalField, setModalField] = useState(null);
+  const [modalField, setModalField] = useState(null);
+  const [openFileModal, setOpenFileModal] = useState(false);
 
-const {data}= useOutletContext();
+  const { data, isDataChange } = useOutletContext();
 
-console.log(data)
-const company= data?.company;
+  const company = data?.company;
+
 
   const fields = [
-    { label: "Company name", value: company.companyName },
+    { label: "Company name", value: company?.companyName },
     { label: "Founded", value: "Not available" },
     { label: "Website", value: "Not available" },
-    { label: "Company size", value: company.numOfEmployees },
+    { label: "Company size", value: company?.numOfEmployees },
     { label: "Type of company", value: "Not available" },
-    { label: "Industry", value: company.industry },
-    { label: "About Company", value: company.about },
+    { label: "Industry", value: company?.industry },
+    { label: "About Company", value: company?.about },
   ];
 
   const showModal = (item) => {
     setModalField(item);
     setOpenModal(true);
   };
-  
+
 
   return (
     <div className="w-full max-w-3xl mx-auto mt-1 px-4 pb-10">
       {/* Alert */}
       <div className="bg-yellow-100 border-l-4 border-yellow-400 text-yellow-700 p-4 text-sm mb-4 rounded">
-        <strong className="font-medium">Please share company information</strong> to improve job seekers trust. 
+        <strong className="font-medium">Please share company information</strong> to improve job seekers trust.
         <span className="ml-1 font-semibold text-black">Update 7 information</span>
       </div>
 
@@ -43,13 +46,11 @@ const company= data?.company;
         <h2 className="text-xl font-bold text-gray-800 mb-4">Company details</h2>
 
         {/* Company Logo and Name */}
-        <div className="flex items-start space-x-4 mb-6">
-          <div className="w-14 h-14 rounded-full bg-purple-700 text-white flex items-center justify-center font-semibold text-lg">
-            SW
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500">Company Logo</p>
-          </div>
+        <div onClick={() => setOpenFileModal(!openFileModal)} className="flex items-start space-x-4 mb-6">
+          {company?.logoUrl ?<img src={company.logoUrl} alt="Logo"  className="w-14 h-14 rounded-full flex items-center justify-center font-semibold text-lg"/> :<div  className="w-14 h-14 rounded-full bg-purple-700 text-white flex items-center justify-center font-semibold text-lg">
+            company?companyName.split("")[0].toUpperCase()
+          </div>}
+        
         </div>
 
         {/* Info List */}
@@ -64,7 +65,7 @@ const company= data?.company;
                 {item.value}
               </p>
             </div>
-            <button onClick={()=> showModal(item)} className="flex items-center text-green-700 hover:underline text-sm">
+            <button onClick={() => showModal(item)} className="flex items-center text-green-700 hover:underline text-sm">
               <PlusCircle className="w-4 h-4 mr-1" />
               Suggest
             </button>
@@ -99,14 +100,24 @@ const company= data?.company;
       </div>
 
       {openModal && modalField && (
-  <DynamicModal
-    open={openModal}
-    onClose={() => setOpenModal(false)}
-    fields={{ [modalField.label]: modalField.value }}
-    type={{ [modalField.label]: "text" }}
-    suggestions={[]}
-  />
-)}
+        <DynamicModal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          fields={{ [modalField.label]: modalField.value }}
+          type={{ [modalField.label]: "text" }}
+          suggestions={[]}
+        />
+      )}
+
+      {openFileModal && (
+        <UserForm
+          open= {openFileModal} 
+          isDataChange={isDataChange} 
+          label="Logo Upload" 
+          onClose={()=> setOpenFileModal(false)} 
+          metaData={{onSubmitFunc: logoUpload}}
+          />
+      )}
 
     </div>
   );

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { applicationApi, createProfileApi, jobPostApi, mobileApi, otpApi } from "./APIs";
+import { applicationApi, createProfileApi, jobPostApi, logoUploadApi, mobileApi, otpApi, profilePicUploadApi } from "./APIs";
 
 
 // data={ phone: "string", role: "string" }
@@ -147,3 +147,40 @@ export const updateApplication = async (id, data) => {
         console.log("error from update Application", e)
     }
 }
+
+export const profilePicUpload = async (data)=>{
+     try {
+        const token = localStorage.getItem('TokenId')
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+
+           const newData = new FormData();
+        newData.append("employerProfile", data)
+       
+
+        const response = await axios.post(profilePicUploadApi , newData,  { headers });
+
+        return response;
+    } catch (e) {
+        console.log("error from update Application", e)
+    }
+}
+
+export const logoUpload = async (data)=>{
+     try {
+        const token = localStorage.getItem('TokenId')
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+
+        const newData = new FormData();
+        newData.append("logo", data)
+        const response = await axios.post(logoUploadApi , newData,  { headers });
+
+        return response;
+    } catch (e) {
+        console.log("error from update Application", e)
+    }
+}
+

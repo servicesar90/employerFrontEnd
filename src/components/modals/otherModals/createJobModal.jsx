@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill, { Quill } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import {
@@ -121,31 +121,7 @@ const PostJob = () => {
 
   const navigate = useNavigate();
 
-  // const config = {
-  //   readonly: false,
-  //   toolbarSticky: false,
-  //   height: 300,
-  //   toolbar: true,
-  //   preserveMarkersInPlainText: true,
-  //   buttons: [
-  //     'bold',
-  //     'italic',
-  //     'underline',
-  //     '|',
-  //     'ul',
-  //     'ol',
-  //     '|',
-  //     'left',
-  //     'center',
-  //     'right',
-  //     '|',
-  //     'undo',
-  //     'redo'
-  //   ],
-  //   style: {
-  //   textAlign: 'left'
-  // }
-  // };
+ 
   const modules = {
     toolbar: [
       ["bold", "italic", "underline"],
@@ -264,6 +240,8 @@ const PostJob = () => {
   }, [data, jobs, reset]);
 
   const values = getValues();
+
+  console.log(walkIn)
 
   const toggleField = (field) => {
     if (expanded.includes(field)) {
@@ -868,9 +846,6 @@ const PostJob = () => {
               <Controller
                 name="joiningFee"
                 control={control}
-                rules={{
-                  required: "Please choose Yes or No",
-                }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
                     {[
@@ -922,6 +897,7 @@ const PostJob = () => {
                         value: /^[0-9]+$/,
                         message: "Only numeric values are allowed",
                       },
+                      validate: (value)=>value<=10000 || "Amount must be 10000 or less"
                     }}
                     render={({ field }) => (
                       <TextField
@@ -1499,23 +1475,22 @@ const PostJob = () => {
               <Controller
                 name="walkIn"
                 control={control}
-                rules={{ required: "Please select an option" }}
                 render={({ field }) => (
                   <RadioGroup
                     {...field}
                     onChange={(e) => {
-                      const value = e.target.value;
+                      const value = e.target.value === "true";
                       setWalkIn(value);
                       field.onChange(value);
                     }}
                   >
                     <FormControlLabel
-                      value={true}
+                      value="true"
                       control={<Radio />}
                       label="Yes"
                     />
                     <FormControlLabel
-                      value={false}
+                      value="false"
                       control={<Radio />}
                       label="No"
                     />

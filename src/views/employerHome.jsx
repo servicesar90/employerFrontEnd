@@ -8,7 +8,7 @@ const EmployerHome = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileVisible, setMobileVisible] = useState(false);
- const {data, jobs}= useOutletContext()
+ const {data, jobs, isDataChange}= useOutletContext()
 
 
   const handleMenuClick = () => {
@@ -28,7 +28,7 @@ const EmployerHome = () => {
   return (
     <div className='flex flex-col w-full'>
       <div className='flex flex-col w-full'>
-        <Header onMenuClick={handleMenuClick} data={data} />
+        <Header onMenuClick={handleMenuClick} data={data} isDataChange={isDataChange} />
       </div>
 
 
@@ -44,7 +44,7 @@ const EmployerHome = () => {
         <div className="flex-1 w-full lg:w-[85vw]  ">
 
           {(data && jobs) ? (
-            <Outlet context={{data: data, jobs:jobs}} />
+            <Outlet context={{data: data, isDataChange: isDataChange, jobs:jobs}} />
           ) : (
             <p>Loading...</p>
           )}

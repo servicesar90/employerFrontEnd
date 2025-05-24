@@ -1,8 +1,12 @@
 import { Avatar, Menu, MenuItem, Typography, Paper } from "@mui/material";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { profilePicUpload } from "../../../API/ApiFunctions";
+import UserForm from "./uploadFileModal";
 
-const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
+const MenuProfileModal = ({ open, anchor, handleClose, data, isDataChange }) => {
 
+      const [openFileModal, setOpenFileModal] = useState(false);
     const navigate = useNavigate();
 
     const logOut = () => {
@@ -13,6 +17,7 @@ const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
     const user= JSON.parse(localStorage.getItem("User"))
 
     return (
+        <>
         <Menu
             anchorEl={anchor}
             open={open}
@@ -32,7 +37,13 @@ const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
         >
             <Paper className="p-2">
                 <div className="flex items-start space-x-3">
-                    <Avatar className="bg-purple-700">A</Avatar>
+                     <div onClick={() => setOpenFileModal(!openFileModal)}>
+
+          {data?.profile ? <img src={data?.profile} className="w-8 h-8 rounded-full flex items-center justify-center font-bold cursor-pointer" /> : <div className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center font-bold text-sm cursor-pointer">
+            {data?.name ? data.name.charAt(0).toUpperCase() : ''}
+
+          </div>}
+        </div>
                     <div>
                         <Typography className="font-medium text-gray-900">
                             {data?.name}
@@ -61,6 +72,17 @@ const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
                 </div>
             </Paper>
         </Menu>
+
+          {openFileModal && (
+        <UserForm
+          open= {openFileModal} 
+          isDataChange={isDataChange} 
+          label="Profile Upload" 
+          onClose={()=> setOpenFileModal(false)} 
+          metaData={{onSubmitFunc: profilePicUpload}}
+          />
+      )}
+      </>
     );
 };
 

@@ -18,7 +18,7 @@ export default function Jobs() {
                 <div className="min-h-screen w-full bg-gray-100 p-6 rounded-xl">
 
                     <div className="max-w-6xl mx-auto">
-                        <div className="flex items-center justify-between py-4">
+                        <div className="flex items-center justify-between py-1">
                             <h1 className="text-2xl font-semibold text-gray-800">All Jobs({jobs.length})</h1>
                             <Button variant="contained" onClick={() => navigate(`/jobsModal/${null}`)} color="success" sx={{
                                 fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.9rem' },
@@ -28,13 +28,13 @@ export default function Jobs() {
                             </Button>
                         </div>
 
-                        <Card className="mt-10">
-                            <CardContent className="p-10 text-center">
-                                <div className="p-6 bg-gray-50 min-h-screen">
+                        <Card className="mt-5">
+                            <CardContent className="p-10 text-center ">
+                                <div className="p-6 bg-gray-50 max-h-[75vh] overflow-scroll">
                                    
                                     {jobs.map((job, index) => (
                                         <div key={index}>
-                                            <JobCard job={job}  />
+                                            <JobCard jobss={job}  />
                                         </div>
                                     ))}
                                 </div>
