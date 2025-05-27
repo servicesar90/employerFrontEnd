@@ -2,16 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { BadgeCheck, MoreVertical, Copy, RefreshCcw } from 'lucide-react';
 import { Chip, Button, Menu, Paper, MenuItem, Avatar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { getJob, updateJobById } from '../../../API/ApiFunctions';
+import { updateJobById } from '../../../API/ApiFunctions';
 import { showErrorToast, showSuccessToast } from '../toast';
+import { useDispatch } from 'react-redux';
+import { fetchJobs, fetchJobsById } from '../../../Redux/getData';
 
-const JobCard = ({ jobss }) => {
+const JobCard = ({ job }) => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const navigate = useNavigate()
   const modalRef = useRef();
   const [pendingCount, setPendingCount] = useState(null);
-  const [job, setJob] = useState(jobss);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (job?.JobApplications?.length) {
@@ -26,28 +28,10 @@ const JobCard = ({ jobss }) => {
   }, [job]);
 
 
-  const updateJob = async (id) => {
-
-    const response = await getJob();
-    if (response) {
-      
-      const updateJob = response.data.data?.filter((job) => job.id == id);
-     
-      if (updateJob.length > 0) {
-        setJob(updateJob[0]);
-      }
-
-    } else {
-      console.log("not getting data")
-    }
-  }
-
-
-
   const expiredJob = async (id) => {
     const response = await updateJobById({ status: "E" }, id);
     if (response) {
-      updateJob(id)
+      dispatch(fetchJobs())
       showSuccessToast("Successfully Expired")
     } else {
       showErrorToast("could not Expired")
@@ -57,14 +41,12 @@ const JobCard = ({ jobss }) => {
   const activeJob = async (id) => {
     const response = await updateJobById({ status: "A" }, id);
     if (response) {
-      updateJob(id)
+      dispatch(fetchJobs())
       showSuccessToast("Successfully Expired")
     } else {
       showErrorToast("could not Expired")
     }
   }
-
-
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4 border border-gray-200">

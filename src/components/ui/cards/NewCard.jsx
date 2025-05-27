@@ -15,6 +15,8 @@ import { Button, Chip } from "@mui/material";
 import { updateApplication } from "../../../API/ApiFunctions";
 import { showErrorToast, showSuccessToast } from "../toast";
 import ProfileModal from "../../modals/otherModals/profileModal";
+import { useDispatch } from "react-redux";
+import { fetchJobsById } from "../../../Redux/getData";
 
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -39,16 +41,18 @@ const DetailRow = ({ logo, label, value }) => (
   </div>
 );
 
-export default function SimplePaper({ job, candidate, candidateStatus, setCandidateStatus }) {
+export default function SimplePaper({ job, jobId,  candidate}) {
   const width = useWindowWidth();
   const isMobile = width <= 768;
   const [matchingFields, setMatchedField] = useState([]);
   const [matchingPrecent, setMatchingPrecent] = useState(0);
   const [openProfileModal, setOpenProfileModal] = useState(false);
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     if (!job || !candidate) return;
-    console.log(job, candidate)
+
     const totalFields = Object.keys(job).length;
     let matchedCount = 0;
 
@@ -85,7 +89,7 @@ export default function SimplePaper({ job, candidate, candidateStatus, setCandid
     const response = await updateApplication(id, { status: "Rejected" });
     if (response) {
       showSuccessToast("succesfully Rejected")
-      setCandidateStatus(id, "Rejected")
+      dispatch(fetchJobsById(jobId))
     } else {
       showErrorToast("could not processed, Try again!")
     }
@@ -95,7 +99,7 @@ export default function SimplePaper({ job, candidate, candidateStatus, setCandid
     const response = await updateApplication(id, { status: "Selected" });
     if (response) {
       showSuccessToast("succesfully Shortlisted")
-      setCandidateStatus(id, "Selected")
+      dispatch(fetchJobsById(jobId))
     } else {
       showErrorToast("could not processed, Try again!")
     }
@@ -258,8 +262,8 @@ export default function SimplePaper({ job, candidate, candidateStatus, setCandid
 
 
               <div className="flex flex-row gap-4 w-full justify-end">
-                <Button variant="outlined" onClick={() => handleShortList(candidate.id)} disabled={candidateStatus === "Selected"} color="success">{(candidateStatus === "Selected") ? "Shortlisted" : "ShortList"}</Button>
-                <Button variant="contained" onClick={() => handleReject(candidate.id)} disabled={candidateStatus === "Rejected"} color="error">{(candidateStatus === "Rejected") ? "Rejected" : "Reject"}</Button>
+                <Button variant="outlined" onClick={() => handleShortList(candidate?.id)} disabled={candidate?.status === "Selected"} color="success">{(candidate?.status === "Selected") ? "Shortlisted" : "ShortList"}</Button>
+                <Button variant="contained" onClick={() => handleReject(candidate?.id)} disabled={candidate?.status === "Rejected"} color="error">{(candidate?.status === "Rejected") ? "Rejected" : "Reject"}</Button>
               </div>
             </div>
 
@@ -416,8 +420,8 @@ export default function SimplePaper({ job, candidate, candidateStatus, setCandid
                   </div>
 
                   <div className="flex flex-row gap-4 ">
-                    <Button variant="outlined" onClick={() => handleShortList(candidate.id)} disabled={candidateStatus === "Selected"} color="success">{(candidateStatus === "Selected") ? "Shortlisted" : "ShortList"}</Button>
-                    <Button variant="contained" onClick={() => handleReject(candidate.id)} disabled={candidateStatus === "Rejected"} color="error">{(candidateStatus === "Rejected") ? "Rejected" : "Reject"}</Button>
+                    <Button variant="outlined" onClick={() => handleShortList(candidate?.id)} disabled={candidate?.status === "Selected"} color="success">{(candidate?.status === "Selected") ? "Shortlisted" : "ShortList"}</Button>
+                    <Button variant="contained" onClick={() => handleReject(candidate?.id)} disabled={candidate?.status === "Rejected"} color="error">{(candidate?.status === "Rejected") ? "Rejected" : "Reject"}</Button>
                   </div>
                 </div>
 
@@ -443,7 +447,7 @@ export default function SimplePaper({ job, candidate, candidateStatus, setCandid
       )}
 
       {openProfileModal && (
-        <ProfileModal open={openProfileModal} onClose={()=>setOpenProfileModal(false)} candidate={candidate} candidateStatus={candidateStatus} setCandidateStatus={setCandidateStatus} />
+        <ProfileModal open={openProfileModal} onClose={()=>setOpenProfileModal(false)} jobId={jobId} candidate={candidate}/>
       )}
     </>
   );

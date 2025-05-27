@@ -1,15 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Card, CardContent } from '@mui/material';
 import { Plus, FileText } from 'lucide-react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import JobCard from '../ui/cards/jobCards';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchJobs } from '../../Redux/getData';
 
 export default function Jobs() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        dispatch(fetchJobs())
+    },[dispatch])
     
-    const { jobs}= useOutletContext()
+    const {jobs, loading} = useSelector((state)=> state.getDataReducer);
 
 
+if (loading) return (
+    <div className="flex justify-center items-center w-full min-h-[80vh] bg-black/20">
+      <img
+        src="/unigrowLogo.png"
+        alt="logo"
+        className="w-40 h-16 animate-heartbeat"
+      />
+    </div>
+  );
   
 
     if (jobs?.length > 0) {
@@ -32,9 +48,9 @@ export default function Jobs() {
                             <CardContent className="p-10 text-center ">
                                 <div className="p-6 bg-gray-50 max-h-[75vh] overflow-scroll">
                                    
-                                    {jobs.map((job, index) => (
+                                    {jobs?.map((job, index) => (
                                         <div key={index}>
-                                            <JobCard jobss={job}  />
+                                            <JobCard job={job}  />
                                         </div>
                                     ))}
                                 </div>

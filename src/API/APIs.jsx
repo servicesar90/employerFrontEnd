@@ -1,8 +1,10 @@
-  const base_url = "https://backend.careernest.online";
+  const base_url = "https://backend.talentnestjob.store";
 
 
 // LoginAPIs
 export const mobileApi=`${base_url}/api/v1/auth/signup`
+
+export const resendOtp = `${base_url}`
 
 export const otpApi = `${base_url}/api/v1/auth/verifysignin`
 

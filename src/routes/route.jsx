@@ -55,11 +55,11 @@ function Layout() {
   }, [])
 
   return (
-    <>
+    <div className='max-w-[100vw]'>
 
       <Outlet context={{ data: data?.data, jobs: jobs?.data, isDataChange: ()=>setDataChange(!isdataChange) }} />
 
-    </>
+    </div>
   )
 }
 

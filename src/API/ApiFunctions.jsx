@@ -24,6 +24,16 @@ export const handleOtp = async (data) => {
     }
 }
 
+export const resendOtpApiCall = async (data) => {
+    try {
+        const response = await axios.post(resendOtp, data); // resendOtp is your endpoint URL
+        return response;
+    } catch (error) {
+        console.log("Error from resend OTP API", error);
+        return null;
+    }
+};
+
 export const createProfile = async (data) => {
     try {
         const token = localStorage.getItem('TokenId')

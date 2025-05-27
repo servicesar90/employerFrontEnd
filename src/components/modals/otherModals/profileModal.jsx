@@ -17,18 +17,21 @@ import { Eye, View } from 'lucide-react';
 import { updateApplication } from '../../../API/ApiFunctions';
 import { showErrorToast, showSuccessToast } from '../../ui/toast';
 import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
+import { useDispatch } from 'react-redux';
+import { fetchJobsById } from '../../../Redux/getData';
 
 
-const ProfileModal = ({ open, onClose, candidate , candidateStatus, setCandidateStatus}) => {
+const ProfileModal = ({ open, onClose, jobId, candidate }) => {
 
     const [age, setAge] = useState(0);
+    const dispatch = useDispatch();
 
     const handleReject = async (id) => {
         console.log(id)
         const response = await updateApplication(id, { status: "Rejected" });
         if (response) {
           showSuccessToast("succesfully Rejected")
-          setCandidateStatus(id, "Rejected")
+          dispatch(fetchJobsById(jobId))
         } else {
           showErrorToast("could not processed, Try again!")
         }
@@ -38,7 +41,7 @@ const ProfileModal = ({ open, onClose, candidate , candidateStatus, setCandidate
         const response = await updateApplication(id, { status: "Selected" });
         if (response) {
           showSuccessToast("succesfully Shortlisted")
-          setCandidateStatus(id, "Selected")
+          dispatch(fetchJobsById(jobId))
         } else {
           showErrorToast("could not processed, Try again!")
         }
@@ -178,8 +181,8 @@ const ProfileModal = ({ open, onClose, candidate , candidateStatus, setCandidate
                     <Button variant="outlined" startIcon={<WhatsApp />} className="text-green-600 border-green-600">
                         WhatsApp
                     </Button>
-                    <Button variant="outlined" onClick={() => handleShortList(candidate.id)} disabled={candidateStatus === "Selected"} color="success">{(candidateStatus === "Selected") ? "Shortlisted" : "ShortList"}</Button>
-                    <Button variant="contained" onClick={() => handleReject(candidate.id)} disabled={candidateStatus === "Rejected"} color="error">{(candidateStatus === "Rejected") ? "Rejected" : "Reject"}</Button>
+                    <Button variant="outlined" onClick={() => handleShortList(candidate?.id)} disabled={candidate?.status === "Selected"} color="success">{(candidate?.status === "Selected") ? "Shortlisted" : "ShortList"}</Button>
+                    <Button variant="contained" onClick={() => handleReject(candidate?.id)} disabled={candidate?.status === "Rejected"} color="error">{(candidate?.status === "Rejected") ? "Rejected" : "Reject"}</Button>
 
                 </div>
 

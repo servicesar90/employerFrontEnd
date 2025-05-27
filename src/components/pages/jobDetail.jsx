@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Download, ChevronDown, ChevronLeft, Info, MoreVertical, Filter, Users } from 'lucide-react';
-import {  Button } from '@mui/material';
+import { ChevronLeft, Filter, Users } from 'lucide-react';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import SimplePaper from '../ui/cards/NewCard';
-import { getJobById } from '../../API/ApiFunctions';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchJobsById } from '../../Redux/getData';
 
 const filters = [
   { label: 'Matched to job requirements (10)' },
@@ -19,65 +20,45 @@ const CandidateManagementPage = () => {
   const [data, setData] = useState(null)
   const [filterIndex, setFilterIndex] = useState(0);
   const [allCandidates, setAllCandidates] = useState({})
-  const [candidateStatus, setCandidateStatus] = useState({})
-  
+  const dispatch = useDispatch();
 
+  const { jobsById, loading } = useSelector((state) => state.getDataReducer);
 
   useEffect(() => {
+    dispatch(fetchJobsById(id));
+  }, [dispatch, id])
 
-    const getData = async()=>{
-      const response = await getJobById(id);
-      if(response){
-        setData(response.data.data[0])
-        const jobApps = response.data.data[0]?.JobApplications || [];
-  const pendingCandidate = jobApps.filter(app => app.status === "Applied");
-  const selectedCandidate = jobApps.filter(app => app.status === "Selected");
-  const rejectedCandidate = jobApps.filter(app => app.status === "Rejected");
+  useEffect(() => {
+    if (jobsById) {
+      console.log(jobsById[0])
+      setData(jobsById[0])
+      const jobApps = jobsById[0]?.JobApplications || [];
+      const pendingCandidate = jobApps.filter(app => app.status === "Applied");
+      const selectedCandidate = jobApps.filter(app => app.status === "Selected");
+      const rejectedCandidate = jobApps.filter(app => app.status === "Rejected");
 
-  setAllCandidates({
-    0: jobApps,
-    1: pendingCandidate,
-    3: selectedCandidate,
-    4: rejectedCandidate
-  });
-         }else{
-        console.log("Couldn't fetch the data")
-      }
+      setAllCandidates({
+        0: jobApps,
+        1: pendingCandidate,
+        3: selectedCandidate,
+        4: rejectedCandidate
+      });
+    } else {
+      console.log("Couldn't fetch the data")
     }
-
-    if (id) {
-      getData()
-    }
-  }, []);
-
-
-const handleFilteration = (id, status) => {
-  const allApps = allCandidates[0] || [];
- setCandidateStatus(prev => ({
-  ...prev,
-  [id]: status
-}));
-  const appToUpdate = allApps.find(app => app.id === id);
-  if (!appToUpdate) return;
-
-  const isPending = allCandidates[1]?.some(app => app.id === id);
-
-  setAllCandidates(prev => ({
-    ...prev,
-    1: isPending
-      ? prev[1].filter(app => app.id !== id)
-      : prev[1] || [],
-    3: status === "Selected"
-      ? [...(prev[3] || []).filter(app => app.id !== id), appToUpdate]
-      : (prev[3] || []).filter(app => app.id !== id),
-    4: status === "Rejected"
-      ? [...(prev[4] || []).filter(app => app.id !== id), appToUpdate]
-      : (prev[4] || []).filter(app => app.id !== id)
-  }));
-};
+  }, [jobsById]);
 
 
 
+  if (loading) return (
+    <div className="flex justify-center items-center w-full min-h-[80vh] bg-black/20">
+      <img
+        src="/unigrowLogo.png"
+        alt="logo"
+        className="w-40 h-16 animate-heartbeat"
+      />
+    </div>
+  );
 
 
   return (
@@ -93,13 +74,13 @@ const handleFilteration = (id, status) => {
             <h2 className="text-lg font-semibold text-gray-900">
               {data?.jobTitle}
               <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
-                {data?.status==="P"? "Pending": (data?.status ==="A"?"Active":  "Expired" ) }
+                {data?.status === "P" ? "Pending" : (data?.status === "A" ? "Active" : "Expired")}
               </span>
             </h2>
             <p className="text-sm text-gray-500 px-3 border-l border-r">{data?.location}</p>
           </div>
           <div className="ml-2 text-xs text-gray-500 border border-gray-300 rounded px-3 py-0.5">
-            Current: {data?.JobApplications.length}
+            Current: {data?.JobApplications?.length}
           </div>
           {/* <span className="text-sm text-blue-500 cursor-pointer hover:underline ml-2">
             more details
@@ -115,13 +96,13 @@ const handleFilteration = (id, status) => {
         </div> */}
       </div>
 
-      
+
       {/* Top Summary Box */}
       <div className="bg-white shadow-sm rounded-lg p-4 m-4 border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Users className="text-gray-600" />
-            <h2 className="text-lg font-medium">Applied to job ({data?.JobApplications.length})</h2>
+            <h2 className="text-lg font-medium">Applied to job ({data?.JobApplications?.length})</h2>
           </div>
           {/* <div className="flex gap-2 items-center">
             <Button variant="outlined" size="small" startIcon={<Download size={16} />}>
@@ -139,11 +120,11 @@ const handleFilteration = (id, status) => {
             <button
               key={idx}
               className={`px-4 py-1 rounded-full text-sm font-medium border ${idx === filterIndex
-                  ? 'bg-blue-100 text-blue-600 border-blue-300'
-                  : 'bg-white text-gray-600 border-gray-300'
+                ? 'bg-blue-100 text-blue-600 border-blue-300'
+                : 'bg-white text-gray-600 border-gray-300'
                 }`}
-              
-              onClick={()=>setFilterIndex(idx)}
+
+              onClick={() => setFilterIndex(idx)}
             >
               {tab}
             </button>
@@ -151,7 +132,7 @@ const handleFilteration = (id, status) => {
         </div>
       </div>
 
-       {/* bottom section */}
+      {/* bottom section */}
       <div className="flex gap-6 p-4">
         {/* Left Filters */}
         <div className="w-1/4 space-y-4">
@@ -193,7 +174,7 @@ const handleFilteration = (id, status) => {
           <div className="text-sm text-gray-600 mb-2">Showing {allCandidates[filterIndex]?.length} candidates</div>
           {allCandidates[filterIndex]?.map((candidate, index) => (
             <div key={index}>
-              <SimplePaper job={data} candidate={candidate} candidateStatus={candidateStatus[candidate?.id]? candidateStatus[candidate?.id]: candidate?.status} setCandidateStatus={(id, status)=>handleFilteration(id, status)} />
+              <SimplePaper job={data} jobId={id} candidate={candidate}  />
             </div>
           ))}
 

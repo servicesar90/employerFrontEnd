@@ -1,169 +1,269 @@
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate} from "react-router-dom";
+import {  Menu, X } from "lucide-react";
 import CandidateLoginModal from "../modals/loginModals/CandidateLoginModal";
 import OtpModal from "../modals/loginModals/OtpModal";
-import { Link } from "react-router-dom";
+import UnigrowOnboardingForm from "../modals/otherModals/createProfileModal";
+import { Drawer, IconButton, List, ListItem, ListItemText } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserProfile } from "../../Redux/getData";
 
 export default function Navbar() {
-  const [isJobsOpen, setIsJobsOpen] = useState(false);
   const [isCareerOpen, setIsCareerOpen] = useState(false);
-
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [mobile, setMobile] = useState("");
   const [showOtp, setShowOtp] = useState(false);
+  const [showProfileModal, setShowProfileModal]= useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [anchor, setAnchor]= useState(null);
+  const [profile, setProfile]= useState(null);
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+   const {employee } = useSelector((state)=>state.getDataReducer);
+
+     const storedUser = localStorage.getItem('User');
 
 
+ useEffect(() => {
+  
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setIsLoggedIn(true);
 
+      if (user.profile && !employee) {
+        dispatch(fetchUserProfile());
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [dispatch, storedUser, employee]);
+
+
+  useEffect(() => {
+    if (employee) {
+      setProfile(employee);
+    }
+  }, [employee]);
+
+ 
+ 
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("TokenId");
+    localStorage.removeItem("User");// or sessionStorage
+    setIsLoggedIn(false);
+    setShowProfileModal(false);
+    setProfile(null)
+    setMobile("");
+    navigate("/")
+  };
+
+
+  const services = [
+    {
+      title: "AI Resume builder",
+      subtitle: "Create your best resume using AI",
+      link: "/ai-resume-builder",
+    },
+    {
+      title: "AI Resume checker",
+      subtitle: "Get instant resume feedback",
+      link: "/ai-resume-checker",
+    },
+    {
+      title: "AI Cover letter generator",
+      subtitle: "Stand out and get hired faster",
+      link: "/ai-cover-letter-generator",
+    },
+    {
+      title: "Direct connection with recruiter",
+      subtitle: "Stand out and get hired faster",
+      link: "/recruiter-connection",
+    },
+    {
+      title: "Blog",
+      subtitle: "Guidance for securing your dream job",
+      link: "/blog",
+    },
+  ];
 
 
   return (
     <>
-      <nav className="bg-[#3C78D8] shadow p-4 flex justify-between items-center relative">
-        <Link to="/" className="text-xl font-bold text-white">
-          <img src="/LOGO.png" style={{ width: "100px", padding: 0, margin: 0 }} alt="" />
-        </Link>
+      <nav className="bg-white shadow p-4 flex justify-between w-full h-20 items-center relative">
 
-        <div className="flex items-center space-x-8">
-          {/* Jobs Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setIsJobsOpen(true)}
-            onMouseLeave={() => setIsJobsOpen(false)}
-          >
-            <button className="flex items-center gap-1 font-semibold text-white">
-              Jobs <ChevronDown size={16} />
-            </button>
-            {isJobsOpen && (
-              <div className="absolute top-10 left-0 bg-white shadow-lg p-4 grid grid-cols-2 gap-x-10 rounded-md z-50 w-[500px]">
-                {/* Jobs List */}
-                <div className="space-y-2 text-sm text-[#666666] font-medium">
-                  {[
-                    ["Work From Home Jobs", "/jobs/work-from-home"],
-                    ["Part Time Jobs", "/jobs/part-time"],
-                    ["Freshers Jobs", "/jobs/freshers"],
-                    ["Jobs for Women", "/jobs/women"],
-                    ["Full Time Jobs", "/jobs/full-time"],
-                    ["Night Shift Jobs", "/jobs/night-shift"],
-                  ].map(([label, path], i) => (
-                    <Link
-                      key={i}
-                      to={path}
-                      className="block px-3 py-1 rounded hover:bg-gray-100 text-left w-full"
-                    >
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-                <div className="space-y-2 text-sm text-[#666666] font-medium">
-                  {[
-                    ["Jobs By City →", "/jobs/city"],
-                    ["Jobs By Department →", "/jobs/department"],
-                    ["Jobs By Company →", "/jobs/company"],
-                    ["Jobs By Qualification →", "/jobs/qualification"],
-                    ["Others →", "/jobs/others"],
-                  ].map(([label, path], i) => (
-                    <Link
-                      key={i}
-                      to={path}
-                      className="block px-3 py-1 rounded hover:bg-gray-100 text-left w-full"
-                    >
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+        <img onClick={() => navigate("/")} src="/unigrowLogo.png" className="w-[7rem] h-auto" alt="Logo" />
+
+
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex justify-center ml-auto items-center gap-4 flex flex-row">
+
+          <div className=" flex  flex-row gap-4">
+            <Link to="/" className="font-semibold text-16 text-gray-800">Home</Link>
           </div>
 
-          {/* Career Compass Dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setIsCareerOpen(true)}
-            onMouseLeave={() => setIsCareerOpen(false)}
-          >
-            <button className="flex items-center gap-1 font-semibold text-white">
-              Career Compass <ChevronDown size={16} />
-            </button>
-            {isCareerOpen && (
-              <div className="absolute top-10 left-0 bg-white shadow-lg p-4 flex gap-6 rounded-md z-50 w-[600px]">
-                <div className="space-y-4 text-sm text-[#666666] font-medium w-1/2">
-                  {[
-                    ["AI Resume builder", "Create your best resume using AI"],
-                    ["AI Resume checker", "Get instant resume feedback"],
-                    [
-                      "AI Cover letter generator",
-                      "Stand out and get hired faster",
-                    ],
-                    [
-                      "Direct connection with recruiter",
-                      "Stand out and get hired faster",
-                    ],
-                    ["Blog", "Guidance for securing your dream job"],
-                  ].map(([title, subtitle], i) => (
-                    <button
-                      key={i}
-                      className="text-left w-full px-2 py-1 hover:bg-gray-100 rounded"
-                    >
-                      <strong>{title}</strong>
-                      <br />
-                      <span className="text-gray-500">{subtitle}</span>
-                    </button>
-                  ))}
+            <div
+              className="relative"
+              // onMouseEnter={() => setIsCareerOpen(true)}
+              // onMouseLeave={() => setIsCareerOpen(false)}
+              onClick={()=>navigate("/jobs")}
+            >
+              <button className="flex items-center gap-1 font-semibold text-16 text-gray-800">
+                Find A Job 
+                {/* <ChevronDown size={16} /> */}
+              </button>
+              {isCareerOpen && (
+                <div className="absolute top-10 left-0 bg-white shadow-lg p-4 flex gap-6 rounded-md z-50 w-[600px]">
+                  <div className="space-y-4 text-sm text-[#666666] font-medium w-1/2">
+                    {services.map(({ title, subtitle, link }, i) => (
+                      <Link
+                        to={link}
+                        key={i}
+                        className="text-left w-full px-2 py-1 hover:bg-gray-100 rounded block"
+                      >
+                        <strong>{title}</strong><br />
+                        <span className="text-gray-500">{subtitle}</span>
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="w-1/2 space-y-2">
+                    <img src="/assets/career-video-thumbnail.jpg" alt="Career Compass Video" className="rounded-md" />
+                    <p className="text-sm font-medium text-[#666666]">
+                      Level up your resume: Watch our career compass video guide.
+                    </p>
+                    <Link to="/career-compass-video" className="text-[#3C78D8] font-semibold text-sm">
+                      Watch video →
+                    </Link>
+                  </div>
                 </div>
-                <div className="w-1/2 space-y-2">
-                  <img
-                    src=""
-                    alt="Career Compass Video"
-                    className="rounded-md"
-                  />
-                  <p className="text-sm font-medium text-[#666666]">
-                    Level up your resume: Watch our career compass video guide.
-                  </p>
-                  <Link
-                    to="/career-compass-video"
-                    className="text-[#3C78D8] font-semibold text-sm"
+              )}
+            </div>
+        </div> 
+
+
+          <div className="flex items-center gap-4 ml-auto">
+            {!isLoggedIn ? (
+              <div className="flex flex-row gap-2">
+                <button
+                  disabled
+                  className="bg-blue-500 text-white px-1 md:px-2 py-1 rounded-md text-[0.8rem] md:text-16 font-medium"
+                >
+                  Candidate Login
+                </button>
+                <button
+                 onClick={() => setShowLoginModal(true)}
+                  className="text-blue-500 hover:text-white cursor-pointer bg-white px-1 md:px-2 py-1 rounded-md text-[0.8rem] md:text-16  font-medium hover:bg-secondary transition-colors duration-300 "
+                >
+                  Employer Login
+                </button>
+              </div>
+            ) : (
+              <div>
+                {profile ? 
+                <div onClick={(e)=>{
+                  setAnchor(e.currentTarget);
+                  setShowProfileModal(!showProfileModal)
+                  
+                }
+                } className="rounded-[50%] flex justify-center items-center bg-secondary text-white py-3 px-5">
+                  <strong>{profile?.fullName?.trim()?.charAt(0).toUpperCase()}</strong>
+                </div> :
+                  <button
+                    onClick={handleLogout}
+                    className="bg-secondary text-white px-2 py-1 rounded-md text-16 font-medium"
                   >
-                    Watch video →
-                  </Link>
-                </div>
+                    Logout
+                  </button>
+                }
+
               </div>
+
             )}
           </div>
 
-          {/* Login Buttons */}
-          <div className="flex items-center flex-row gap-4 pl-4">
+            <div className="lg:hidden md:hidden flex flex">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 rounded-md focus:outline-none"
+                aria-label="Toggle Menu"
+              >
+                <Menu size={24} />
+              </button>
+            </div>
 
-            <button
-              onClick={() => setShowLoginModal(true)}
-              className="text-[#36A85C] bg-white px-4 py-1 rounded text-sm font-semibold"
-            >
-              Employer Login
-            </button>
+        
 
-
-            <button
-              disabled
-              className="bg-[#36A85C] text-white px-4 py-1 rounded text-sm font-semibold"
-            >
-              Candidate Login
-            </button>
-          </div>
-        </div>
+        
       </nav>
 
-      {showLoginModal && <CandidateLoginModal
-        mobile={mobile}
-        setMobile={setMobile}
-        onClose={() => {
-          setShowLoginModal(false)
-          setShowOtp(true)
-        }
-        }
-      />}
+      {/* Mobile Menu */}
+    <Drawer
+      anchor="right"
+      open={isMenuOpen}
+      onClose={() => setIsMenuOpen(false)}
+      sx={{
+        '& .MuiDrawer-paper': {
+          width: '50%',
+          maxWidth: 300,
+          padding: '1.5rem',
+        },
+      }}
+    >
+      <IconButton
+        onClick={() => setIsMenuOpen(false)}
+        sx={{ position: 'absolute', top: 10, right: 10 }}
+      >
+        <X />
+      </IconButton>
 
-      {showOtp && <OtpModal mobile={mobile} onClose={() => setShowOtp(false)} />}
+      <List sx={{ marginTop: 6 }}>
+        <ListItem button component={Link} to="/" onClick={() => setIsMenuOpen(false)}>
+          <ListItemText primary="Home" />
+        </ListItem>
+        <ListItem button component={Link} to="/employerHome/profile" onClick={() => setIsMenuOpen(false)}>
+          <ListItemText primary="Profile" />
+        </ListItem>
+        <ListItem button component={Link} to="/employerHome/jobs" onClick={() => setIsMenuOpen(false)}>
+          <ListItemText primary="My Jobs" />
+        </ListItem>
+        {/* Uncomment if needed */}
+        {/* <ListItem button component={Link} to="/contact-us" onClick={() => setIsMenuOpen(false)}>
+          <ListItemText primary="Contact Us" />
+        </ListItem>
+        <ListItem button component={Link} to="/about-us" onClick={() => setIsMenuOpen(false)}>
+          <ListItemText primary="About Us" />
+        </ListItem> */}
+      </List>
+    </Drawer>
 
+      {/* Modals */}
+      {showLoginModal && (
+        <CandidateLoginModal
+          mobile={mobile}
+          setMobile={setMobile}
+          onClose={() => {
+            setShowLoginModal(false);
+          }}
+          onSubmit={() => {
+            setShowOtp(true);
+            setShowLoginModal(false)
+          }}
+        />
+      )}
+      {showOtp && <OtpModal mobile={mobile} onClose={() => setShowOtp(false)} onSubmit={() => {
+        setIsLoggedIn(true)
 
+      }} />}
+
+      {showProfileModal && (
+        <ProfileModal showProfileModal={showProfileModal} onClose={()=> setShowProfileModal(!showProfileModal)} profile={profile} anchor={anchor} handleLogout={handleLogout}/>
+      )}
+
+    
     </>
   );
 }
