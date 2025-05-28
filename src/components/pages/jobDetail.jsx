@@ -14,6 +14,8 @@ const filters = [
 
 
 
+
+
 const CandidateManagementPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -21,6 +23,7 @@ const CandidateManagementPage = () => {
   const [filterIndex, setFilterIndex] = useState(0);
   const [allCandidates, setAllCandidates] = useState({})
   const dispatch = useDispatch();
+  const [showFilters, setShowFilters] = useState(false);
 
   const { jobsById, loading } = useSelector((state) => state.getDataReducer);
 
@@ -59,10 +62,11 @@ const CandidateManagementPage = () => {
       />
     </div>
   );
+  
 
 
   return (
-    <div className="bg-gray-50 min-h-screen w-full ">
+    <div className="bg-gray-50 min-h-screen w-full  ">
       <div className="flex items-center justify-between px-4 py-3 bg-white ">
         {/* Left Side */}
         <div className="flex items-center space-x-3">
@@ -73,7 +77,7 @@ const CandidateManagementPage = () => {
           <div className='flex flex-row gap-2 items-center justify-center'>
             <h2 className="text-lg font-semibold text-gray-900">
               {data?.jobTitle}
-              <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
+              <span className="ml-2 px-2 py-0.5 bg-secondary text-green-700 text-xs rounded-full ">
                 {data?.status === "P" ? "Pending" : (data?.status === "A" ? "Active" : "Expired")}
               </span>
             </h2>
@@ -133,60 +137,95 @@ const CandidateManagementPage = () => {
       </div>
 
       {/* bottom section */}
-      <div className="flex gap-6 p-4">
-        {/* Left Filters */}
-        <div className="w-1/4 space-y-4">
-          <div className="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-2">
-            <Filter size={18} /> Filters (0)
-          </div>
+   
+<div className="flex gap-6 p-4 flex-col md:flex-row relative">
+  {/* Mobile Filter Button */}
+  <div className="md:hidden flex justify-end mb-2">
+    <button
+      className="text-sm font-medium text-blue-600 border border-blue-600 px-4 py-1 rounded-full"
+      onClick={() => setShowFilters(true)}
+    >
+      Show Filters
+    </button>
+  </div>
 
-          <div className="bg-white rounded-lg border shadow-sm p-4 space-y-3">
-            {filters.map((item, idx) => (
-              <label key={idx} className="flex items-center gap-2 text-sm text-gray-700">
-                <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" />
-                <span>
-                  {item.label}
-                  {item.badge && (
-                    <span className="ml-2 text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </span>
-              </label>
-            ))}
-          </div>
+  {/* Left Filters - Drawer on mobile, visible on md+ */}
+  <div
+    className={`
+    ${showFilters ? 'fixed bottom-0 left-0 w-full max-w-full h-[80vh] z-50 bg-white shadow-xl p-4 rounded-t-2xl animate-slide-up overflow-y-auto' : 'hidden'}
+    md:static md:block md:w-1/4 md:space-y-4 md:bg-transparent md:shadow-none md:p-0
+  `}
+  >
+    {/* Close Button for mobile drawer */}
+    <div className="flex justify-between items-center mb-4 md:hidden">
+      <h3 className="text-base font-semibold text-gray-700">Filters</h3>
+      <button
+        onClick={() => setShowFilters(false)}
+        className="text-gray-500 text-lg font-bold"
+      >
+        ×
+      </button>
+    </div>
 
-          <div className="bg-white rounded-lg border shadow-sm p-4 space-y-2 text-sm text-gray-700">
-            <details open>
-              <summary className="cursor-pointer font-medium">Applied in</summary>
-            </details>
-            <details>
-              <summary className="cursor-pointer font-medium">Location</summary>
-            </details>
-            <details>
-              <summary className="cursor-pointer font-medium">Gender</summary>
-            </details>
-          </div>
-        </div>
+    <div className="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-2">
+      <Filter size={18} /> Filters (0)
+    </div>
 
-        {/* Right: Candidate List */}
-        <div className="w-3/4 max-h-[60vh] overflow-scroll">
-          <div className="text-sm text-gray-600 mb-2">Showing {allCandidates[filterIndex]?.length} candidates</div>
-          {allCandidates[filterIndex]?.map((candidate, index) => (
-            <div key={index}>
-              <SimplePaper job={data} jobId={id} candidate={candidate}  />
-            </div>
-          ))}
+    <div className="bg-white rounded-lg border shadow-sm p-4 space-y-3">
+      {filters.map((item, idx) => (
+        <label key={idx} className="flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" />
+          <span>
+            {item.label}
+            {item.badge && (
+              <span className="ml-2 text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
+                {item.badge}
+              </span>
+            )}
+          </span>
+        </label>
+      ))}
+    </div>
 
+    <div className="bg-white rounded-lg border shadow-sm p-4 space-y-2 text-sm text-gray-700">
+      <details open>
+        <summary className="cursor-pointer font-medium">Applied in</summary>
+      </details>
+      <details>
+        <summary className="cursor-pointer font-medium">Location</summary>
+      </details>
+      <details>
+        <summary className="cursor-pointer font-medium">Gender</summary>
+      </details>
+    </div>
+  </div>
 
-          {/* Pagination */}
-          <div className="flex justify-end mt-4">
-            <div className="border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-700">
-              1
-            </div>
-          </div>
-        </div>
+  {/* Overlay for mobile filter drawer */}
+  {showFilters && (
+    <div
+      onClick={() => setShowFilters(false)}
+      className="fixed inset-0 bg-black/40 z-40 md:hidden"
+    />
+  )}
+
+  {/* Right: Candidate List */}
+  <div className="w-full md:w-3/4 max-h-[60vh] overflow-scroll">
+    <div className="text-sm text-gray-600 mb-2">Showing {allCandidates[filterIndex]?.length} candidates</div>
+    {allCandidates[filterIndex]?.map((candidate, index) => (
+      <div key={index}>
+        <SimplePaper job={data} jobId={id} candidate={candidate} />
       </div>
+    ))}
+
+    {/* Pagination */}
+    <div className="flex justify-end mt-4">
+      <div className="border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-700">
+        1
+      </div>
+    </div>
+  </div>
+</div>
+
     </div>
   );
 };

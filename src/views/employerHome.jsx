@@ -33,7 +33,7 @@ const EmployerHome = () => {
 
 
       <div className="flex flex-row w-full" >
-        <div className='flex w-[15vw]'>
+        <div className='flex md:w-[15vw]'>
         <Sidebar
           collapsed={isCollapsed}
           mobileVisible={mobileVisible}

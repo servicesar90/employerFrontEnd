@@ -45,15 +45,15 @@ if (loading) return (
                         </div>
 
                         <Card className="mt-5">
-                            <CardContent className="p-10 text-center ">
-                                <div className="p-6 bg-gray-50 max-h-[75vh] overflow-scroll">
+                            <CardContent className="p-0 md:p-10 text-center ">
+                               
                                    
                                     {jobs?.map((job, index) => (
-                                        <div key={index}>
+                                        <div key={index} >
                                             <JobCard job={job}  />
                                         </div>
                                     ))}
-                                </div>
+                                
                             </CardContent>
                         </Card>
                     </div>
