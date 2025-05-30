@@ -263,13 +263,13 @@ function UnigrowOnboardingForm() {
               disabled={!agrrement}
               className={`p-2.5 w-full m-5 text-sm font-medium text-center text-white rounded-md cursor-pointer
                 ${!agrrement
-                  ? "bg-green-300 cursor-not-allowed"  // 👈 green color when disabled
-                  : "bg-green-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  ? "bg-secondary cursor-not-allowed"  // 👈 green color when disabled
+                  : "bg-secondary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 }`}
               aria-label="Post a job"
 
             >
-              Post a job
+              Register
             </button>
           </form>
         </section>
