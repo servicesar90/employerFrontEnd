@@ -1552,7 +1552,7 @@ const PostJob = () => {
             ))}
           </Box>
 
-          <Box className="bg-white p-6 rounded mt-4 shadow space-y-6 flex flex-col items-start">
+          <Box className="bg-white p-6 rounded mt-4 shadow flex flex-col items-start">
             <Typography
               variant="h6"
               className="mb-2"
@@ -1571,7 +1571,7 @@ const PostJob = () => {
 
             {/* Job Description */}
 
-            <Box className="mt-6 mb-1 w-full">
+            <Box className="mt-6 mb-1 w-full" sx={{marginBottom: "30px"}}>
               <Controller
                 name="jobDescription"
                 control={control}
@@ -1587,12 +1587,7 @@ const PostJob = () => {
                     className="quill-editor"
                     placeholder="Write job description..."
                   />
-                  // <JoditEditor
-                  //   value={field.value}
-                  //   config={config}
-                  //   onBlur={field.onBlur}
-                  //   onChange={(newContent) => field.onChange(newContent)}
-                  // />
+                
                 )}
               />
             </Box>
