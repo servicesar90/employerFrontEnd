@@ -25,8 +25,6 @@ const JobCard = ({ job }) => {
 
   const open = Boolean(anchorEl);
 
-  console.log(open)
-
   useEffect(() => {
     if (job?.JobApplications?.length) {
       const pendings = job.JobApplications.filter(
@@ -65,7 +63,7 @@ const JobCard = ({ job }) => {
       <div onClick={() => navigate(`/employerHome/jobsDetail/${job.id}`)} className="flex justify-between items-start">
         <div className='flex flex-col justify-start items-start'>
           <h3 className="flex items-center gap-4 md:gap-2">
-            <span className='heading'>{job?.jobTitle}</span>
+            <span className='heading text-left w-auto'>{job?.jobTitle}</span>
             {job?.status === 'A' && (
               <Chip sx={{ backgroundColor: "#0784C9", color: "white", borderRadius: "5px" }} label="Active" size="small" />
             )}
@@ -77,9 +75,9 @@ const JobCard = ({ job }) => {
             )}
           </h3>
           <ul className="flex mt-4 flex-col md:flex-row md:gap-4 gap-3 justify-start items-start text-sm md:text-md text-gray-600">
-            <li className='chips'><LocationOnIcon className='text-secondary' fontSize='small' />{job?.location}</li>
-            <li className='chips'><CalendarMonthIcon className='text-secondary' fontSize='small' /> {job?.createdAt?.split("T")[0]}</li>
-            <li className='chips'><PersonIcon className='text-secondary' fontSize='small' />{job?.otherRecruiterName || "N/A"}</li>
+            <li className='chips text-left'><LocationOnIcon className='text-secondary' fontSize='small' />{job?.location}</li>
+            <li className='chips text-left'><CalendarMonthIcon className='text-secondary' fontSize='small' /> {job?.createdAt?.split("T")[0]}</li>
+            <li className='chips text-left'><PersonIcon className='text-secondary' fontSize='small' />{job?.otherRecruiterName || "N/A"}</li>
           </ul>
         </div>
 

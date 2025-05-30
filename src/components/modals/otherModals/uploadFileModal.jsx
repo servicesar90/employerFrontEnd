@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Box, Button, Modal } from "@mui/material";
 import { showErrorToast, showSuccessToast } from "../../ui/toast";
+import { useDispatch } from "react-redux";
+import { fetchUserProfile } from "../../../Redux/getData";
 
-const UserForm = ({ open, isDataChange, label, onClose, metaData }) => {
+const UserForm = ({ open, label, onClose, metaData }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(metaData.default);
   const [uploadStatus, setUploadStatus] = useState("");
+  const dispatch= useDispatch();
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -24,7 +27,7 @@ const UserForm = ({ open, isDataChange, label, onClose, metaData }) => {
     if (response) {
       setUploadStatus("Successfully Uploaded");
       showSuccessToast("Successfully Updated")
-      isDataChange()
+      dispatch(fetchUserProfile())
       onClose()
     } else {
       setUploadStatus("Could not uploaded, please try again");

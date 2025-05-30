@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../cards/NewCard.css";
 import Avatar from "@mui/material/Avatar";
+import { Box } from "@mui/material";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   BriefcaseBusiness,
@@ -23,8 +24,8 @@ function useWindowWidth() {
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return width;
@@ -41,14 +42,13 @@ const DetailRow = ({ logo, label, value }) => (
   </div>
 );
 
-export default function SimplePaper({ job, jobId,  candidate}) {
+export default function SimplePaper({ job, jobId, candidate }) {
   const width = useWindowWidth();
   const isMobile = width <= 768;
   const [matchingFields, setMatchedField] = useState([]);
   const [matchingPrecent, setMatchingPrecent] = useState(0);
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const dispatch = useDispatch();
-
 
   useEffect(() => {
     if (!job || !candidate) return;
@@ -59,18 +59,20 @@ export default function SimplePaper({ job, jobId,  candidate}) {
     for (const key in job) {
       if (candidate[key] !== undefined) {
         // For string/number matching
-        if (typeof job[key] === 'string' || typeof job[key] === 'number') {
+        if (typeof job[key] === "string" || typeof job[key] === "number") {
           if (job[key] === candidate.EmployeeProfile[key]) {
             matchedCount++;
-            setMatchedField((prev) => [...prev, key])
+            setMatchedField((prev) => [...prev, key]);
           }
         }
         // For arrays (like skills or tools)
         else if (Array.isArray(job[key]) && Array.isArray(candidate[key])) {
-          const intersection = job[key].filter(val => candidate.EmployeeProfile[key].includes(val));
+          const intersection = job[key].filter((val) =>
+            candidate.EmployeeProfile[key].includes(val)
+          );
           if (intersection.length > 0) {
             matchedCount++;
-            setMatchedField((prev) => [...prev, key])
+            setMatchedField((prev) => [...prev, key]);
           }
         }
         // Add more logic if needed (e.g. objects, nested fields)
@@ -78,133 +80,202 @@ export default function SimplePaper({ job, jobId,  candidate}) {
     }
 
     const matchPercentage = Math.round((matchedCount / totalFields) * 100);
-    setMatchingPrecent(matchPercentage)
-
-
+    setMatchingPrecent(matchPercentage);
   }, [candidate, job]);
 
-
   const handleReject = async (id) => {
-    console.log(id)
+    console.log(id);
     const response = await updateApplication(id, { status: "Rejected" });
     if (response) {
-      showSuccessToast("succesfully Rejected")
-      dispatch(fetchJobsById(jobId))
+      showSuccessToast("succesfully Rejected");
+      dispatch(fetchJobsById(jobId));
     } else {
-      showErrorToast("could not processed, Try again!")
+      showErrorToast("could not processed, Try again!");
     }
-  }
+  };
 
   const handleShortList = async (id) => {
     const response = await updateApplication(id, { status: "Selected" });
     if (response) {
-      showSuccessToast("succesfully Shortlisted")
-      dispatch(fetchJobsById(jobId))
+      showSuccessToast("succesfully Shortlisted");
+      dispatch(fetchJobsById(jobId));
     } else {
-      showErrorToast("could not processed, Try again!")
+      showErrorToast("could not processed, Try again!");
     }
-  }
+  };
 
   return (
     <>
       {isMobile ? (
         <>
-          <div className="mobileCardWrapper border rounded-md border-gray-400">
+          <div className="mobileCardWrapper border rounded-lg bg-white border">
             <div className="flex mt-2 mb-2 mr-2">
               <div className="flex gap-4">
                 <input type="checkbox" className="ml-4" />
 
-                <Avatar sx={{ bgcolor: "#ff5722" }}> {candidate?.EmployeeProfile.fullName
-                  .split(' ')
-                  .map(word => word[0])
-                  .slice(0, 2)
-                  .join('')
-                  .toUpperCase()}</Avatar>
+                <Avatar sx={{ bgcolor: "#ff5722" }}>
+                  {" "}
+                  {candidate?.EmployeeProfile.fullName
+                    .split(" ")
+                    .map((word) => word[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()}
+                </Avatar>
               </div>
               <div className=" flex w-full justify-between items-center ml-4">
                 <div>
-                  <strong>{candidate?.EmployeeProfile.fullName}</strong>
+                  <p className="text-16 font-semibold text-gray-800">
+                    {candidate?.EmployeeProfile.fullName || "N/A"}
+                  </p>
                 </div>
                 <div>
                   <Chip
-                    icon={<LockOpenIcon size={15} />}
-                    label=" "
+                    label={<span className="text-white text-12">unlocked</span>}
                     size="small"
+                    sx={{ backgroundColor: "#0784C9" }}
                   />
                 </div>
               </div>
             </div>
             <div className="flex line-info  w-full items-center justify-between pt-2 pb-2  gap-2">
               <div className="flex flex-col items-center flex-wrap gap-1 ml-3">
-                <BriefcaseBusiness size={18} />
-                <p>{candidate?.EmployeeProfile.TotalExperience?.years} years {candidate?.EmployeeProfile.TotalExperience?.months} months</p>
+                <BriefcaseBusiness size={18} className="text-secondary" />
+                {candidate?.EmployeeProfile.TotalExperience?.years ? (
+                  <p className="text-14 text-gray-650">
+                    {candidate?.EmployeeProfile.TotalExperience?.years} years{" "}
+                    {candidate?.EmployeeProfile.TotalExperience?.months} months
+                  </p>
+                ) : (
+                  <p>N/A</p>
+                )}
               </div>
               <div></div>
               <div className="flex flex-col items-center flex-wrap gap-1 ">
-                <IndianRupee size={18} />
-                <p>{candidate?.EmployeeProfile.salary}</p>
+                <IndianRupee size={18} className="text-secondary" />
+                <p className="text-14 text-gray-650">
+                  {candidate?.EmployeeProfile.salary || "N/A"}
+                </p>
               </div>
               <div></div>
               <div className="flex flex-col items-center flex-wrap gap-1 mr-3">
-                <MapPin size={18} />
-                <p>{candidate?.EmployeeProfile.currentLocation}</p>
+                <MapPin size={18} className="text-secondary" />
+                <p className="text-14 text-gray-650">
+                  {candidate?.EmployeeProfile?.currentLocation || "N/A"}
+                </p>
               </div>
             </div>
 
-            <button onClick={()=> setOpenProfileModal(true)} className="flex w-full justify-start m-4 font-bold cursor-pointer text-sm text-green-500">View Profile</button>
-              
+            <button
+              onClick={() => setOpenProfileModal(true)}
+              className="flex w-full justify-start m-4 font-bold cursor-pointer text-sm text-green-500"
+            >
+              View Profile
+            </button>
 
             <div className="mid-info ml-3 mr-3 mt-3">
               <div className="flex flex-col">
                 <div className="flex items-center gap-2 flex-nowrap whitespace-nowrap mb-2">
                   <span className="text-gray-400">
-                    <BriefcaseBusiness size={16} />
+                    <BriefcaseBusiness size={16} className="text-secondary" />
                   </span>
-                  <div className="text-gray-400 font-semibold" >Current/Previous Work</div>
-                </div>
-                <div className="flex flex-col  flex-wrap gap-x-4 gap-y-2 pl-2 ">
-                  {/* Item 1 */}
-                  <div className="flex items-start relative ">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full absolute -left-1 top-1" />
-                    {candidate?.EmployeeProfile.EmployeeExperiences[0] && <p className="mobile-current-work">
-                      {candidate?.EmployeeProfile.EmployeeExperiences[0].jobTitle} at {candidate?.EmployeeProfile.EmployeeExperiences[0].companyName}
-                    </p>}
+                  <div className="text-gray-800 font-semibold text-14">
+                    Current/Previous Work
                   </div>
+                </div>
 
-                  {/* Item 2 */}
+                <div className="flex flex-col flex-wrap gap-x-4 gap-y-2 pl-2">
+                  {/* Item 1 - Current */}
                   <div className="flex items-start relative">
                     <div className="w-2 h-2 bg-gray-400 rounded-full absolute -left-1 top-1" />
-                    {candidate?.EmployeeProfile.EmployeeExperiences[1] && <p className="mobile-current-work">
-                      {candidate?.EmployeeProfile.EmployeeExperiences[1].jobTitle} at {candidate?.EmployeeProfile.EmployeeExperiences[1].companyName}
-                    </p>}
+                    <p className="mobile-current-work">
+                      {candidate?.EmployeeProfile?.EmployeeExperiences?.[0] ? (
+                        `${candidate.EmployeeProfile.EmployeeExperiences[0].jobTitle} at ${candidate.EmployeeProfile.EmployeeExperiences[0].companyName}`
+                      ) : (
+                        <span className="text-14 text-gray-650">
+                          Not Provided
+                        </span>
+                      )}
+                    </p>
+                  </div>
+
+                  {/* Item 2 - Previous */}
+                  <div className="flex items-start relative">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full absolute -left-1 top-1" />
+                    <p className="mobile-current-work">
+                      {candidate?.EmployeeProfile?.EmployeeExperiences?.[1] ? (
+                        `${candidate.EmployeeProfile.EmployeeExperiences[1].jobTitle} at ${candidate.EmployeeProfile.EmployeeExperiences[1].companyName}`
+                      ) : (
+                        <span className="text-14 text-gray-650">
+                          Not Provided
+                        </span>
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
+
               <div className="flex flex-col mt-2">
                 <div className="flex items-center gap-2 flex-nowrap whitespace-nowrap mb-2">
                   <span className="text-gray-400">
-                    <School size={18} />
+                    <School size={18} className="text-secondary" />
                   </span>
-                  <div className="text-gray-400 font-semibold">Education</div>
+                  <div className="text-gray-800 font-semibold text-14">
+                    Education
+                  </div>
                 </div>
-                {candidate?.EmployeeProfile.EmployeeEducations[0] && <div className="mobile-education">
-                  {candidate?.EmployeeProfile.EmployeeEducations[0].degree}, {candidate?.EmployeeProfile.EmployeeEducations[0].specialization}, {candidate?.EmployeeProfile.EmployeeEducations[0].instituteName}
-                </div>}
+                <div className="mobile-education text-14 text-gray-650">
+                  {candidate?.EmployeeProfile?.EmployeeEducations?.[0]
+                    ?.degree ||
+                  candidate?.EmployeeProfile?.EmployeeEducations?.[0]
+                    ?.specialization ||
+                  candidate?.EmployeeProfile?.EmployeeEducations?.[0]
+                    ?.instituteName ? (
+                    <>
+                      {candidate.EmployeeProfile.EmployeeEducations[0].degree ||
+                        ""}{" "}
+                      {candidate.EmployeeProfile.EmployeeEducations[0]
+                        .specialization || ""}{" "}
+                      {candidate.EmployeeProfile.EmployeeEducations[0]
+                        .instituteName || ""}
+                    </>
+                  ) : (
+                    "Not Provided"
+                  )}
+                </div>
               </div>
 
               <div>
                 <div className="flex flex-col mt-2">
                   <div className="flex items-center gap-2 flex-nowrap whitespace-nowrap mb-2">
                     <span className="text-gray-400">
-                      <MapPin size={18} />
+                      <MapPin size={18} className="text-secondary" />
                     </span>
-                    <div className="text-gray-400 font-semibold">Pref. Location</div>
+                    <div className="text-gray-800 font-semibold text-14">
+                      Pref. Location
+                    </div>
                   </div>
 
-                  <div className="mobile-location">
-                    {candidate?.EmployeeProfile.preferredJobCity && JSON.parse(candidate?.EmployeeProfile.preferredJobCity).map((city, index) => (
-                      <Chip key={index} label={city} size="small" />
-                    ))}
+                  <div className="mobile-location text-14 text-gray-650 flex flex-wrap gap-2">
+                    {candidate?.EmployeeProfile?.preferredJobCity &&
+                    JSON.parse(candidate.EmployeeProfile.preferredJobCity)
+                      ?.length > 0 ? (
+                      JSON.parse(
+                        candidate.EmployeeProfile.preferredJobCity
+                      ).map((city, index) => (
+                        <Chip key={index} label={city} size="small" 
+                        sx={{
+          backgroundColor: "#E0F2FE", // light blue
+          color: "gray",           // darker blue text
+          fontSize: "12px",
+          padding: "2px 1px",
+          fontWeight: 500,
+          borderRadius: "8px",
+        }}/>
+                      ))
+                    ) : (
+                      <span className="text-14 text-gray-650">Not Provided</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -212,32 +283,68 @@ export default function SimplePaper({ job, jobId,  candidate}) {
               <div className="flex flex-col mt-2">
                 <div className="flex items-center gap-2 flex-nowrap whitespace-nowrap mb-2">
                   <span className="text-gray-400">
-                    <ShipWheel size={18} />
+                    <ShipWheel size={18} className="text-secondary" />
                   </span>
-                  <div className="text-gray-400 font-semibold">Skills</div>
+                  <div className="text-gray-800 font-semibold text-14">Skills</div>
                 </div>
 
-                <div className="mobile-location">
-                  {candidate?.EmployeeProfile.skills && JSON.parse(candidate?.EmployeeProfile.skills).map((skill, index) => (
-                    <Chip key={index} label={skill} size="small" />
-                  ))}
-                </div>
+                <div className="mobile-location text-14 text-gray-650 flex flex-wrap gap-2">
+  {candidate?.EmployeeProfile?.skills &&
+  JSON.parse(candidate.EmployeeProfile.skills)?.length > 0 ? (
+    JSON.parse(candidate.EmployeeProfile.skills).map((skill, index) => (
+      <Chip
+        key={index}
+        label={skill}
+        size="small"
+        sx={{
+          backgroundColor: "#E0F2FE", // light blue
+          color:"gray",           // dark blue text
+          fontSize: "12px",
+          padding: "2px 1px",
+          fontWeight: 500,
+          borderRadius: "8px",
+        }}
+      />
+    ))
+  ) : (
+    <span className="text-14 text-gary-650">Not Provided</span>
+  )}
+</div>
+
               </div>
               <div className="flex flex-col mt-2">
                 <div className="flex items-center gap-2 flex-nowrap whitespace-nowrap mb-2">
                   <span className="text-gray-400">
-                    <Languages size={18} />
+                    <Languages size={18} className="text-secondary" />
                   </span>
-                  <div className="text-gray-400 font-semibold">Languages</div>
+                  <div className="text-gray-800 font-semibold text-14">Languages</div>
                 </div>
-                <div className="mobile-education  ">
+                <div className="mobile-education text-14 text-gray-650   ">
                   English ({candidate?.EmployeeProfile.englishProficiency})
-                  <div className="flex flex-row gap-4 mt-4 mb-2">
-
-                    {candidate?.EmployeeProfile.otherLanguages && JSON.parse(candidate?.EmployeeProfile.otherLanguages).map((language, index) => (
-                      <Chip key={index} label={language} size="small" />
-                    ))}
-                  </div>
+                  <div className="flex flex-row gap-1 mt-4 mb-2">
+  {candidate?.EmployeeProfile?.otherLanguages &&
+  JSON.parse(candidate.EmployeeProfile.otherLanguages)?.length > 0 ? (
+    JSON.parse(candidate.EmployeeProfile.otherLanguages).map((language, index) => (
+      <Chip
+        key={index}
+        label={language}
+        size="small"
+        sx={{
+          backgroundColor: "#E0F2FE", // light blue
+          color: "gray",           // dark blue text
+          fontSize: "12px",
+          padding: "2px 1px",
+          fontWeight: 500,
+          borderRadius: "8px",
+        }}
+      />
+    ))
+  ) : (
+    <span className=" text-14 text-gray-650">Not Provided</span>
+    
+    
+  )}
+</div>
                 </div>
               </div>
               <div className="mobile-contact-button">
@@ -260,144 +367,355 @@ export default function SimplePaper({ job, jobId,  candidate}) {
                 </Button>
               </div>
 
-
-              <div className="flex flex-row gap-4 w-full justify-end">
-                <Button variant="outlined" onClick={() => handleShortList(candidate?.id)} disabled={candidate?.status === "Selected"} color="success">{(candidate?.status === "Selected") ? "Shortlisted" : "ShortList"}</Button>
-                <Button variant="contained" onClick={() => handleReject(candidate?.id)} disabled={candidate?.status === "Rejected"} color="error">{(candidate?.status === "Rejected") ? "Rejected" : "Reject"}</Button>
+              <div className="flex flex-row gap-4 w-full justify-end mb-2">
+                <Button
+                  variant="outlined"
+                  onClick={() => handleShortList(candidate?.id)}
+                  disabled={candidate?.status === "Selected"}
+                  color="success"
+                >
+                  {candidate?.status === "Selected"
+                    ? "Shortlisted"
+                    : "ShortList"}
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleReject(candidate?.id)}
+                  disabled={candidate?.status === "Rejected"}
+                  color="error"
+                >
+                  {candidate?.status === "Rejected" ? "Rejected" : "Reject"}
+                </Button>
               </div>
             </div>
-
           </div>
-          <div className="mobile-card-bottom-section text-xs ">
-
+          <div className="mobile-card-bottom-section text-xs bg-white border-l border-r ">
             <div className="flex flex-row gap-1">
               <div className="flex flex-row items-center">
                 <span>
-
-                  <Paperclip size={12} />
+                  <Paperclip size={12} className="text-gray-650 text-12" />
                 </span>
-                {candidate?.EmployeeProfile.resumeURL?"Cv Attached": "Cv Not attached"}
+                <span className="text-gray-650 text-12">
+                  {candidate?.EmployeeProfile.resumeURL
+                    ? "Cv Attached"
+                    : "Cv Not attached"}
+                </span>
               </div>
-              |<div>Active on {candidate?.EmployeeProfile.updatedAt.split("T")[0]}</div>
+              <span className="text-gray-650 text-12">|</span>
+              <div className="text-gray-650 text-12">
+                Active on {candidate?.EmployeeProfile.updatedAt.split("T")[0]}
+              </div>
             </div>
           </div>
         </>
       ) : (
-        <div className="mb-4 mr-2 w-full  border border-black-500 rounded-lg">
+        <div className="mb-4 mr-2 w-full  border rounded-lg shadow-xl mb-5">
           <div className="card-wrapper">
-            <div className="custom-card">
+            <div className="custom-card border  ">
               <label>
                 <input type="checkbox" className="corner-checkbox" />
               </label>
               <div className="card-top-section">
                 <div className="left-avatar-section">
-                  <Avatar sx={{ bgcolor: "#ff5722" }}> {candidate?.EmployeeProfile.fullName
-                    .split(' ')
-                    .map(word => word[0])
-                    .slice(0, 2)
-                    .join('')
-                    .toUpperCase()}</Avatar>
+                  <Avatar sx={{ bgcolor: "#ff5722" }}>
+                    {" "}
+                    {candidate?.EmployeeProfile.fullName
+                      .split(" ")
+                      .map((word) => word[0])
+                      .slice(0, 2)
+                      .join("")
+                      .toUpperCase()}
+                  </Avatar>
                 </div>
                 <div className="right-info-section">
                   <div className="info-section">
                     <div className="candidate-name gap-4">
                       <h1>
-                        <strong>{candidate?.EmployeeProfile.fullName}</strong>
-
+                        <p className="text-16 font-semibold text-gray-800">
+                          {candidate?.EmployeeProfile.fullName}
+                        </p>
                       </h1>
-                      <button onClick={() => setOpenProfileModal(true)} className="font-bold cursor-pointer text-sm text-green-500">View Profile</button>
+                      <button
+                        onClick={() => setOpenProfileModal(true)}
+                        className="font-bold cursor-pointer text-sm text-green-500 "
+                      >
+                        View Profile
+                      </button>
                     </div>
                     <div className="info">
                       <div className="candidate-experience flex flex-row gap-1 items-center">
                         <span className="experience-icon">
-                          <BriefcaseBusiness size={16} />
+                          <BriefcaseBusiness
+                            size={16}
+                            className="text-secondary"
+                          />
                         </span>
                         <div className="experience">
-                          <p>{candidate?.EmployeeProfile.TotalExperience?.years} years {candidate?.EmployeeProfile.TotalExperience?.months} months</p>
+                          <p className="text-gray-650 text-14">
+                            {candidate?.EmployeeProfile?.TotalExperience
+                              ?.years ||
+                            candidate?.EmployeeProfile?.TotalExperience?.months
+                              ? `${candidate.EmployeeProfile.TotalExperience.years} years ${candidate.EmployeeProfile.TotalExperience.months} months`
+                              : "N/A"}
+                          </p>
                         </div>
                       </div>
                       <div className="candidate-salary flex flex-row gap-1 items-center">
                         <span className="salary-icon">
-                          <IndianRupee size={16} />
+                          <IndianRupee size={16} className="text-secondary" />
                         </span>
                         <div className="salary">
-                          <p>{candidate?.EmployeeProfile.salary}</p>
+                          <p className="text-gray-650 text-14">
+                            {candidate?.EmployeeProfile?.salary
+                              ? `${candidate?.EmployeeProfile?.salary}`
+                              : "N/A"}
+                          </p>
                         </div>
                       </div>
                       <div className="candidate-current-location flex flex-row gap-1 items-center">
                         <span className="location-icon">
-                          <MapPin size={16} />
+                          <MapPin size={16} className="text-secondary" />
                         </span>
                         <div className="location">
-                          <p>{candidate?.EmployeeProfile.currentLocation}</p>
+                          <p className="text-gray-650 text-14">
+                            {candidate?.EmployeeProfile?.currentLocation
+                              ? `${candidate?.EmployeeProfile?.currentLocation}`
+                              : "N/A"}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="unlock-badge-section">
-                    <Chip label="Unlocked" size="small" />
+                    <Chip
+                      label="Unlocked"
+                      size="small"
+                      sx={{
+                        backgroundColor: "#0784C9",
+                        color: "#fff",
+                        borderRadius: "4px",
+                      }}
+                    />
                   </div>
 
                   <div className="unlock-badge-section">
-                    <Chip label={`${matchingPrecent}% matched`} size="small" />
+                    <Chip
+                      label={`${matchingPrecent}% matched`}
+                      size="small"
+                      sx={{
+                        backgroundColor: "#0784C9",
+                        color: "#fff",
+                        borderRadius: "4px",
+                      }}
+                    />
                   </div>
                 </div>
               </div>
 
               <div className="mid-section flex flex-col mt-5 gap-2 self-center w-full">
-
-                {candidate?.EmployeeProfile.EmployeeExperiences[0] && <DetailRow
-                  logo={<BriefcaseBusiness size={18} />}
-                  label="Current"
-                  value={`${candidate?.EmployeeProfile.EmployeeExperiences[0].jobTitle} at ${candidate?.EmployeeProfile.EmployeeExperiences[0].companyName}`}
-                />}
-                {candidate?.EmployeeProfile.EmployeeExperiences[1] &&
-                  <DetailRow
-                    logo={<BriefcaseBusiness size={18} />}
-                    label="Previous"
-                    value={`${candidate?.EmployeeProfile.EmployeeExperiences[1].jobTitle} at ${candidate?.EmployeeProfile.EmployeeExperiences[1].companyName}`}
-                  />
-                }
-
                 <DetailRow
-                  logo={<School size={18} />}
-                  label="Education"
-                  value={`${candidate?.EmployeeProfile.EmployeeEducations[0]?.degree}, ${candidate?.EmployeeProfile.EmployeeEducations[0]?.specialization}, ${candidate?.EmployeeProfile.EmployeeEducations[0]?.instituteName}`}
-                />
-                <DetailRow
-                  logo={<MapPin size={18} />}
-                  label="Pef. Location"
-                  value={candidate?.EmployeeProfile.preferredJobCity && JSON.parse(candidate?.EmployeeProfile.preferredJobCity).map((city, index) => (
-                    <span key={index} className="mr-4">{city}</span>
-                  ))}
-                />
-                <DetailRow
-                  logo={<ShipWheel size={18} />}
-                  label="Skills"
-                  value={candidate?.EmployeeProfile.skills && JSON.parse(candidate?.EmployeeProfile.skills).map((skill, index) => (
-                    <span key={index} className="mr-4">{skill}</span>
-                  ))}
-                />
-                <DetailRow
-                  logo={<Languages size={18} />}
-                  label="Languages"
-                  value={`English (${candidate?.EmployeeProfile.englishProficiency})`}
-                />
-                <DetailRow
-                  logo={<Languages size={18} />}
-                  label="Other Languages"
-                  value={candidate?.EmployeeProfile.otherLanguages && JSON.parse(candidate?.EmployeeProfile.otherLanguages).map((language, index) => (
-                    <span key={index} className="mr-4">{language}</span>
-                  ))}
+                  logo={
+                    <BriefcaseBusiness size={18} className="text-secondary" />
+                  }
+                  label={
+                    <span className="text-14 font-semibold text-gray-650">
+                      Current
+                    </span>
+                  }
+                  value={
+                    candidate?.EmployeeProfile?.EmployeeExperiences?.[0] ? (
+                      <span className="text-14 text-gray-650">
+                        {" "}
+                        {
+                          candidate.EmployeeProfile.EmployeeExperiences[0]
+                            .jobTitle
+                        }{" "}
+                        at{" "}
+                        {
+                          candidate.EmployeeProfile.EmployeeExperiences[0]
+                            .companyName
+                        }
+                      </span>
+                    ) : (
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    )
+                  }
                 />
 
                 <DetailRow
-                  logo={<Languages size={18} />}
-                  label="Matching Crerterion"
-                  value={(matchingFields).map((language, index) => (
-                    <span key={index} className="mr-4">{language}</span>
-                  ))}
+                  logo={
+                    <BriefcaseBusiness size={18} className="text-secondary" />
+                  }
+                  label={
+                    <span className="text-14 font-semibold text-gray-650">
+                      Previous
+                    </span>
+                  }
+                  value={
+                    candidate?.EmployeeProfile?.EmployeeExperiences?.[1] ? (
+                      <span className="text-14 text-gray-650">
+                        {
+                          candidate.EmployeeProfile.EmployeeExperiences[1]
+                            .jobTitle
+                        }{" "}
+                        at $
+                        {
+                          candidate.EmployeeProfile.EmployeeExperiences[1]
+                            .companyName
+                        }
+                      </span>
+                    ) : (
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    )
+                  }
                 />
+
+                <DetailRow
+                  logo={<School size={18} className="text-secondary" />}
+                  label={
+                    <span className="text-14 font-semibold text-gray-650">
+                      Education
+                    </span>
+                  }
+                  value={
+                    candidate?.EmployeeProfile?.EmployeeEducations?.[0] ? (
+                      <span className="text-14 text-gray-650 mr-2">
+                        {candidate.EmployeeProfile.EmployeeEducations[0]
+                          ?.degree || ""}{" "}
+                        {candidate.EmployeeProfile.EmployeeEducations[0]
+                          ?.specialization || ""}{" "}
+                        {candidate.EmployeeProfile.EmployeeEducations[0]
+                          ?.instituteName || ""}
+                      </span>
+                    ) : (
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    )
+                  }
+                />
+                <DetailRow
+                  logo={<MapPin size={18} className="text-secondary" />}
+                  label={
+                    <span className="text-14 font-semibold text-gray-650">
+                      Pref. City
+                    </span>
+                  }
+                  value={
+                    candidate?.EmployeeProfile?.preferredJobCity &&
+                    JSON.parse(candidate.EmployeeProfile.preferredJobCity)
+                      ?.length > 0 ? (
+                      JSON.parse(
+                        candidate.EmployeeProfile.preferredJobCity
+                      ).map((city, index) => (
+                        <span
+                          key={index}
+                          className="text-14 text-gray-650 mr-3"
+                        >
+                          {city}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-14 text-gray-650 ">
+                        Not Provided
+                      </span>
+                    )
+                  }
+                />
+                <DetailRow
+                  logo={<ShipWheel size={18} className="text-secondary" />}
+                  label={
+                    <span className="text-14 font-semibold text-gray-650">
+                      Skills
+                    </span>
+                  }
+                  value={
+                    candidate?.EmployeeProfile?.skills &&
+                    JSON.parse(candidate.EmployeeProfile.skills)?.length > 0 ? (
+                      JSON.parse(candidate.EmployeeProfile.skills).map(
+                        (skill, index) => (
+                          <span
+                            key={index}
+                            className="mr-3 text-14 text-gray-650"
+                          >
+                            {skill}
+                          </span>
+                        )
+                      )
+                    ) : (
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    )
+                  }
+                />
+                <DetailRow
+                  logo={<Languages size={18} className="text-secondary" />}
+                  label={
+                    <span className="text-14 font-semibold text-gray-650">
+                      English
+                    </span>
+                  }
+                  value={
+                    candidate?.EmployeeProfile?.englishProficiency ? (
+                      <span className="text-14 text-gray-650">
+                        {candidate.EmployeeProfile.englishProficiency}
+                      </span>
+                    ) : (
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    )
+                  }
+                />
+                <DetailRow
+                  logo={<Languages size={18} className="text-secondary" />}
+                  label={
+                    <span className="text-14 font-semibold text-gray-650">
+                      Languages
+                    </span>
+                  }
+                  value={
+                    candidate?.EmployeeProfile?.englishProficiency ? (
+                      <span className="text-14 text-gray-650">
+                        English ({candidate.EmployeeProfile.englishProficiency})
+                      </span>
+                    ) : (
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    )
+                  }
+                />
+
+                {/* <DetailRow
+                  logo={<Languages size={18} className="text-secondary" />}
+                  label={
+                    <span className="text-14 font-semibold text-gray-650">
+                      Matching Criterion
+                    </span>
+                  }
+                  value={
+                    matchingFields?.length > 0 ? (
+                      matchingFields.map((field, index) => (
+                        <span
+                          key={index}
+                          className="mr-3 text-14 text-gray-650"
+                        >
+                          {field}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    )
+                  }
+                /> */}
                 <div className="flex flex-row justify-between">
                   <div className="flex">
                     <Button
@@ -420,34 +738,62 @@ export default function SimplePaper({ job, jobId,  candidate}) {
                   </div>
 
                   <div className="flex flex-row gap-4 ">
-                    <Button variant="outlined" onClick={() => handleShortList(candidate?.id)} disabled={candidate?.status === "Selected"} color="success">{(candidate?.status === "Selected") ? "Shortlisted" : "ShortList"}</Button>
-                    <Button variant="contained" onClick={() => handleReject(candidate?.id)} disabled={candidate?.status === "Rejected"} color="error">{(candidate?.status === "Rejected") ? "Rejected" : "Reject"}</Button>
+                    <Button
+                      variant="outlined"
+                      onClick={() => handleShortList(candidate?.id)}
+                      disabled={candidate?.status === "Selected"}
+                      color="success"
+                    >
+                      {candidate?.status === "Selected"
+                        ? "Shortlisted"
+                        : "ShortList"}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleReject(candidate?.id)}
+                      disabled={candidate?.status === "Rejected"}
+                      color="error"
+                    >
+                      {candidate?.status === "Rejected" ? "Rejected" : "Reject"}
+                    </Button>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
-          <div className="card-bottom-section text-xs ">
+          <div className="card-bottom-section text-xs border">
             <div className="flex flex-row gap-1 ">
-              <div>29 unlocks</div>|<div>Proile Unlocked</div>
+              <div className="text-gray-650 text-12">29 unlocks</div>
+              <span className="text-gray-650 text-12">|</span>
+              <div className="text-gray-650 text-12">Proile Unlocked</div>
             </div>
             <div className="flex flex-row gap-1">
               <div className="flex flex-row items-center">
                 <span>
-
-                  <Paperclip size={12} />
+                  <Paperclip size={12} className="text-gray-650 text-12" />
                 </span>
-                {candidate?.EmployeeProfile.resumeURL? "Cv Attached": "Cv not Attached"}
+                <span className="text-gray-650 text-12">
+                  {candidate?.EmployeeProfile.resumeURL
+                    ? "Cv Attached"
+                    : "Cv not Attached"}
+                </span>
               </div>
-              |<div>Active on {candidate?.EmployeeProfile.updatedAt.split("T")[0]}</div>
+              <span className="text-gray-650 text-12">|</span>
+              <div className="text-gray-650 text-12">
+                Active on {candidate?.EmployeeProfile.updatedAt.split("T")[0]}
+              </div>
             </div>
           </div>
         </div>
       )}
 
       {openProfileModal && (
-        <ProfileModal open={openProfileModal} onClose={()=>setOpenProfileModal(false)} jobId={jobId} candidate={candidate}/>
+        <ProfileModal
+          open={openProfileModal}
+          onClose={() => setOpenProfileModal(false)}
+          jobId={jobId}
+          candidate={candidate}
+        />
       )}
     </>
   );

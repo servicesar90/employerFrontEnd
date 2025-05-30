@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox, FormControlLabel, Radio, RadioGroup, Pagination, Button } from '@mui/material';
 import {  Download } from 'lucide-react';
-import { candidates } from '../../assets/data';
 import SimplePaper from '../ui/cards/NewCard';
+import { getJobById } from '../../API/ApiFunctions';
 
 const UnlockedCandidates = () => {
  

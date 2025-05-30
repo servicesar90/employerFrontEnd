@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/ui/header';
 import Sidebar from '../components/ui/sidebar';
-import { Outlet, useOutletContext } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile } from '../Redux/getData';
 
 
 const EmployerHome = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileVisible, setMobileVisible] = useState(false);
- const {data, jobs, isDataChange}= useOutletContext()
+  // const dispatch = useDispatch();
 
+  // useEffect(()=>{
+  //   dispatch(fetchUserProfile());
+  // },[dispatch])
+
+  // console.log("hello")
+
+
+  // const {employer, loading } = useSelector((state)=> state.getDataReducer);
+
+// if (loading) return (
+//     <div className="flex justify-center items-center w-full min-h-[80vh] bg-black/20">
+//       <img
+//         src="/unigrowLogo.png"
+//         alt="logo"
+//         className="w-40 h-16 animate-heartbeat"
+//       />
+//     </div>
+//   );
 
   const handleMenuClick = () => {
     if (window.innerWidth < 768) {
@@ -28,27 +48,20 @@ const EmployerHome = () => {
   return (
     <div className='flex flex-col w-full'>
       <div className='flex flex-col w-full'>
-        <Header onMenuClick={handleMenuClick} data={data} isDataChange={isDataChange} />
+        <Header onMenuClick={handleMenuClick} />
       </div>
 
 
       <div className="flex flex-row w-full" >
-        <div className='flex md:w-[15vw]'>
+        
         <Sidebar
           collapsed={isCollapsed}
           mobileVisible={mobileVisible}
           onCloseMobile={handleMenuClick}
-          data={data} />
-        </div> 
+          />
 
-        <div className="flex-1 w-full lg:w-[85vw]  ">
-
-          {(data && jobs) ? (
-            <Outlet context={{data: data, isDataChange: isDataChange, jobs:jobs}} />
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
+          <Outlet />
+     
       </div>
     </div>
   );

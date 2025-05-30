@@ -93,6 +93,26 @@ export const postJob = async (data) => {
     }
 }
 
+export const editPostJob = async(id, data)=>{
+   
+    try {
+        const token = localStorage.getItem('TokenId')
+
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+        const response = await axios.patch(`${jobPostApi}/${id}`, data, { headers });
+
+        return response;
+
+
+    } catch (err) {
+        console.log("error response", err);
+        alert("could not post")
+
+    }
+}
+
 
 export const getJob = async () => {
     try {
@@ -193,4 +213,6 @@ export const logoUpload = async (data)=>{
         console.log("error from update Application", e)
     }
 }
+
+
 

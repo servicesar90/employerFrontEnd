@@ -1,13 +1,21 @@
 import { Menu, HelpCircle, Database } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MenuProfileModal from "../modals/otherModals/menuProfileModal";
+import { fetchUserProfile } from "../../Redux/getData";
+import { useDispatch, useSelector } from "react-redux";
 
 
-const Header = ({ onMenuClick, data, isDataChange }) => {
+const Header = ({ onMenuClick }) => {
 
   const [showProfileModal, setShowprofileModal] = useState(false);
+  const dispatch = useDispatch();
 
+  useEffect(()=>{
+    dispatch(fetchUserProfile());
+  },[dispatch])
 
+  
+  const {employer } = useSelector((state)=> state.getDataReducer);
 
 
   const avatarRef = useRef();
@@ -33,15 +41,15 @@ const Header = ({ onMenuClick, data, isDataChange }) => {
         {/* Avatar circle */}
         <div ref={avatarRef} onClick={() => setShowprofileModal(!showProfileModal)}>
 
-          {data?.profile ? <img src={data?.profile} className="w-8 h-8 rounded-full flex items-center justify-center font-bold cursor-pointer" /> : <div className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center font-bold text-sm cursor-pointer">
-            {data?.name ? data.name.charAt(0).toUpperCase() : ''}
+          {employer?.profile ? <img src={employer?.profile} className="w-8 h-8 rounded-full flex items-center justify-center font-bold cursor-pointer" /> : <div className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center font-bold text-sm cursor-pointer">
+            {employer?.name ? employer.name.charAt(0).toUpperCase() : ''}
 
           </div>}
         </div>
       </div>
 
       {showProfileModal &&
-        <MenuProfileModal open={showProfileModal} isDataChange={isDataChange} anchor={avatarRef.current} handleClose={() => setShowprofileModal(false)} data={data} />
+        <MenuProfileModal open={showProfileModal} anchor={avatarRef.current} handleClose={() => setShowprofileModal(false)} data={employer} />
       }
 
       

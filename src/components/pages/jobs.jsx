@@ -18,7 +18,7 @@ export default function Jobs() {
 
 
 if (loading) return (
-    <div className="flex justify-center items-center w-full min-h-[80vh] bg-black/20">
+    <div className="flex justify-center items-center w-full min-h-[100vh] bg-black/20">
       <img
         src="/unigrowLogo.png"
         alt="logo"
@@ -31,21 +31,22 @@ if (loading) return (
     if (jobs?.length > 0) {
         return (
             <>
-                <div className="min-h-screen w-full bg-gray-100 p-6 rounded-xl">
+                <div className="min-h-[80vh] w-full bg-gray-100 px-6 pt-6 rounded-xl">
 
                     <div className="max-w-6xl mx-auto">
                         <div className="flex items-center justify-between py-1">
-                            <h1 className="text-2xl font-semibold text-gray-800">All Jobs({jobs.length})</h1>
+                            <h1 className="text-lg md:text-xl font-semibold text-gray-800">All Jobs({jobs.length})</h1>
                             <Button variant="contained" onClick={() => navigate(`/jobsModal/${null}`)} color="success" sx={{
                                 fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.9rem' },
-                                padding: { xs: '4px 10px', sm: '6px 14px', md: '8px 20px' },
+                                padding: { xs: '4px 10px', sm: '6px 14px', md: '6px 15px' },
+                                backgroundColor: "#0784C9",
                             }}>
                                 Post a new job
                             </Button>
                         </div>
 
                         <Card className="mt-5">
-                            <CardContent className="p-0 md:p-10 text-center ">
+                            <CardContent className="p-0 md:p-10 text-center max-h-[80vh] overflow-scroll" style={{scrollbarWidth: "none"}}>
                                
                                    
                                     {jobs?.map((job, index) => (

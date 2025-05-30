@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { Route, Routes, Outlet } from 'react-router-dom';
 import EmployerHome from '../views/employerHome';
 import ProfileUpdate from '../components/modals/otherModals/profileUpdateModal';
@@ -13,51 +12,17 @@ import { ProtectedRoute, RedirectedRoute, RedirectedRouteForHome, RedirectedRout
 import CompanyProfile from '../components/pages/companyDetail';
 import UnigrowOnboardingForm from '../components/modals/otherModals/createProfileModal';
 import SimplePaper from '../components/ui/cards/NewCard';
-import { getJob, getProfile } from '../API/ApiFunctions';
 import SelectPlan from '../components/pages/SelectPlan';
 import Checkout from '../components/pages/Checkout'
 import LandingPage from '../views/landingPage';
 
 function Layout() {
-  const [data, setData] = useState(null);
-  const [jobs, setJobs] = useState(null);
-  const [isdataChange, setDataChange] = useState(false);
 
-  useEffect(()=>{
-    const getData = async () => {
-        const response = await getProfile();
-        if (response) {
-        
-          setData(response.data);
-        } else {
-          console.log("not getting data")
-        }
-  
-      }
-  
-      getData()
-},[isdataChange]);
-
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getJob();
-      if (response) {
-
-        setJobs(response.data);
-      } else {
-        console.log("not getting data")
-      }
-
-    }
-
-    getData()
-  }, [])
 
   return (
     <div className='max-w-[100vw]'>
 
-      <Outlet context={{ data: data?.data, jobs: jobs?.data, isDataChange: ()=>setDataChange(!isdataChange) }} />
+      <Outlet />
 
     </div>
   )
