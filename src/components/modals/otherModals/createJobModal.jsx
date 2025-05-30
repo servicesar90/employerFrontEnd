@@ -330,7 +330,7 @@ const PostJob = () => {
 
       let response = null;
 
-      if (id) {
+      if (id !=="null") {
         response = await editPostJob(id, data)
       } else {
         response = await postJob(data);
