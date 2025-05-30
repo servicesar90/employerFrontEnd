@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, TextField, Typography, Box, Grid } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile } from '../../../Redux/getData';
 
 const ProfileUpdate = () => {
 
     const [isDisabled, setIsDisabled] = useState(true);
+    const dispatch = useDispatch();
 
-    const employer= useOutletContext();
+    useEffect(()=>{
+        dispatch(fetchUserProfile())
+    },[dispatch])
+
+    const {employer} = useSelector((state)=> state.getDataReducer);
 
     
     const {
@@ -16,8 +23,8 @@ const ProfileUpdate = () => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            name: employer.name,
-            email: employer.email,
+            name: employer?.name,
+            email: employer?.email,
             mobile: '9540441958',
         },
     });
@@ -46,7 +53,7 @@ const ProfileUpdate = () => {
                                         // Save clicked: manually trigger submission
                                         handleSubmit(onSubmit)();
                                     }
-                                }} variant="contained" color="success">
+                                }} variant="contained" sx={{backgroundColor: "secondary"}}>
                                 {isDisabled ? <p>Edit</p> : <p>Save</p>}
                             </Button>
                         </Box>

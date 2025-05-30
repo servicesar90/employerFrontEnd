@@ -1,20 +1,29 @@
 import { PlusCircle } from "lucide-react";
 import { Linkedin, Facebook, Instagram } from "lucide-react";
 import DynamicModal from "../modals/otherModals/dynamicModal";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import UserForm from "../modals/otherModals/uploadFileModal";
 import { logoUpload } from "../../API/ApiFunctions";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserProfile } from "../../Redux/getData";
 
 const CompanyProfile = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [modalField, setModalField] = useState(null);
   const [openFileModal, setOpenFileModal] = useState(false);
+  const dispatch = useDispatch();
 
-  const { data, isDataChange } = useOutletContext();
+  useEffect(()=>{
+    dispatch(fetchUserProfile())
+  })
 
-  const company = data?.company;
+  const {employer} = useSelector((state)=> state.getDataReducer)
+
+
+
+  const company = employer?.company;
 
 
   const fields = [
@@ -54,6 +63,8 @@ const CompanyProfile = () => {
         </div>
 
         {/* Info List */}
+        <div className="h-[50vh] overflow-scroll" style={{scrollbarWidth: "none"}}>
+
         {fields.map((item, index) => (
           <div
             key={index}
@@ -65,25 +76,22 @@ const CompanyProfile = () => {
                 {item.value}
               </p>
             </div>
-            <button onClick={() => showModal(item)} className="flex items-center text-green-700 hover:underline text-sm">
+            <button onClick={() => showModal(item)} className="flex items-center text-secondary hover:underline text-sm">
               <PlusCircle className="w-4 h-4 mr-1" />
               Suggest
             </button>
           </div>
         ))}
-      </div>
-
-      {/* Social Profiles */}
-      <div className="bg-white rounded shadow p-6">
+        <div className="bg-white rounded shadow p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-800">Social profiles</h2>
-          <button className="flex items-center text-green-700 hover:underline text-sm">
+          <button className="flex items-center text-secondary hover:underline text-sm">
             <PlusCircle className="w-4 h-4 mr-1" />
             Suggest
           </button>
         </div>
 
-        <div className="flex gap-6 text-gray-700">
+        <div className="flex gap-6 text-gray-700 flex-col md:flex-row">
           <div className="flex items-center gap-2 text-sm">
             <Linkedin className="w-5 h-5 text-gray-800" />
             <span>LinkedIn</span>
@@ -98,6 +106,12 @@ const CompanyProfile = () => {
           </div>
         </div>
       </div>
+        </div>
+
+      </div>
+
+      {/* Social Profiles */}
+      
 
       {openModal && modalField && (
         <DynamicModal
@@ -112,7 +126,6 @@ const CompanyProfile = () => {
       {openFileModal && (
         <UserForm
           open= {openFileModal} 
-          isDataChange={isDataChange} 
           label="Logo Upload" 
           onClose={()=> setOpenFileModal(false)} 
           metaData={{onSubmitFunc: logoUpload}}

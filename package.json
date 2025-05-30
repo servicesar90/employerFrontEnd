@@ -1,5 +1,6 @@
 {
   "name": "job-platform",
+  "homepage": "https://employer.talentnestjob.store",
   "private": true,
   "version": "0.0.0",
   "type": "module",
