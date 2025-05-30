@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, Filter, Users } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronUp, Filter, Users } from "lucide-react";
 
 import { useNavigate, useParams } from "react-router-dom";
 import SimplePaper from "../ui/cards/NewCard";
@@ -20,6 +20,7 @@ const CandidateManagementPage = () => {
   const [allCandidates, setAllCandidates] = useState({});
   const dispatch = useDispatch();
   const [showFilters, setShowFilters] = useState(false);
+  const [showbutton, setShowButtons]= useState(false);
 
   const { jobsById, loading } = useSelector((state) => state.getDataReducer);
 
@@ -66,7 +67,7 @@ const CandidateManagementPage = () => {
 
   return (
     <div className="bg-gray-100 min-h-[80vh] w-full  ">
-      <div className="flex items-center justify-between pl-2 pr-6 pt-3 bg-white border-b border-t   ">
+      <div className="flex items-center justify-between pl-2 pr-6 py-3 bg-white border-b border-t   ">
         {/* Left Side */}
         <div className="flex items-center space-x-1">
           <ChevronLeft
@@ -124,6 +125,7 @@ const CandidateManagementPage = () => {
             <h2 className="text-16 font-semibold text-gray-800">
               Applied to job ({data?.JobApplications?.length})
             </h2>
+            {showbutton? <ChevronUp onClick={()=>setShowButtons(!showbutton)} />:<ChevronDown onClick={()=>setShowButtons(!showbutton)}/>}
           </div>
           {/* <div className="flex gap-2 items-center">
             <Button variant="outlined" size="small" startIcon={<Download size={16} />}>
@@ -136,7 +138,7 @@ const CandidateManagementPage = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-3">
+        {showbutton &&<div className="flex flex-wrap gap-3 transition-all duration-300 ease-in-out transform ">
           {[
             `All candidates (${allCandidates[0]?.length})`,
             `Action Pending (${allCandidates[1]?.length})`,
@@ -156,7 +158,7 @@ const CandidateManagementPage = () => {
               {tab}
             </button>
           ))}
-        </div>
+        </div>}
       </div>
 
       {/* bottom section */}

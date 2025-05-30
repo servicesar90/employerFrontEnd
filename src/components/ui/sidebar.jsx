@@ -126,6 +126,23 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
             );
           })}
         </nav>
+        {/* logout button */}
+<div className="border-t-[2px] w-full h-[10vh] mt-auto flex justify-center items-center ">
+          <div
+            onClick={logout}
+            className={`flex items-center ${
+              showFull ? "gap-3" : "justify-center"
+            } cursor-pointer`}
+          >
+            <Power
+              size={28}
+              className="text-white bg-red-500 rounded-full p-1"
+            />
+            {showFull && (
+              <p className="text-16 font-semibold text-grey-800">Sign Out</p>
+            )}
+          </div>
+        </div>
       </div>
     );
   };
@@ -144,33 +161,21 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
         >
            <div className='h-full flex mt-[8vh] flex-col justify-end'>
               <SidebarContent isCollapsed={collapsed && !hovered} />
-              <div className=' border-t-[1.5px] w-full h-[10vh] mb-2 flex justify-center'>
-                <div onClick={logout}  className='w-1/2 flex flex-row justify-center items-center gap-3 cursor-pointer'>
-                  <Power size={30} className='text-white bg-red-500 rounded-full p-1 ' />
-                  <p className='text-16 font-semibold text-grey-800'>Sign Out</p>
-                </div>
-
-              </div>
+             
             </div>
         </div>
       </div>
 
       {/* Mobile Sidebar */}
       {mobileVisible && (
-        <div className="fixed inset-0 z-50 flex md:hidden">
-          <div className="w-60 bg-white shadow-lg h-full py-4 overflow-hidden">
+        <div className="absolute inset-0 z-50 flex md:hidden">
+          <div className="w-60 bg-white shadow-lg h-[95vh] py-4 overflow-hidden">
             <div className="flex justify-end pr-4">
               <X className="cursor-pointer text-gray-600" onClick={onCloseMobile} />
             </div>
             <div className='h-full flex flex-col justify-end'>
               <SidebarContent isCollapsed={false} />
-              <div className=' border-t-[1.5px] w-full h-[10vh] mb-2 flex justify-center'>
-                <div onClick={logout}  className='w-1/2 flex flex-row justify-center items-center gap-3 cursor-pointer'>
-                  <Power size={30} className='text-white bg-red-500 rounded-full p-1 ' />
-                  <p className='text-16 font-semibold text-grey-800'>Sign Out</p>
-                </div>
-
-              </div>
+             
             </div>
 
           </div>

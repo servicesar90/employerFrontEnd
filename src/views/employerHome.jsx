@@ -52,7 +52,7 @@ const EmployerHome = () => {
       </div>
 
 
-      <div className="flex flex-row w-full" >
+      <div className="flex flex-row w-full fixed top-[50px] md:top-[56px]" >
         
         <Sidebar
           collapsed={isCollapsed}
