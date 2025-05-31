@@ -52,7 +52,7 @@ const JobCard = ({ job }) => {
     const response = await updateJobById({ status: "A" }, id);
     if (response) {
       dispatch(fetchJobs())
-      showSuccessToast("Successfully Expired")
+      showSuccessToast("Activated Successfully")
     } else {
       showErrorToast("could not Expired")
     }

@@ -18,6 +18,8 @@ import {
   Radio,
   Card,
   CardContent,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -39,7 +41,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchJobsById, fetchUserProfile } from "../../../Redux/getData";
 // import JoditEditor from "jodit-react";
 
-const steps = ["Job details", "", "", "", ""];
+const steps = ["Job details", "BasicRequireMents", "InterviewDetails", "Preview", "Payment Mode"];
 
 const PERKS = [
   "Flexible Working Hours",
@@ -69,6 +71,7 @@ const educationOptions = [
   "ITI",
   "Graduate",
   "Post Graduate",
+  "CA/CS/ICWA"
 ];
 
 const ADDITIONAL_FIELDS = {
@@ -77,7 +80,6 @@ const ADDITIONAL_FIELDS = {
   languages: ["Hindi", "English", "Tamil"],
   skills: ["Communication", "Sales", "Excel"],
   age: ["18-25", "26-35", "36+"],
-  educationSpecialization: ["Marketing", "Finance", "HR"],
 };
 
 const englishLevels = ["No English", "Basic English", "Good English"];
@@ -567,7 +569,7 @@ const PostJob = () => {
                 rules={{ required: "Location type is required" }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
-                    {["work-from-office", "work-from-home", "field-job"].map(
+                    {["onSite", "remote", "hybrid", "field-work"].map(
                       (type) => {
                         return (
                           <div
@@ -633,7 +635,7 @@ const PostJob = () => {
                           placeholder="Enter Flat No./House No."
                           size="small"
                           fullWidth
-                      
+
                         />
                       )}
                     />
@@ -780,7 +782,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                What is the pay type? *
+                What is the monthly pay type? *
               </Typography>
 
               <Controller
@@ -789,7 +791,7 @@ const PostJob = () => {
                 rules={{ required: "Pay type is required" }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
-                    {["Fixed-only", "Fixed+Incentive", "incentive"].map(
+                    {["Fixed-only", "Fixed+Incentive", "Fixed+variable", "incentive"].map(
                       (type) => {
                         return (
                           <div
@@ -821,7 +823,7 @@ const PostJob = () => {
 
             <div className="w-full flex flex-wrap gap-2 items-start">
               {/* Fixed or Fixed+Incentive: Minimum Salary */}
-              {(selectedPayType === "Fixed-only" || selectedPayType === "Fixed+Incentive") && (
+              {(selectedPayType === "Fixed-only" || selectedPayType === "Fixed+Incentive" || selectedPayType === "Fixed+variable") && (
                 <Box className="mt-6 w-[25%]">
                   <Typography
                     variant="h6"
@@ -865,7 +867,7 @@ const PostJob = () => {
 
 
               {/* Fixed or Fixed+Incentive: Maximum Salary */}
-              {(selectedPayType === "Fixed-only" || selectedPayType === "Fixed+Incentive") && (
+              {(selectedPayType === "Fixed-only" || selectedPayType === "Fixed+Incentive" || selectedPayType === "Fixed+variable") && (
                 <Box className="mt-6 w-[25%]">
                   <Typography
                     variant="h6"
@@ -1114,7 +1116,7 @@ const PostJob = () => {
                           "security-deposit",
                           "registration-fees",
                           "commission",
-                          "IRDA-exam",
+                          "Training/Certification",
                           "other-reason",
                         ].map((type) => {
                           return (
@@ -1302,6 +1304,36 @@ const PostJob = () => {
               )}
             </FormControl>
 
+
+            {(educationLevel === "Diploma" || educationLevel === "ITI" || educationLevel === "Graduate" || educationLevel === "Post Graduate" || educationLevel === "CA/CS/ICWA") &&
+              <Box className="flex items-center flex-col w-full gap-2 mt-4">
+                <Typography
+                  variant="h6"
+                  className="self-start"
+                  sx={{ fontWeight: 700, fontSize: "0.9rem" }}
+                >
+                  Specialization
+                </Typography>
+                <Box className="flex items-start flex-row w-full gap-2 mt-2">
+                  <Controller
+                    name="educationSpecialization"
+                    control={control}
+
+                    render={({ field }) => (
+
+                      <TextField
+                        {...field}
+                        fullWidth
+                        size="small"
+
+                      />
+
+                    )}
+                  />
+                </Box>
+              </Box>}
+
+
             {/* English Level */}
             <FormControl fullWidth className="flex flex-col items-start">
               <FormLabel
@@ -1387,7 +1419,7 @@ const PostJob = () => {
             </FormControl>
 
             {experienceLevel === "Experienced Only" && (
-              <FormControl fullWidth className="flex flex-col items-start">
+              <FormControl className="flex flex-col items-start w-1/4">
                 <FormLabel
                   className="mb-2 self-start"
                   sx={{ fontWeight: 700, fontSize: "0.9rem" }}
@@ -1399,27 +1431,61 @@ const PostJob = () => {
                   name="experienceLevel"
                   control={control}
                   rules={{ required: "Experience Level is required" }}
-                  render={({ field }) => (
-                    <div className="flex flex-wrap gap-4 mt-2">
-                      {experienceLevelOptions.map((type) => {
-                        return (
-                          <div
-                            key={type}
-                            onClick={() => {
-                              field.onChange(type);
-                            }}
-                            className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
-                              ? "bg-secondary text-white border-secondary"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                              }`}
+                  render={({ field }) => {
+                    const [min, max] = field.value?.split("-").map(Number) || [null, null];
+
+                    const handleChange = (type, value) => {
+                      const newMin = type === "min" ? value : min;
+                      const newMax = type === "max" ? value : max;
+
+                      if (newMin !== null && newMax !== null && newMin > newMax) {
+                        // You can also show a warning if needed
+                        return;
+                      }
+
+                      field.onChange(`${newMin ?? ""}-${newMax ?? ""}`);
+                    };
+
+                    return (
+                      <div className="flex gap-4 w-full mt-2">
+                        <FormControl fullWidth>
+                          <FormLabel>Minimum</FormLabel>
+                          <Select
+                            value={min ?? ""}
+                            onChange={(e) => handleChange("min", e.target.value)}
+                            displayEmpty
+                            size="small"
                           >
-                            {type.replace("-", " ")}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                            <MenuItem value="">Min</MenuItem>
+                            {[0,1,2,3,4,5,6,7,8,9,10].map((val) => (
+                              <MenuItem key={val} value={val}>
+                                {val} yrs
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth>
+                          <FormLabel>Maximum</FormLabel>
+                          <Select
+                            value={max ?? ""}
+                            onChange={(e) => handleChange("max", e.target.value)}
+                            displayEmpty
+                            size="small"
+                          >
+                            <MenuItem value="">Max</MenuItem>
+                            {[1,2,3,4,5,6,7,8,9,10, ">10"].map((val) => (
+                              <MenuItem key={val} value={val}>
+                                {val} yrs
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    );
+                  }}
                 />
+
 
                 {errors.experienceLevel && (
                   <Typography color="error" variant="caption">
@@ -1454,21 +1520,8 @@ const PostJob = () => {
                 control={control}
                 defaultValue={[]}
                 render={({ field }) => {
-                  const options =
-                    educationLevel === "Diploma" ||
-                      educationLevel === "Graduate" ||
-                      educationLevel === "Post Graduate"
-                      ? [
-                        "educationSpecialization",
-                        "gender",
-                        "age",
-                        "distance",
-                        "languages",
-                        "skills",
-                      ]
-                      : ["gender", "age", "distance", "languages", "skills"];
+                  const options = ["gender", "age", "distance", "languages", "skills"];
                   const labels = {
-                    educationSpecialization: "educationSpecialization",
                     gender: "Gender",
                     age: "Age",
                     distance: "Distance",
