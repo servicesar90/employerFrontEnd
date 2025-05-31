@@ -13,6 +13,7 @@ const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
         localStorage.removeItem("TokenId");
         localStorage.removeItem("User")
         navigate("/");
+        window.location.reload();
     }
 
     const user = JSON.parse(localStorage.getItem("User"))

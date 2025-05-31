@@ -7,6 +7,7 @@ import UnigrowOnboardingForm from "../modals/otherModals/createProfileModal";
 import { Drawer, IconButton, List, ListItem, ListItemText } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../Redux/getData";
+import MenuProfileModal from "../modals/otherModals/menuProfileModal";
 
 export default function Navbar() {
   const [isCareerOpen, setIsCareerOpen] = useState(false);
@@ -59,6 +60,7 @@ export default function Navbar() {
     setProfile(null)
     setMobile("");
     navigate("/")
+    window.location.reload();
   };
 
 
@@ -244,11 +246,7 @@ export default function Navbar() {
 
       }} />}
 
-      {showProfileModal && (
-        <ProfileModal showProfileModal={showProfileModal} onClose={()=> setShowProfileModal(!showProfileModal)} profile={profile} anchor={anchor} handleLogout={handleLogout}/>
-      )}
-
-    
+   
     </>
   );
 }

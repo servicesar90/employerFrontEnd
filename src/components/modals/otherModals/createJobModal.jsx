@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ReactQuill, { Quill } from "react-quill-new";
+import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import {
   Box,
@@ -283,44 +283,18 @@ const PostJob = () => {
     }
   };
 
-  const handleAddress = (value) => {
-    const locate = getValues("location");
-    if (locate.includes(",")) {
-      const locationArray = locate.split(",");
-      setValue("location", `${value},${locationArray[1]},${locationArray[2]}`)
-    } else {
-      if (locate) {
-        setValue("location", `${value}, ${locate}`)
-      } else {
-        setValue("location", value)
-      }
-    }
 
-  }
 
   const handleLocation = async (value) => {
-    console.log(value)
     if (value.length == 6) {
       try {
         const response = await axios.get(`https://api.postalpincode.in/pincode/${value}`)
         if (response) {
           setIsGetAddress(true);
           const addresss = response.data[0].PostOffice?.[0];
-          console.log(addresss.Pincode)
           setValue("state", addresss.Circle);
           setValue("city", addresss.District);
           setValue("pinCode", addresss.Pincode);
-          const locate = getValues("location");
-          if (locate.includes(",")) {
-            const locationArray = locate.split(",");
-            setValue("location", `${locationArray[0]}, ${addresss.District} ${addresss.Circle}, ${addresss.Pincode}`)
-          } else {
-            if (locate) {
-              setValue("location", `${locate}, ${addresss.District} ${addresss.Circle}, ${addresss.Pincode}`)
-            } else {
-              setValue("location", `-, ${addresss.District} ${addresss.Circle}, ${addresss.Pincode}`)
-            }
-          }
         }
       }
       catch (e) {
@@ -649,13 +623,21 @@ const PostJob = () => {
                     Address Line 1
                   </Typography>
 
-                  <TextField
-                    placeholder="Flat No./Street No."
-                    size="small"
-                    fullWidth
-                    required={true}
-                    onChange={(e) => handleAddress(e.target.value)}
-                  />
+                  <Box className="flex items-start flex-row w-full gap-2">
+                    <Controller
+                      name="location"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          placeholder="Enter Flat No./House No."
+                          size="small"
+                          fullWidth
+                      
+                        />
+                      )}
+                    />
+                  </Box>
                 </Box>
 
                 <Box className="flex items-start min-w-[30vw] gap-2 flex-col">
@@ -1850,7 +1832,7 @@ const PostJob = () => {
             {/* Communication Preferences */}
             <Box className="bg-blue-50 p-3 mt-4 rounded border border-blue-200">
               <Typography variant="body2">
-                📥 Leads information will be accessible on Apna portal and can
+                📥 Leads information will be accessible on Unigrow portal and can
                 be <strong>downloaded in excel format</strong>
               </Typography>
             </Box>
@@ -2065,7 +2047,7 @@ const PostJob = () => {
                   <FormControl component="fieldset" fullWidth>
                     <FormLabel className="mt-4 mb-2 self-start">
                       Every time you receive a candidate application,do you
-                      wantWhatsapp Alerts from Apna? *
+                      wantWhatsapp Alerts from Unigrow? *
                     </FormLabel>
                     <Controller
                       name="notificationPreference"
@@ -2174,7 +2156,7 @@ const PostJob = () => {
                     label="Work type"
                     value={values.workLocationType}
                   />
-                  <DetailRow label="Job location" value={values.location} />
+                  <DetailRow label="Job location" value={`${values.location}, ${values.city}, ${values.state}`} />
 
                   <DetailRow
                     label="Monthly Salary | Pay Type"
