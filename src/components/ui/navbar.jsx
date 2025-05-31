@@ -108,39 +108,24 @@ export default function Navbar() {
 
             <div
               className="relative"
-              // onMouseEnter={() => setIsCareerOpen(true)}
-              // onMouseLeave={() => setIsCareerOpen(false)}
-              onClick={()=>navigate("/jobs")}
+          
+              onClick={()=>navigate("/employerHome/jobs")}
             >
               <button className="flex items-center gap-1 font-semibold text-16 text-gray-800">
-                Find A Job 
-                {/* <ChevronDown size={16} /> */}
+                DashBoard 
               </button>
-              {isCareerOpen && (
-                <div className="absolute top-10 left-0 bg-white shadow-lg p-4 flex gap-6 rounded-md z-50 w-[600px]">
-                  <div className="space-y-4 text-sm text-[#666666] font-medium w-1/2">
-                    {services.map(({ title, subtitle, link }, i) => (
-                      <Link
-                        to={link}
-                        key={i}
-                        className="text-left w-full px-2 py-1 hover:bg-gray-100 rounded block"
-                      >
-                        <strong>{title}</strong><br />
-                        <span className="text-gray-500">{subtitle}</span>
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="w-1/2 space-y-2">
-                    <img src="/assets/career-video-thumbnail.jpg" alt="Career Compass Video" className="rounded-md" />
-                    <p className="text-sm font-medium text-[#666666]">
-                      Level up your resume: Watch our career compass video guide.
-                    </p>
-                    <Link to="/career-compass-video" className="text-[#3C78D8] font-semibold text-sm">
-                      Watch video →
-                    </Link>
-                  </div>
-                </div>
-              )}
+          
+            </div>
+
+             <div
+              className="relative"
+          
+              onClick={()=>navigate("/jobsModal/null")}
+            >
+              <button className="flex items-center gap-1 font-semibold text-16 text-gray-800">
+                Post Job 
+              </button>
+          
             </div>
         </div> 
 
@@ -224,8 +209,8 @@ export default function Navbar() {
         <ListItem button component={Link} to="/" onClick={() => setIsMenuOpen(false)}>
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button component={Link} to="/employerHome/profile" onClick={() => setIsMenuOpen(false)}>
-          <ListItemText primary="Profile" />
+        <ListItem button component={Link} to="/jobsModal/null" onClick={() => setIsMenuOpen(false)}>
+          <ListItemText primary="Post Jobs" />
         </ListItem>
         <ListItem button component={Link} to="/employerHome/jobs" onClick={() => setIsMenuOpen(false)}>
           <ListItemText primary="My Jobs" />

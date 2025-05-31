@@ -4,6 +4,7 @@ import { showErrorToast } from "../../ui/toast";
 
 export default function CandidateLoginModal({ onClose, mobile, setMobile, onSubmit }) {
   const [countryCode, setCountryCode] = useState("+91");
+  const [isComplete, setIsComplete]= useState(false)
 
   const handleChangeMobile = async (e) => {
     const value = e.target.value.replace(/\D/g, "");
@@ -11,7 +12,9 @@ export default function CandidateLoginModal({ onClose, mobile, setMobile, onSubm
     if (value.length <= 10) {
       setMobile(value);
 
+
       if (value.length === 10) {
+        setIsComplete(true)
         const response = await handlelogin({ phone: (value).toString(), role: "employer" });
        
         if (response) {
@@ -48,7 +51,7 @@ export default function CandidateLoginModal({ onClose, mobile, setMobile, onSubm
             value={countryCode}
             onChange={(e) => setCountryCode(e.target.value)}
             placeholder="+91"
-            className="w-20 border rounded px-3 py-2 text-14 focus:outline-none focus:ring-2 focus:ring-[#0784C9] border-gray-300"
+            className="w-[15%] border rounded px-3 py-2 text-14 focus:outline-none focus:ring-2 focus:ring-[#0784C9] border-gray-300"
           />
           <input
             type="tel"
@@ -64,8 +67,9 @@ export default function CandidateLoginModal({ onClose, mobile, setMobile, onSubm
         )}
 
         <button
-          disabled
-          className="w-full font-medium py-2 rounded bg-gray-300 text-gray-650 cursor-not-allowed"
+          disabled={isComplete}
+          onClick={()=>showErrorToast("Enter Valid Number")}
+          className={isComplete?"w-full font-medium py-2 rounded bg-gray-300 text-gray-650 cursor-pointer":"w-full font-medium py-2 rounded bg-secondary text-white cursor-pointer"}
         >
           Continue
         </button>

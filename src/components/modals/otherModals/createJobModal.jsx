@@ -134,6 +134,7 @@ const PostJob = () => {
   }, [id, dispatch])
 
 
+
   const { employer, jobsById } = useSelector((state) => state.getDataReducer);
 
   const navigate = useNavigate();
@@ -204,6 +205,9 @@ const PostJob = () => {
       notificationPreference: null,
     },
   });
+
+
+  console.log(errors)
 
 
 
@@ -541,17 +545,23 @@ const PostJob = () => {
               <Controller
                 name="nightShift"
                 control={control}
-                rules={{ required: "Job type is required" }}
                 render={({ field }) => (
                   <FormControlLabel
-                    control={<Checkbox {...field} checked={field.value} />}
+                    control={
+                      <Checkbox
+                        checked={!!field.value}
+                        onChange={(e) => {
+                          field.onChange(e.target.checked);
+                          console.log("Night shift:", e.target.checked);
+                        }}
+                      />
+                    }
                     label="This is a night shift job"
-                    // error={!errors.nightShift}
-                    helperText={errors.nightShift?.message}
                   />
                 )}
               />
             </Box>
+
           </Box>
 
           <Box className="bg-white p-6 mt-2 flex justify-start flex-col items-start rounded shadow">
@@ -870,7 +880,7 @@ const PostJob = () => {
                 </Box>
               )}
 
-             
+
 
               {/* Fixed or Fixed+Incentive: Maximum Salary */}
               {(selectedPayType === "Fixed-only" || selectedPayType === "Fixed+Incentive") && (
@@ -1571,7 +1581,7 @@ const PostJob = () => {
 
             {/* Job Description */}
 
-            <Box className="mt-6 mb-1 w-full" sx={{marginBottom: "30px"}}>
+            <Box className="mt-6 mb-1 w-full" sx={{ marginBottom: "30px" }}>
               <Controller
                 name="jobDescription"
                 control={control}
@@ -1587,7 +1597,7 @@ const PostJob = () => {
                     className="quill-editor"
                     placeholder="Write job description..."
                   />
-                
+
                 )}
               />
             </Box>
@@ -1596,7 +1606,7 @@ const PostJob = () => {
           <Box className="bg-white p-6 rounded mt-4 gap-4 justify-center shadow  flex flex-row ">
             <Button
               variant="outlined"
-              sx={{color: "#0784C9"}}
+              sx={{ color: "#0784C9" }}
               onClick={() => {
                 setCurrentStep((prev) => prev - 1); // only runs if form is valid
               }}
@@ -2102,7 +2112,7 @@ const PostJob = () => {
           <Box className="bg-white p-6 rounded mt-4 gap-4 shadow flex flex-row justify-center">
             <Button
               variant="outlined"
-             sx={{ backgroundColor: "secondary" }}
+              sx={{ backgroundColor: "secondary" }}
               onClick={() => {
                 setCurrentStep((prev) => prev - 1); // only runs if form is valid
               }}
@@ -2304,7 +2314,7 @@ const PostJob = () => {
             <Button
               onClick={() => setCurrentStep((prev) => prev - 1)}
               variant="outlined"
-              sx={{color: "#0784C9"}}
+              sx={{ color: "#0784C9" }}
             >
               Back
             </Button>

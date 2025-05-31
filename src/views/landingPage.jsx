@@ -13,7 +13,7 @@ const LandingPage = () => {
       <section className="bg-blue-100 py-12 px-4 text-center md:text-left">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            The <span className="text-blue-600">Easiest Way</span> to Get Your New Job
+            The <span className="text-blue-600">Easiest Way</span> to Post Your New Job
           </h1>
           <p className="text-gray-600 text-lg">
             Each month, more than 3 million job seekers turn to our website in their search
@@ -31,9 +31,9 @@ const LandingPage = () => {
       {/* We're Hiring CTA */}
       <section className="bg-white py-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4">
-          <div className="text-2xl font-semibold">We are <span className="text-blue-600">HIRING</span></div>
+          <div className="text-2xl font-semibold">Let's Start <span className="text-blue-600">HIRING</span></div>
           <p className="text-sm text-gray-600">Let’s Work Together & Explore Opportunities</p>
-          <button onClick={()=> navigate("/jobs")} className="bg-blue-600 text-white px-6 py-2 rounded">Apply Now</button>
+          <button onClick={()=> navigate("/jobsModal/:id")} className="bg-blue-600 text-white px-6 py-2 rounded">Post Jobs</button>
         </div>
       </section>
 
