@@ -63,6 +63,7 @@ function UnigrowOnboardingForm() {
     const response = await createProfile(data);
 
     if (response) {
+      console.log(response)
       const user = JSON.parse(localStorage.getItem("User"));
       const newUser = { ...user, profile: true };
       localStorage.setItem("User", JSON.stringify(newUser));
