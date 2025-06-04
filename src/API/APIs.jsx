@@ -17,3 +17,13 @@ export const applicationApi = `${base_url}/api/v1/apply`
 export const profilePicUploadApi = `${base_url}/api/v1/employer-uploads/profile`
 
 export const logoUploadApi = `${base_url}/api/v1/employer-uploads/logo`
+
+export const getCitiesApi = `${base_url}/api/v1/cities`
+
+export const getEducationSuggestionsApi = `${base_url}/api/v1/suggest/edu`
+
+export const getSkillsSuggestionsApi = `${base_url}/api/v1/suggest/skills`
+
+export const getCategorySuggestionsApi = `${base_url}/api/v1/suggest/roles/categories`
+
+export const getJobRolesSuggestionsApi = `${base_url}/api/v1/suggest/roles`

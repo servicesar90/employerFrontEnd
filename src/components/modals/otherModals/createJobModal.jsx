@@ -20,6 +20,8 @@ import {
   CardContent,
   Select,
   MenuItem,
+  Autocomplete,
+  Chip,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -33,15 +35,13 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import { editPostJob, postJob } from "../../../API/ApiFunctions";
+import { editPostJob, getCategorySuggestions, getCitiesbyPincode, getEducationSuggestions, getJobRolesSuggestions, getSkillSuggestions, postJob } from "../../../API/ApiFunctions";
 import { useNavigate, useParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../ui/toast";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchJobsById, fetchUserProfile } from "../../../Redux/getData";
-// import JoditEditor from "jodit-react";
 
-const steps = ["Job details", "BasicRequireMents", "InterviewDetails", "Preview", "Payment Mode"];
+const steps = ["Job details", "Basic Details", "Interview Details", "Preview", "Payment Mode"];
 
 const PERKS = [
   "Flexible Working Hours",
@@ -65,19 +65,20 @@ const PERKS = [
 ];
 
 const educationOptions = [
-  "10th Or Below 10th",
-  "12th Pass",
-  "Diploma",
+  "10th_or_Below_10th",
+  "12th_Pass",
+  "Diploma_Categories",
   "ITI",
   "Graduate",
-  "Post Graduate",
-  "CA/CS/ICWA"
+  "Postgraduate",
+  "Professional_Certification"
 ];
 
 const ADDITIONAL_FIELDS = {
   gender: ["Male", "Female", "Other"],
   distance: ["<10km", "10-20km", ">20km"],
-  languages: ["Hindi", "English", "Tamil"],
+  languages: ["Assamese", "Bengali", "Bodo", "Dogri", "Gujarati", "Hindi", "Kannada", "Kashmiri", "Konkani", "Maithili",
+    "Malayalam", "Manipuri", "Marathi", "Nepali", "Odia", "Punjabi", "Sanskrit", "Santali", "Sindhi", "Tamil", "Telugu", "Urdu"],
   skills: ["Communication", "Sales", "Excel"],
   age: ["18-25", "26-35", "36+"],
 };
@@ -86,15 +87,6 @@ const englishLevels = ["No English", "Basic English", "Good English"];
 
 const experienceOptions = ["Any", "Experienced Only", "Fresher Only"];
 
-const experienceLevelOptions = [
-  "6 Months",
-  "1 year",
-  "2 year",
-  "3 year",
-  "4 year",
-  "5 year",
-  "5+ year",
-];
 
 const DetailRow = ({ label, value }) => (
   <div className="flex">
@@ -110,6 +102,7 @@ const PostJob = () => {
   const [joiningFeeReason, setjoiningFeeReason] = useState(null);
   const [experienceLevel, setExperience] = useState(null);
   const [educationLevel, setEducation] = useState(null);
+  const [educationSuggestions, setEducationSuggestions] = useState(["hello"]);
   const [expanded, setExpanded] = useState([]);
   const [walkIn, setWalkIn] = useState(false);
   const [contactpermission, setContactPermission] = useState(null);
@@ -120,6 +113,11 @@ const PostJob = () => {
     useState(false);
   const [changeSelected, setSelectedChange] = useState(true);
   const [isGetAddress, setIsGetAddress] = useState(false);
+  const [skillsSuggestions, setSkillsSuggestions] = useState([]);
+  const [inputValue, setInputValue] = useState("")
+  const [categorySuggestions, setCategorySuggestions] = useState([]);
+  const [category, setCategory] = useState(null);
+  const [jobRoleSuggestions, setJobRoleSuggestions] = useState([]);
 
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -209,7 +207,7 @@ const PostJob = () => {
   });
 
 
-  console.log(errors)
+
 
 
 
@@ -290,13 +288,14 @@ const PostJob = () => {
   const handleLocation = async (value) => {
     if (value.length == 6) {
       try {
-        const response = await axios.get(`https://api.postalpincode.in/pincode/${value}`)
+        const response = await getCitiesbyPincode(value);
         if (response) {
+
           setIsGetAddress(true);
-          const addresss = response.data[0].PostOffice?.[0];
-          setValue("state", addresss.Circle);
-          setValue("city", addresss.District);
-          setValue("pinCode", addresss.Pincode);
+          const addresss = response.data[0];
+          setValue("state", addresss.state);
+          setValue("city", addresss.district);
+          setValue("pinCode", addresss.pincode);
         }
       }
       catch (e) {
@@ -304,6 +303,53 @@ const PostJob = () => {
       }
     }
   }
+
+  const handleEducationSuggestions = async (value) => {
+
+    const response = await getEducationSuggestions(value);
+
+    if (response) {
+      console.log(response.data)
+      setEducation(value);
+      setEducationSuggestions(response.data);
+    } else {
+      showErrorToast("Could not fetch suggestionas")
+    }
+  }
+
+  const handleSkillsSuggestions = async (value) => {
+    console.log(value)
+    const response = await getSkillSuggestions(value);
+    if (response) {
+      console.log(response.data.data)
+      setSkillsSuggestions(response.data.data)
+    } else {
+      showErrorToast("Could not fetch suggestions")
+    }
+  }
+
+  const handlecategorySuggestions = async () => {
+    const response = await getCategorySuggestions();
+    if (response) {
+      
+      setCategorySuggestions(response.data.data)
+    } else {
+      showErrorToast("Couldn't fetch suggestions")
+    }
+  }
+
+  const handleCategory = async(value)=>{
+    
+    const response = await getJobRolesSuggestions(value);
+
+    if(response){
+      setCategory(value);
+      setJobRoleSuggestions(response.data.data)
+    }else{
+      showErrorToast("could not fetch suggestions")
+    }
+  }
+
 
   const onSubmit = async (data) => {
     console.log("Form Submitted:", data);
@@ -456,25 +502,79 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Job Role
+                Category
               </Typography>
               <Box className="flex items-start flex-row w-full gap-2 mt-2">
-                <Controller
-                  name="jobRoles"
-                  control={control}
-                  render={({ field }) => (
+
+                <Autocomplete
+                  freeSolo
+                  options={categorySuggestions}
+                  className="w-full"
+                  onInputChange={(event, newInputValue, reason) => {
+                    if (reason === "input") {
+                      if (categorySuggestions.length == 0) {
+                        handlecategorySuggestions()
+                      }
+
+                    }
+                  }}
+                  onChange={(event, value) => {
+                    if (value) {
+                      handleCategory(value)
+                      
+                    }
+                  }}
+
+                  renderInput={(params) => (
                     <TextField
-                      {...field}
-                      placeholder="Eg. Accont managment"
+                      {...params}
+                      placeholder="Choose Job Category"
                       size="small"
                       fullWidth
-                      error={!!errors.jobRoles}
-                      helperText={errors.jobRoles?.message}
                     />
+
                   )}
                 />
+
               </Box>
             </Box>
+
+            {category &&
+              <Box className="mt-4 w-1/2 flex flex-col items-start">
+                <Typography
+                  variant="h6"
+                  className="mb-2 self-start"
+                  sx={{ fontWeight: 700, fontSize: "0.9rem" }}
+                >
+                  Job Role
+                </Typography>
+                <Box className="flex items-start flex-row w-full gap-2 mt-2">
+                  <Controller
+                    name="jobRoles"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        freeSolo
+                        options={jobRoleSuggestions}
+                        className="w-full"
+                        onChange={(e) => field.onChange(e.target.value)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder="Choose Job Roles"
+                            size="small"
+                            fullWidth
+                            error={!!errors.jobRoles}
+                            helperText={errors.jobRoles?.message}
+                          />
+                        )}
+
+                        />
+                   
+                  )}
+                  />
+                </Box>
+              </Box>}
 
             <Box className="mt-6 flex flex-col items-start">
               <Typography
@@ -1282,14 +1382,15 @@ const PostJob = () => {
                           key={type}
                           onClick={() => {
                             field.onChange(type);
-                            setEducation(type);
+                            handleEducationSuggestions(type);
                           }}
                           className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
                             ? "bg-secondary text-white border-secondary"
                             : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
                             }`}
                         >
-                          {type.replace("-", " ")}
+                          {type.replace(/_/g, " ").replace(/Categories/g, " ")}
+
                         </div>
                       );
                     })}
@@ -1305,7 +1406,7 @@ const PostJob = () => {
             </FormControl>
 
 
-            {(educationLevel === "Diploma" || educationLevel === "ITI" || educationLevel === "Graduate" || educationLevel === "Post Graduate" || educationLevel === "CA/CS/ICWA") &&
+            {educationLevel &&
               <Box className="flex items-center flex-col w-full gap-2 mt-4">
                 <Typography
                   variant="h6"
@@ -1321,13 +1422,22 @@ const PostJob = () => {
 
                     render={({ field }) => (
 
-                      <TextField
-                        {...field}
-                        fullWidth
-                        size="small"
-
+                      <Autocomplete
+                        freeSolo
+                        className="md:w-1/3 w-full"
+                        options={educationSuggestions}
+                        value={field.value}
+                        onChange={(_, newValue) => field.onChange(newValue)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            size="small"
+                            fullWidth
+                            className="border border-gray-300 rounded px-3 py-2 w-full"
+                            placeholder="Select or type languages"
+                          />
+                        )}
                       />
-
                     )}
                   />
                 </Box>
@@ -1457,7 +1567,7 @@ const PostJob = () => {
                             size="small"
                           >
                             <MenuItem value="">Min</MenuItem>
-                            {[0,1,2,3,4,5,6,7,8,9,10].map((val) => (
+                            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((val) => (
                               <MenuItem key={val} value={val}>
                                 {val} yrs
                               </MenuItem>
@@ -1474,7 +1584,7 @@ const PostJob = () => {
                             size="small"
                           >
                             <MenuItem value="">Max</MenuItem>
-                            {[1,2,3,4,5,6,7,8,9,10, ">10"].map((val) => (
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ">10"].map((val) => (
                               <MenuItem key={val} value={val}>
                                 {val} yrs
                               </MenuItem>
@@ -1569,30 +1679,85 @@ const PostJob = () => {
                   {fieldKey} Options
                 </Typography>
 
+
+
                 <Controller
                   name={fieldKey}
                   control={control}
-                  render={({ field }) => (
-                    <div className="flex flex-wrap gap-4 mt-2">
-                      {ADDITIONAL_FIELDS[fieldKey].map((type) => {
-                        return (
-                          <div
-                            key={type}
-                            onClick={() => {
-                              field.onChange(type);
-                            }}
-                            className={`cursor-pointer px-6 py-1 rounded-full border transition ${field.value === type
-                              ? "bg-secondary text-white border-secondary"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                              }`}
-                          >
-                            {type}
+                  render={({ field }) => {
+                    if (fieldKey === "languages" || fieldKey === "skills") {
+                      return (
+                        <>
+                          {/* Render selected chips */}
+                          <Box className="flex flex-wrap rounded-2xl gap-2 mb-2">
+                            {(field.value || []).map((value, idx) => (
+                              <Chip
+                                key={idx}
+                                label={value}
+                                onDelete={() => {
+                                  const updated = field.value.filter((val) => val !== value);
+                                  field.onChange(updated);
+                                }}
+                                className="cursor-pointer"
+                              />
+                            ))}
+                          </Box>
+
+                          {/* Autocomplete input */}
+                          <div className="flex flex-wrap gap-4 mt-2 w-1/3">
+                            <Autocomplete
+                              multiple
+                              freeSolo
+                              className="w-full"
+                              inputValue={inputValue}
+                              onInputChange={(event, value, reason) => {
+                                if (reason === "input") {
+                                  setInputValue(value);
+                                  if (fieldKey === "skills") {
+                                    handleSkillsSuggestions(value);
+                                  }
+                                }
+                              }}
+                              options={fieldKey === "skills" ? skillsSuggestions : ADDITIONAL_FIELDS[fieldKey]}
+                              value={field.value || []}
+                              onChange={(event, newValue) => {
+                                field.onChange(newValue);
+                                setInputValue(""); // clear input after selection
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  size="small"
+                                  fullWidth
+                                  className="border border-gray-300 rounded px-3 py-2 w-full"
+                                  placeholder="Type and Select"
+                                />
+                              )}
+                            />
                           </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                        </>
+                      );
+                    } else {
+                      return (
+                        <div className="flex flex-wrap gap-4 mt-2">
+                          {ADDITIONAL_FIELDS[fieldKey].map((type) => (
+                            <div
+                              key={type}
+                              onClick={() => field.onChange(type)}
+                              className={`cursor-pointer px-6 py-1 rounded-full border transition ${field.value === type
+                                ? "bg-secondary text-white border-secondary"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                                }`}
+                            >
+                              {type}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+                  }}
                 />
+
               </Box>
             ))}
           </Box>
@@ -1738,14 +1903,32 @@ const PostJob = () => {
                     control={control}
                     rules={{ required: "Address is required" }}
                     render={({ field }) => (
-                      <TextField
-                        {...field}
-                        placeholder="Enter full address"
-                        size="small"
-                        fullWidth
-                        error={!!errors.walkInAddress}
-                        helperText={errors.walkInAddress?.message}
-                      />
+                      <div className="flex flex-col gap-2 items-start justify-center">
+                        <TextField
+                          {...field}
+                          placeholder="Enter full address"
+                          size="small"
+
+                          error={!!errors.walkInAddress}
+                          helperText={errors.walkInAddress?.message}
+                        />
+                        <label className="m-0 text-12 text-gray-500">
+                          <input
+                            type="checkbox"
+                            className="p-0 mr-4"
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setValue(
+                                  "walkInAddress",
+                                  `${getValues("location")}, ${getValues("city")}, ${getValues("state")}`
+                                );
+                              }
+                            }}
+                          />
+                          Same as office address
+                        </label>
+
+                      </div>
                     )}
                   />
                 </FormControl>

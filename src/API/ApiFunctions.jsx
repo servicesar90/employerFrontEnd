@@ -1,5 +1,5 @@
 import axios from "axios";
-import { applicationApi, createProfileApi, jobPostApi, logoUploadApi, mobileApi, otpApi, profilePicUploadApi } from "./APIs";
+import { applicationApi, createProfileApi, getCategorySuggestionsApi, getCitiesApi, getEducationSuggestionsApi, getJobRolesSuggestionsApi, getSkillsSuggestionsApi, jobPostApi, logoUploadApi, mobileApi, otpApi, profilePicUploadApi } from "./APIs";
 
 
 // data={ phone: "string", role: "string" }
@@ -214,5 +214,78 @@ export const logoUpload = async (data)=>{
     }
 }
 
+export const getCitiesbyPincode = async (value)=>{
+     try {
+        const token = localStorage.getItem('TokenId')
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
 
+        const response = await axios.get(`${getCitiesApi}/pincode/${value}`, { headers });
 
+        return response;
+
+    } catch (err) {
+        console.log("Error from get city api", err)
+    }
+}
+
+export const getEducationSuggestions = async(value)=>{
+    try{
+ const token = localStorage.getItem('TokenId')
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+
+        const response = await axios.get(`${getEducationSuggestionsApi}/${value}`, {headers});
+        
+        return response;
+    }catch (err) {
+        console.log("Error from get education suggestion api", err)
+    }
+}
+
+export const getSkillSuggestions = async(value)=>{
+    try{
+ const token = localStorage.getItem('TokenId')
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+
+        const response = await axios.get(`${getSkillsSuggestionsApi}/${value}`, {headers});
+        
+        return response;
+    }catch (err) {
+        console.log("Error from get Skills suggestions api", err)
+    }
+}
+
+export const getCategorySuggestions = async()=>{
+    try{
+ const token = localStorage.getItem('TokenId')
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+
+        const response = await axios.get(getCategorySuggestionsApi, {headers});
+        
+        return response;
+    }catch (err) {
+        console.log("Error from get Skills suggestions api", err)
+    }
+}
+
+export const getJobRolesSuggestions = async(value)=>{
+    try{
+ const token = localStorage.getItem('TokenId')
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+
+        const response = await axios.get(`${getJobRolesSuggestionsApi}/${value}`, {headers});
+        
+        return response;
+    }catch (err) {
+        console.log("Error from get Skills suggestions api", err)
+    }
+}
