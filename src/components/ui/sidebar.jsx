@@ -47,16 +47,16 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
       >
         {/* Logo & Avatar */}
         <div className={`px-2 mb-4 flex items-center ${showFull ? 'gap-3' : 'justify-center'}`}>
-          {employer?.company.logoUrl ? (
+          {employer?.company?.logoUrl ? (
             <img src={employer?.company.logoUrl} alt="Logo" className="w-8 h-8 rounded-[8px] object-cover" />
           ) : (
             <div className="w-8 h-8 rounded-[8px] bg-green-500 text-white flex items-center justify-center text-sm font-semibold">
-              {employer?.company.companyName.charAt(0).toUpperCase()}
+              {employer?.company?.companyName.charAt(0).toUpperCase()}
             </div>
           )}
           {showFull && (
-            <h1 className="text-xl font-semibold">
-              {employer?.company.companyName}
+            <h1 className="text-14 font-semibold">
+              {employer?.company?.companyName}
             </h1>
           )}
         </div>

@@ -157,6 +157,8 @@ const PostJob = () => {
     getValues,
     setValue,
     reset,
+    clearErrors,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -164,7 +166,7 @@ const PostJob = () => {
       jobTitle: null,
       jobRoles: null,
       jobType: null,
-      nightShift: false,
+      nightShift: "Day Shift",
       workLocationType: null,
       location: null,
       state: null,
@@ -226,7 +228,7 @@ const PostJob = () => {
         jobTitle: selectedJob?.jobTitle,
         jobRoles: selectedJob.jobRoles,
         jobType: selectedJob.jobType || "Full Time",
-        nightShift: selectedJob.nightShift ?? false,
+        nightShift: selectedJob.nightShift,
         workLocationType: selectedJob.workLocationType,
         location: selectedJob.location,
         payType: selectedJob.payType,
@@ -284,25 +286,39 @@ const PostJob = () => {
   };
 
 
-
   const handleLocation = async (value) => {
-    if (value.length == 6) {
+    if (value.length === 6) {
       try {
         const response = await getCitiesbyPincode(value);
-        if (response) {
+
+        if (response && response.data.length > 0) {
+          clearErrors("pinCode")
+          const address = response.data[0];
 
           setIsGetAddress(true);
-          const addresss = response.data[0];
-          setValue("state", addresss.state);
-          setValue("city", addresss.district);
-          setValue("pinCode", addresss.pincode);
+          setValue("state", address.state);
+          setValue("city", address.district);
+          setValue("pinCode", address.pincode);
+        } else {
+          setIsGetAddress(false);
+          setValue("state", null);
+          setValue("city", null);
+          setError("pinCode", {
+            type: "manual",
+            message: "Not a Valid Pincode",
+          });
         }
-      }
-      catch (e) {
+      } catch (e) {
         console.log(e)
+        setIsGetAddress(false);
+        setError("pinCode", {
+          type: "manual",
+          message: "Could not fetch data",
+        });
       }
     }
-  }
+  };
+
 
   const handleEducationSuggestions = async (value) => {
 
@@ -625,9 +641,9 @@ const PostJob = () => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={!!field.value}
+                        checked={field.value === "Night Shift"}
                         onChange={(e) => {
-                          field.onChange(e.target.checked);
+                          field.onChange(e.target.checked? "Night Shift" : "Day Shift");
                           console.log("Night shift:", e.target.checked);
                         }}
                       />
@@ -943,8 +959,8 @@ const PostJob = () => {
                       },
                       validate: (value) => {
                         const numericValue = Number(value);
-                        if (numericValue < 1000) return "Minimum salary should be at least ₹1000";
-                        if (numericValue > 10000000) return "Salary cannot exceed ₹1 crore";
+                        if (numericValue < 3000) return "Minimum salary should be at least ₹3000";
+                        if (numericValue > 150000) return "Salary cannot exceed ₹1.5 Lakh";
                         return true;
                       },
                     }}
@@ -955,7 +971,7 @@ const PostJob = () => {
                         type="number"
                         size="small"
                         fullWidth
-                        placeholder="Enter Minimum Salary"
+                        placeholder="Enter Monthly Salary"
                         error={!!errors.minimumSalary}
                         helperText={errors.minimumSalary?.message}
                       />
@@ -988,8 +1004,8 @@ const PostJob = () => {
                       validate: (value) => {
                         const numericValue = Number(value);
                         const minSalary = Number(getValues("minimumSalary"));
-                        if (numericValue < 1000) return "Maximum salary should be at least ₹1000";
-                        if (numericValue > 100000000) return "Salary cannot exceed ₹10 crore";
+                        if (numericValue < 3000) return "Maximum salary should be at least ₹3000";
+                        if (numericValue > 1000000) return "Salary cannot exceed ₹10 lakh";
                         if (minSalary && numericValue <= minSalary) {
                           return "Maximum salary must be greater than minimum salary";
                         }
@@ -1002,7 +1018,7 @@ const PostJob = () => {
                         fullWidth
                         size="small"
                         type="number"
-                        placeholder="Enter Maximum Salary"
+                        placeholder="Enter Monthly Salary"
                         error={!!errors.maximumSalary}
                         helperText={errors.maximumSalary?.message}
                       />
@@ -1718,11 +1734,23 @@ const PostJob = () => {
                                   }
                                 }
                               }}
-                              options={fieldKey === "skills" ? skillsSuggestions : ADDITIONAL_FIELDS[fieldKey]}
+                              options={
+                                (fieldKey === "skills" ? skillsSuggestions : ADDITIONAL_FIELDS[fieldKey])
+                                  .filter((option) => !(field.value || []).includes(option))
+                              }
                               value={field.value || []}
                               onChange={(event, newValue) => {
-                                field.onChange(newValue);
-                                setInputValue(""); // clear input after selection
+                                const currentValues = field.value || [];
+                                const lastValue = newValue[newValue.length - 1];
+
+                                if (
+                                  lastValue &&
+                                  lastValue.trim() !== "" &&
+                                  !currentValues.includes(lastValue)
+                                ) {
+                                  field.onChange([...currentValues, lastValue]);
+                                  setInputValue(""); // only clear input if new value added
+                                }
                               }}
                               renderTags={() => null}
                               renderInput={(params) => (
@@ -1735,6 +1763,7 @@ const PostJob = () => {
                                 />
                               )}
                             />
+
                           </div>
                         </>
                       );
@@ -2393,7 +2422,7 @@ const PostJob = () => {
                     value={values.jobRoles}
                   />
                   <DetailRow label="Job type" value={values.jobType} />
-                  <DetailRow label="Is Night Shift" value={values.nightShift || "False"} />
+                  <DetailRow label="Is Night Shift" value={values.nightShift} />
                   <DetailRow
                     label="Work type"
                     value={values.workLocationType}
