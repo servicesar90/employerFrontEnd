@@ -5,6 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import { createProfile } from "../../../API/ApiFunctions";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { showErrorToast } from "../../ui/toast";
 const AnimatedCircle = motion.create(Circle);
 const companySizes = [
   "0-50",
@@ -63,7 +64,7 @@ function UnigrowOnboardingForm() {
     const response = await createProfile(data);
 
     if (response) {
-      console.log(response)
+     
       const user = JSON.parse(localStorage.getItem("User"));
       const newUser = { ...user, profile: true };
       localStorage.setItem("User", JSON.stringify(newUser));

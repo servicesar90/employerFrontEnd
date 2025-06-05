@@ -331,21 +331,21 @@ const PostJob = () => {
   const handlecategorySuggestions = async () => {
     const response = await getCategorySuggestions();
     if (response) {
-      
+
       setCategorySuggestions(response.data.data)
     } else {
       showErrorToast("Couldn't fetch suggestions")
     }
   }
 
-  const handleCategory = async(value)=>{
-    
+  const handleCategory = async (value) => {
+
     const response = await getJobRolesSuggestions(value);
 
-    if(response){
+    if (response) {
       setCategory(value);
       setJobRoleSuggestions(response.data.data)
-    }else{
+    } else {
       showErrorToast("could not fetch suggestions")
     }
   }
@@ -521,14 +521,14 @@ const PostJob = () => {
                   onChange={(event, value) => {
                     if (value) {
                       handleCategory(value)
-                      
+
                     }
                   }}
 
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      placeholder="Choose Job Category"
+                      placeholder="Enter Job Category"
                       size="small"
                       fullWidth
                     />
@@ -557,7 +557,8 @@ const PostJob = () => {
                         freeSolo
                         options={jobRoleSuggestions}
                         className="w-full"
-                        onChange={(e) => field.onChange(e.target.value)}
+                        value={field.value || ""}
+                        onChange={(_, newValue) => field.onChange(newValue)}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -568,11 +569,10 @@ const PostJob = () => {
                             helperText={errors.jobRoles?.message}
                           />
                         )}
-
-                        />
-                   
-                  )}
+                      />
+                    )}
                   />
+
                 </Box>
               </Box>}
 
@@ -1382,6 +1382,7 @@ const PostJob = () => {
                           key={type}
                           onClick={() => {
                             field.onChange(type);
+                            setValue("educationSpecialization", null)
                             handleEducationSuggestions(type);
                           }}
                           className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
@@ -1419,14 +1420,12 @@ const PostJob = () => {
                   <Controller
                     name="educationSpecialization"
                     control={control}
-
                     render={({ field }) => (
-
                       <Autocomplete
                         freeSolo
                         className="md:w-1/3 w-full"
                         options={educationSuggestions}
-                        value={field.value}
+                        value={field.value || ""}
                         onChange={(_, newValue) => field.onChange(newValue)}
                         renderInput={(params) => (
                           <TextField
@@ -1434,12 +1433,13 @@ const PostJob = () => {
                             size="small"
                             fullWidth
                             className="border border-gray-300 rounded px-3 py-2 w-full"
-                            placeholder="Select or type languages"
+                            placeholder="Select or type specialization"
                           />
                         )}
                       />
                     )}
                   />
+
                 </Box>
               </Box>}
 
@@ -1724,6 +1724,7 @@ const PostJob = () => {
                                 field.onChange(newValue);
                                 setInputValue(""); // clear input after selection
                               }}
+                              renderTags={() => null}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
@@ -2023,6 +2024,7 @@ const PostJob = () => {
                           type="text"
                           size="small"
                           fullWidth
+                          placeholder="Eg: 10:00 A.M- 06:00 P.M"
                           error={!!errors.walkInStartTime}
                           helperText={errors.walkInStartTime?.message}
                         />
@@ -2383,11 +2385,15 @@ const PostJob = () => {
                   <DetailRow label="Company name" value={values.companyName} />
                   <DetailRow label="Job title" value={values.jobTitle} />
                   <DetailRow
-                    label="Job role/ category"
+                    label="category"
+                    value={category}
+                  />
+                  <DetailRow
+                    label="Job role"
                     value={values.jobRoles}
                   />
                   <DetailRow label="Job type" value={values.jobType} />
-                  <DetailRow label="Is Night Shift" value={values.nightShift} />
+                  <DetailRow label="Is Night Shift" value={values.nightShift || "False"} />
                   <DetailRow
                     label="Work type"
                     value={values.workLocationType}
@@ -2452,6 +2458,10 @@ const PostJob = () => {
                   <DetailRow
                     label="Minimum Education"
                     value={values.education}
+                  />
+                  <DetailRow
+                    label="Specialization"
+                    value={values.educationSpecialization}
                   />
                   <DetailRow
                     label="Experience Required"

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { applicationApi, createProfileApi, getCategorySuggestionsApi, getCitiesApi, getEducationSuggestionsApi, getJobRolesSuggestionsApi, getSkillsSuggestionsApi, jobPostApi, logoUploadApi, mobileApi, otpApi, profilePicUploadApi } from "./APIs";
+import { showErrorToast } from "../components/ui/toast";
 
 
 // data={ phone: "string", role: "string" }
@@ -49,7 +50,10 @@ export const createProfile = async (data) => {
 
     } catch (err) {
         console.log("error response", err);
-        alert("could not post")
+        if(err.response.status===400){
+            showErrorToast(`${err.response.data.message}`)
+        }
+        showErrorToast("could not post")
 
     }
 }
