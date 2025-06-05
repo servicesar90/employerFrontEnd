@@ -137,6 +137,8 @@ const PostJob = () => {
 
   const { employer, jobsById } = useSelector((state) => state.getDataReducer);
 
+
+
   const navigate = useNavigate();
 
 
@@ -223,6 +225,7 @@ const PostJob = () => {
 
     if (jobsById) {
       const selectedJob = jobsById?.[0];
+      
       reset({
         companyName: employer?.company.companyName,
         jobTitle: selectedJob?.jobTitle,
@@ -268,6 +271,52 @@ const PostJob = () => {
         candidateType: selectedJob.candidateType,
         notificationPreference: selectedJob.notificationPreference,
       });
+    }else{
+      reset({
+      companyName: "",
+      jobTitle: "",
+      jobRoles: "",
+      jobType: "Full Time",
+      nightShift: false,
+      workLocationType: "",
+      location: "",
+      payType: "",
+      minimumSalary: "",
+      maximumSalary: "",
+      incentive: "",
+      perks: [],
+      joiningFee: false,
+      joiningFeeAmount: "",
+      joiningFeeReason: "",
+      joiningFeeReasonDetail: "",
+      joiningFeeAmountTime: "",
+      education: "",
+      english: "",
+      experience: "",
+      experienceLevel: { min: "", max: "" },
+      educationSpecialization: "",
+      gender: "",
+      age: "",
+      languages: [],
+      distance: "",
+      state: "",
+      city: "",
+      pinCode: "",
+      skills: [],
+      jobDescription: "",
+      walkIn: false,
+      walkInAddress: "",
+      walkInStartDate: null,
+      WalkInEndDate: null,
+      walkInStartTime: "",
+      walkInInstruction: "",
+      contactPrefernece: "",
+      otherRecruiterName: "",
+      otherRecruiterNumber: "",
+      otherRecruiterEmail: "",
+      candidateType: "",
+      notificationPreference: "",
+    })
     }
 
 

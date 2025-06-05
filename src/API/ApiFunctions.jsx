@@ -146,7 +146,8 @@ export const getJobById = async (id) => {
         return response;
 
     } catch (err) {
-        console.log("Error from get Profile api", err)
+        console.log("Error from get Profile api", err);
+        return err;
     }
 }
 

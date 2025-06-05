@@ -12,10 +12,23 @@ export const fetchJobs = createAsyncThunk('getData/fetchJobs', async () => {
   return response.data.data;
 });
 
-export const fetchJobsById = createAsyncThunk('getData/fetchJobsById', async (id) => {
-  const response = await getJobById(id);
-  return response.data.data;
-});
+export const fetchJobsById = createAsyncThunk(
+  'getData/fetchJobsById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await getJobById(id);
+
+      // simulate API returning error-like data
+      if (response.status !== 200) {
+        return rejectWithValue({ error: response.message, response });
+      }
+
+      return response;
+    } catch (error) {
+      return rejectWithValue({ error: error.message });
+    }
+  }
+);
 
 const initialState = {
   employer: null,
@@ -61,14 +74,17 @@ const getDataSlice = createSlice({
       .addCase(fetchJobsById.pending, (state) => {
         state.loading = true;
         state.error = null;
+        
       })
       .addCase(fetchJobsById.fulfilled, (state, action) => {
         state.loading = false;
-        state.jobsById = action.payload;
+        state.jobsById = action.payload.data.data;
       })
       .addCase(fetchJobsById.rejected, (state, action) => {
+       
         state.loading = false;
         state.error = action.error.message;
+        state.jobsById = null;
       });
   },
 });
