@@ -2049,12 +2049,12 @@ const PostJob = () => {
                         Walk-in End Date *
                       </FormLabel>
                       <Controller
-                        name="walkInEndDate"
+                        name="WalkInEndDate"
                         control={control}
                         rules={{
                           required: "End date is required",
                           validate: (value) => {
-                            const startDateStr = getValues("walkInStartDate");
+                            const startDateStr = getValues("WalkInStartDate");
 
                             if (!startDateStr) return true; // Skip validation if start date is not yet set
 
@@ -2073,8 +2073,8 @@ const PostJob = () => {
                             type="date"
                             size="small"
                             fullWidth
-                            error={!!errors.walkInEndDate}
-                            helperText={errors.walkInEndDate?.message}
+                            error={!!errors.WalkInEndDate}
+                            helperText={errors.WalkInEndDate?.message}
                           />
                         )}
                       />
