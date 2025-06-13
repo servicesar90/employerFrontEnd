@@ -5,12 +5,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import SimplePaper from "../ui/cards/NewCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchJobsById } from "../../Redux/getData";
+import { set } from "react-hook-form";
 
-const filters = [
-  { label: "Matched to job requirements (10)" },
-  { label: "Have Resume Attached (12)" },
-  { label: "Tried contacting you (5)", badge: "New" },
-];
+
 
 const CandidateManagementPage = () => {
   const navigate = useNavigate();
@@ -20,7 +17,11 @@ const CandidateManagementPage = () => {
   const [allCandidates, setAllCandidates] = useState({});
   const dispatch = useDispatch();
   const [showFilters, setShowFilters] = useState(false);
-  const [showbutton, setShowButtons]= useState(false);
+  const [showbutton, setShowButtons] = useState(false);
+  const [originalCandidates, setOriginalCandidates] = useState(null);
+  const [candidatess, setCandidate] = useState(null);
+  const [activeFilters, setActiveFilters] = useState({ time: null, education: null, gender: null });
+
 
   const { jobsById, loading } = useSelector((state) => state.getDataReducer);
 
@@ -54,6 +55,232 @@ const CandidateManagementPage = () => {
     }
   }, [jobsById]);
 
+  useEffect(() => {
+    const currentCandidates = allCandidates?.[filterIndex];
+
+    if (!currentCandidates || !jobsById) return;
+
+    const newCandidate = currentCandidates.map((candidate) => {
+      if (!candidate) return candidate;
+
+      let matchedCount = 0;
+      const newMatchedFields = [];
+
+      // Gender match
+
+      if (jobsById[0]?.gender) {
+        if (jobsById[0]?.gender.toUpperCase() === candidate?.EmployeeProfile?.gender?.toUpperCase()) {
+          matchedCount++;
+          newMatchedFields.push("Gender");
+        }
+      } else {
+        matchedCount++;
+      }
+
+      // Education match
+      const educations = candidate?.EmployeeProfile?.EmployeeEducations;
+      const highestEducation = Array.isArray(educations) && educations.length > 0
+        ? educations.reduce((latest, current) => {
+          const latestDate = new Date(latest.startDate);
+          const currentDate = new Date(current.startDate);
+          return currentDate > latestDate ? current : latest;
+        })
+        : null;
+
+      if (jobsById[0]?.education === highestEducation?.qualification) {
+        matchedCount++;
+        newMatchedFields.push("Education");
+      }
+
+      // Language match (partial)
+      if (jobsById[0]?.languages) {
+        const totalLanguages = JSON.parse(jobsById[0]?.languages || "[]");
+        const candidateLanguages = JSON.parse(candidate?.EmployeeProfile?.otherLanguages || "[]");
+
+        const matchLanguageCount = totalLanguages.filter(item => candidateLanguages.includes(item)).length;
+        const increaseCount = totalLanguages.length ? matchLanguageCount / totalLanguages.length : 0;
+
+        matchedCount += increaseCount;
+        newMatchedFields.push(`Languages(${matchLanguageCount})`);
+      } else {
+        matchedCount++;
+      }
+
+      // English level
+      if (jobsById[0]?.english === candidate?.EmployeeProfile?.englishProficiency) {
+        matchedCount++;
+        newMatchedFields.push("English Level");
+      }
+
+      // Location
+      const preferredCities = JSON.parse(candidate?.EmployeeProfile?.preferredJobCity || "[]");
+      if (preferredCities.includes(jobsById[0]?.city)) {
+        matchedCount++;
+        newMatchedFields.push("Location");
+      }
+
+      // Experience match
+      const minExperienceLevel = Number(jobsById[0]?.experienceLevel?.split("-")[0]) || 0;
+      const candidateExpYears = candidate?.EmployeeProfile?.TotalExperience?.years || 0;
+
+      if (minExperienceLevel === 0 || candidateExpYears >= minExperienceLevel) {
+        matchedCount++;
+        newMatchedFields.push("Experience");
+      }
+
+      // Job Role match
+      let candidateJobRoles = [];
+      candidate?.EmployeeProfile?.EmployeeExperiences?.forEach((exp) => {
+        const roles = JSON.parse(exp?.jobRole || "[]");
+        candidateJobRoles.push(...roles);
+      });
+
+      if (candidateJobRoles.includes(jobsById[0]?.jobRoles)) {
+        matchedCount++;
+        newMatchedFields.push("Job Role");
+      }
+
+      // Job Type
+      const preferredTypes = JSON.parse(candidate?.EmployeeProfile?.prefferedEmploymentTypes || "[]");
+      if (
+        jobsById[0]?.jobType &&
+        preferredTypes.includes(jobsById[0]?.jobType.replace(/-/g, " "))
+      ) {
+        matchedCount++;
+        newMatchedFields.push("Job Type");
+      }
+
+      // Job Location Type
+      const preferredLocationTypes = JSON.parse(candidate?.EmployeeProfile?.preferredLocationTypes || "[]");
+      if (preferredLocationTypes.includes(jobsById[0]?.workLocationType)) {
+        matchedCount++;
+        newMatchedFields.push("Job Location Type");
+      }
+
+      // Skills (partial match)
+      if (jobsById[0].skills) {
+        const totalSkills = JSON.parse(jobsById[0]?.skills || "[]");
+        const candidateSkills = JSON.parse(candidate?.EmployeeProfile?.skills || "[]");
+
+        const matchSkillsCount = totalSkills.filter(skill => candidateSkills.includes(skill)).length;
+        const increaseCount = totalSkills.length ? matchSkillsCount / totalSkills.length : 0;
+
+        matchedCount += increaseCount;
+        newMatchedFields.push(`Skills(${matchSkillsCount})`);
+      } else {
+        matchedCount++;
+      }
+
+
+      // Final matching percentage out of 10 total slots
+      const matchPercentage = Math.round((matchedCount / 10) * 100);
+
+      return {
+        ...candidate,
+        matchedField: newMatchedFields,
+        matchingPrecent: matchPercentage,
+      };
+    });
+    setOriginalCandidates(newCandidate)
+    setCandidate(newCandidate);
+
+  }, [allCandidates, filterIndex, jobsById]);
+
+  const topMatchfilter = () => {
+    const sortedCandidates = [...candidatess].sort((a, b) => b.matchingPrecent - a.matchingPrecent);
+    console.log(sortedCandidates);
+    setCandidate(sortedCandidates);
+  };
+
+  const resumeAttachedFilter = () => {
+    const newcandidate = candidatess?.filter(item => item?.EmployeeProfile.resumeURL !== null);
+
+    setCandidate(newcandidate)
+  }
+
+
+  const filters = [
+    { label: "Matched to job requirements", clickFunc: topMatchfilter },
+    { label: "Have Resume Attached", clickFunc: resumeAttachedFilter },
+  ];
+
+  console.log(jobsById)
+
+  const handlefilter = (type, value) => {
+  const updatedFilters = {
+    ...activeFilters,
+    [type]: value,
+  };
+  setActiveFilters(updatedFilters);
+
+  let filtered = [...originalCandidates]; // Start from originalCandidates
+
+  // Apply gender filter
+  if (updatedFilters.gender) {
+    filtered = filtered.filter((candidate) => {
+      return candidate?.EmployeeProfile?.gender === updatedFilters.gender;
+    });
+  }
+
+  // Apply education filter
+  if (updatedFilters.education) {
+    filtered = filtered.filter((candidate) => {
+      const educations = candidate?.EmployeeProfile?.EmployeeEducations;
+
+      const highestEducation = Array.isArray(educations) && educations.length > 0
+        ? educations.reduce((latest, current) => {
+          const latestDate = new Date(latest.startDate);
+          const currentDate = new Date(current.startDate);
+          return currentDate > latestDate ? current : latest;
+        })
+        : null;
+
+      const qualification = highestEducation?.qualification;
+
+      switch (updatedFilters.education) {
+        case "10th pass":
+          return true;
+        case "12th pass":
+          return qualification !== "10th_or_Below_10th";
+        case "ITI":
+          return qualification === "ITI";
+        case "Graduate":
+          return qualification === "Graduate" || qualification === "Postgraduate";
+        case "Post Graduate":
+          return qualification === "Postgraduate";
+        default:
+          return true;
+      }
+    });
+  }
+
+  // Apply time filter
+  if (updatedFilters.time) {
+    const now = new Date();
+    let compareDate = null;
+
+    if (updatedFilters.time === "24 hours") {
+      compareDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    } else if (updatedFilters.time === "10 days") {
+      compareDate = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
+    } else if (updatedFilters.time === "30 days") {
+      compareDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    }
+
+    filtered = filtered.filter((item) => {
+      const appliedAt = item?.appliedAt ? new Date(item.appliedAt) : null;
+      return appliedAt && appliedAt >= compareDate;
+    });
+  }
+
+  setCandidate(filtered);
+};
+
+
+
+
+
+
   if (loading)
     return (
       <div className="flex justify-center items-center w-full min-h-[100vh] bg-black/20">
@@ -83,8 +310,8 @@ const CandidateManagementPage = () => {
                 {data?.status === "P"
                   ? "Pending"
                   : data?.status === "A"
-                  ? "Active"
-                  : "Expired"}
+                    ? "Active"
+                    : "Expired"}
               </div>
             </div>
 
@@ -125,7 +352,7 @@ const CandidateManagementPage = () => {
             <h2 className="text-16 font-semibold text-gray-800">
               Applied to job ({data?.JobApplications?.length})
             </h2>
-            {showbutton? <ChevronUp onClick={()=>setShowButtons(!showbutton)} />:<ChevronDown onClick={()=>setShowButtons(!showbutton)}/>}
+            {showbutton ? <ChevronUp onClick={() => setShowButtons(!showbutton)} /> : <ChevronDown onClick={() => setShowButtons(!showbutton)} />}
           </div>
           {/* <div className="flex gap-2 items-center">
             <Button variant="outlined" size="small" startIcon={<Download size={16} />}>
@@ -138,7 +365,7 @@ const CandidateManagementPage = () => {
         </div>
 
         {/* Tabs */}
-        {showbutton &&<div className="flex flex-wrap gap-3 transition-all duration-300 ease-in-out transform ">
+        {showbutton && <div className="flex flex-wrap gap-3 transition-all duration-300 ease-in-out transform ">
           {[
             `All candidates (${allCandidates[0]?.length})`,
             `Action Pending (${allCandidates[1]?.length})`,
@@ -148,11 +375,10 @@ const CandidateManagementPage = () => {
           ].map((tab, idx) => (
             <button
               key={idx}
-              className={`  ${
-                idx === filterIndex
-                  ? "text-14 text-white bg-secondary font-medium border border-gray-300 rounded px-2 py-1"
-                  : "bg-white  text-14 text-gray-650 text-gray-600 border-[2px] rounded px-2 py-1"
-              }`}
+              className={`  ${idx === filterIndex
+                ? "text-14 text-white bg-secondary font-medium border border-gray-300 rounded px-2 py-1"
+                : "bg-white  text-14 text-gray-650 text-gray-600 border-[2px] rounded px-2 py-1"
+                }`}
               onClick={() => setFilterIndex(idx)}
             >
               {tab}
@@ -177,11 +403,10 @@ const CandidateManagementPage = () => {
         {/* Left Filters - Drawer on mobile, visible on md+ */}
         <div
           className={`
-    ${
-      showFilters
-        ? "fixed bottom-0 left-0 w-full max-w-full h-[80vh] z-50 bg-white shadow-xl p-4 rounded-t-2xl animate-slideUp overflow-y-auto"
-        : "hidden"
-    }
+    ${showFilters
+              ? "fixed bottom-0 left-0 w-full max-w-full h-[80vh] z-50 bg-white shadow-xl p-4 rounded-t-2xl animate-slideUp overflow-y-auto"
+              : "hidden"
+            }
     md:static md:block md:w-1/4 md:space-y-4 md:bg-transparent md:shadow-none md:p-0
   `}
         >
@@ -209,6 +434,7 @@ const CandidateManagementPage = () => {
                 <input
                   type="checkbox"
                   className="form-checkbox h-4 w-4 text-blue-600"
+                  onClick={item.clickFunc}
                 />
                 <span>
                   {item.label}
@@ -222,17 +448,34 @@ const CandidateManagementPage = () => {
             ))}
           </div>
 
-          <div className="bg-white rounded-lg border shadow-sm p-4 space-y-2 text-14 text-gray-650 text-left">
+          <div className="bg-white rounded-lg max-h-[30vh] overflow-scroll border shadow-sm p-4 space-y-2 text-14 text-gray-650 text-left" style={{ scrollbarWidth: "none" }}>
             <details open>
               <summary className="cursor-pointer font-medium">
                 Applied in
               </summary>
+              <div className="ml-4 mt-2 space-y-1 ">
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.time === "24 hours"} onChange={() => handlefilter("time", "24 hours")} /> <span>Last 24 Hours</span></div>
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.time === "10 days"} onChange={() => handlefilter("time", "10 days")} /><span>Last 10 days</span></div>
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.time === "30 days"} onChange={() => handlefilter("time", "30 days")} /><span>Last 30 days</span></div>
+              </div>
             </details>
             <details>
-              <summary className="cursor-pointer font-medium">Location</summary>
+              <summary className="cursor-pointer font-medium">Education</summary>
+              <div className="ml-4 mt-2 space-y-1">
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.education === "10th pass"} onChange={() => handlefilter("education", "10th pass")} /><span>10th pass</span></div>
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.education === "12th pass"} onChange={() => handlefilter("education", "12th pass")} /><span>12th Pass</span></div>
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.education === "ITI"} onChange={() => handlefilter("education", "ITI")} /><span>ITI</span></div>
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.education === "Graduate"} onChange={() => handlefilter("education", "Graduate")} /><span>Graduation</span></div>
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.education === "post Graduate"} onChange={() => handlefilter("education", "post Graduate")} /><span>Post Graduation</span></div>
+              </div>
             </details>
             <details>
               <summary className="cursor-pointer font-medium">Gender</summary>
+              <div className="ml-4 mt-2 space-y-1">
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.gender === "Male"} onChange={() => handlefilter("gender", "Male")} /><span>Male</span></div>
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.gender === "female"} onChange={() => handlefilter("gender", "female")} /><span>Female</span></div>
+                <div className="flex flex-row items-center gap-3"><input type="radio" checked={activeFilters.gender === "Other"} onChange={() => handlefilter("gender", "Other")} /><span>Other</span></div>
+              </div>
             </details>
           </div>
         </div>
@@ -248,9 +491,9 @@ const CandidateManagementPage = () => {
         {/* Right: Candidate List */}
         <div className="w-full md:w-3/4 max-h-[60vh] overflow-scroll">
           <div className="text-16 font-semibold text-gray-800 mb-7">
-            Showing {allCandidates[filterIndex]?.length} candidates
+            Showing {candidatess?.length} candidates
           </div>
-          {allCandidates[filterIndex]?.map((candidate, index) => (
+          {candidatess?.map((candidate, index) => (
             <div key={index} className="mb-10 shadow-xl rounded-lg">
               <SimplePaper job={data} jobId={id} candidate={candidate} />
             </div>

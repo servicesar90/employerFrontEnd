@@ -151,7 +151,7 @@ const ProfileModal = ({ open, onClose, jobId, candidate }) => {
                             <div className='flex flex-row gap-2'>
                                 <PictureAsPdf sx={{ color: 'red' }} />
 
-                                {candidate?.EmployeeProfile.resumeURL.split("/").pop()}
+                                {candidate?.EmployeeProfile.resumeURL?.split("/").pop()}
 
                             </div>
                             <button onClick={() => window.open(candidate?.EmployeeProfile.resumeURL, '_blank')}>

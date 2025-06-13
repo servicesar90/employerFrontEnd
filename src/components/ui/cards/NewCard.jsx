@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import "../cards/NewCard.css";
 import Avatar from "@mui/material/Avatar";
-import { Box } from "@mui/material";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
+
 import {
   BriefcaseBusiness,
   IndianRupee,
@@ -45,43 +44,10 @@ const DetailRow = ({ logo, label, value }) => (
 export default function SimplePaper({ job, jobId, candidate }) {
   const width = useWindowWidth();
   const isMobile = width <= 768;
-  const [matchingFields, setMatchedField] = useState([]);
-  const [matchingPrecent, setMatchingPrecent] = useState(0);
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!job || !candidate) return;
 
-    const totalFields = Object.keys(job).length;
-    let matchedCount = 0;
-
-    for (const key in job) {
-      if (candidate[key] !== undefined) {
-        // For string/number matching
-        if (typeof job[key] === "string" || typeof job[key] === "number") {
-          if (job[key] === candidate.EmployeeProfile[key]) {
-            matchedCount++;
-            setMatchedField((prev) => [...prev, key]);
-          }
-        }
-        // For arrays (like skills or tools)
-        else if (Array.isArray(job[key]) && Array.isArray(candidate[key])) {
-          const intersection = job[key].filter((val) =>
-            candidate.EmployeeProfile[key].includes(val)
-          );
-          if (intersection.length > 0) {
-            matchedCount++;
-            setMatchedField((prev) => [...prev, key]);
-          }
-        }
-        // Add more logic if needed (e.g. objects, nested fields)
-      }
-    }
-
-    const matchPercentage = Math.round((matchedCount / totalFields) * 100);
-    setMatchingPrecent(matchPercentage);
-  }, [candidate, job]);
 
   const handleReject = async (id) => {
     console.log(id);
@@ -341,9 +307,32 @@ export default function SimplePaper({ job, jobId, candidate }) {
     ))
   ) : (
     <span className=" text-14 text-gray-650">Not Provided</span>
+
+   
     
     
   )}
+
+
+    {candidate?.matchedField.map((skill, index) => (
+      <Chip
+        key={index}
+        label={skill}
+        size="small"
+        sx={{
+          backgroundColor: "#E0F2FE", 
+          color:"gray",           
+          fontSize: "12px",
+          padding: "2px 1px",
+          fontWeight: 500,
+          borderRadius: "8px",
+        }}
+      />
+    ))
+  }
+ 
+
+
 </div>
                 </div>
               </div>
@@ -500,7 +489,7 @@ export default function SimplePaper({ job, jobId, candidate }) {
 
                   <div className="unlock-badge-section">
                     <Chip
-                      label={`${matchingPrecent}% matched`}
+                      label={`${candidate?.matchingPrecent}% matched`}
                       size="small"
                       sx={{
                         backgroundColor: "#0784C9",
@@ -692,7 +681,7 @@ export default function SimplePaper({ job, jobId, candidate }) {
                   }
                 />
 
-                {/* <DetailRow
+                <DetailRow
                   logo={<Languages size={18} className="text-secondary" />}
                   label={
                     <span className="text-14 font-semibold text-gray-650">
@@ -700,8 +689,8 @@ export default function SimplePaper({ job, jobId, candidate }) {
                     </span>
                   }
                   value={
-                    matchingFields?.length > 0 ? (
-                      matchingFields.map((field, index) => (
+                    candidate?.matchedField?.length > 0 ? (
+                      candidate?.matchedField.map((field, index) => (
                         <span
                           key={index}
                           className="mr-3 text-14 text-gray-650"
@@ -715,7 +704,7 @@ export default function SimplePaper({ job, jobId, candidate }) {
                       </span>
                     )
                   }
-                /> */}
+                />
                 <div className="flex flex-row justify-between">
                   <div className="flex">
                     <Button

@@ -83,7 +83,7 @@ const ADDITIONAL_FIELDS = {
   age: ["18-25", "26-35", "36+"],
 };
 
-const englishLevels = ["No English", "Basic English", "Good English"];
+const englishLevels = ["Basic", "Intermediate", "Advanced"];
 
 const experienceOptions = ["Any", "Experienced Only", "Fresher Only"];
 
