@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useOutletContext } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../../Redux/getData";
+import { updateProfile } from "../../../API/ApiFunctions";
+import { showErrorToast, showSuccessToast } from "../../ui/toast";
 
 const ProfileUpdate = () => {
   const [isDisabled, setIsDisabled] = useState(true);
@@ -26,9 +28,16 @@ const ProfileUpdate = () => {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Submitted Data:", data);
-    setIsDisabled(true); // Disable again after save
+  const onSubmit = async(data) => {
+    
+    setIsDisabled(true); 
+    const response = await updateProfile(data);
+    if(response){
+        showSuccessToast("Successfully Update")
+        dispatch(fetchUserProfile())
+    }else{
+        showErrorToast("Could not updated")
+    }
   };
 
   return (

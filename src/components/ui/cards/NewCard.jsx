@@ -77,7 +77,7 @@ export default function SimplePaper({ job, jobId, candidate }) {
           <div className="mobileCardWrapper border rounded-lg bg-white border">
             <div className="flex mt-2 mb-2 mr-2">
               <div className="flex gap-4">
-                <input type="checkbox" className="ml-4" />
+               
 
                 <Avatar sx={{ bgcolor: "#ff5722" }}>
                   {" "}
@@ -402,7 +402,7 @@ export default function SimplePaper({ job, jobId, candidate }) {
           <div className="card-wrapper">
             <div className="custom-card border  ">
               <label>
-                <input type="checkbox" className="corner-checkbox" />
+              
               </label>
               <div className="card-top-section">
                 <div className="left-avatar-section">

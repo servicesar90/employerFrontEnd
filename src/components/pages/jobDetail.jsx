@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   ChevronDown,
@@ -7,6 +6,7 @@ import {
   Filter,
   Users,
 } from "lucide-react";
+import FilterListOffIcon from "@mui/icons-material/FilterListOff";
 
 import { useNavigate, useParams } from "react-router-dom";
 import SimplePaper from "../ui/cards/NewCard";
@@ -25,11 +25,14 @@ const CandidateManagementPage = () => {
   const [showbutton, setShowButtons] = useState(false);
   const [originalCandidates, setOriginalCandidates] = useState(null);
   const [candidatess, setCandidate] = useState(null);
+  const [isFilter, setIsFilter] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     time: null,
     education: null,
     gender: null,
   });
+
+  const [filterSet, setFilterSet] = useState(new Set());
 
   const { jobsById, loading } = useSelector((state) => state.getDataReducer);
 
@@ -43,13 +46,13 @@ const CandidateManagementPage = () => {
       setData(jobsById[0]);
       const jobApps = jobsById[0]?.JobApplications || [];
       const pendingCandidate = jobApps.filter(
-        (app) => app.status === "Applied",
+        (app) => app.status === "Applied"
       );
       const selectedCandidate = jobApps.filter(
-        (app) => app.status === "Selected",
+        (app) => app.status === "Selected"
       );
       const rejectedCandidate = jobApps.filter(
-        (app) => app.status === "Rejected",
+        (app) => app.status === "Rejected"
       );
 
       setAllCandidates({
@@ -108,11 +111,11 @@ const CandidateManagementPage = () => {
       if (jobsById[0]?.languages) {
         const totalLanguages = JSON.parse(jobsById[0]?.languages || "[]");
         const candidateLanguages = JSON.parse(
-          candidate?.EmployeeProfile?.otherLanguages || "[]",
+          candidate?.EmployeeProfile?.otherLanguages || "[]"
         );
 
         const matchLanguageCount = totalLanguages.filter((item) =>
-          candidateLanguages.includes(item),
+          candidateLanguages.includes(item)
         ).length;
         const increaseCount = totalLanguages.length
           ? matchLanguageCount / totalLanguages.length
@@ -134,7 +137,7 @@ const CandidateManagementPage = () => {
 
       // Location
       const preferredCities = JSON.parse(
-        candidate?.EmployeeProfile?.preferredJobCity || "[]",
+        candidate?.EmployeeProfile?.preferredJobCity || "[]"
       );
       if (preferredCities.includes(jobsById[0]?.city)) {
         matchedCount++;
@@ -166,7 +169,7 @@ const CandidateManagementPage = () => {
 
       // Job Type
       const preferredTypes = JSON.parse(
-        candidate?.EmployeeProfile?.prefferedEmploymentTypes || "[]",
+        candidate?.EmployeeProfile?.prefferedEmploymentTypes || "[]"
       );
       if (
         jobsById[0]?.jobType &&
@@ -178,7 +181,7 @@ const CandidateManagementPage = () => {
 
       // Job Location Type
       const preferredLocationTypes = JSON.parse(
-        candidate?.EmployeeProfile?.preferredLocationTypes || "[]",
+        candidate?.EmployeeProfile?.preferredLocationTypes || "[]"
       );
       if (preferredLocationTypes.includes(jobsById[0]?.workLocationType)) {
         matchedCount++;
@@ -189,11 +192,11 @@ const CandidateManagementPage = () => {
       if (jobsById[0].skills) {
         const totalSkills = JSON.parse(jobsById[0]?.skills || "[]");
         const candidateSkills = JSON.parse(
-          candidate?.EmployeeProfile?.skills || "[]",
+          candidate?.EmployeeProfile?.skills || "[]"
         );
 
         const matchSkillsCount = totalSkills.filter((skill) =>
-          candidateSkills.includes(skill),
+          candidateSkills.includes(skill)
         ).length;
         const increaseCount = totalSkills.length
           ? matchSkillsCount / totalSkills.length
@@ -218,28 +221,32 @@ const CandidateManagementPage = () => {
     setCandidate(newCandidate);
   }, [allCandidates, filterIndex, jobsById]);
 
-  const topMatchfilter = () => {
-    const sortedCandidates = [...candidatess].sort(
-      (a, b) => b.matchingPrecent - a.matchingPrecent,
-    );
-    console.log(sortedCandidates);
-    setCandidate(sortedCandidates);
-  };
-
-  const resumeAttachedFilter = () => {
-    const newcandidate = candidatess?.filter(
-      (item) => item?.EmployeeProfile.resumeURL !== null,
-    );
-
-    setCandidate(newcandidate);
-  };
-
   const filters = [
-    { label: "Matched to job requirements", clickFunc: topMatchfilter },
-    { label: "Have Resume Attached", clickFunc: resumeAttachedFilter },
+    { label: "Matched to job requirements" },
+    { label: "Have Resume Attached" },
   ];
 
-  console.log(jobsById);
+  const filterFunctions = {
+    "Matched to job requirements": (list) =>
+      [...list].sort((a, b) => b.matchingPrecent - a.matchingPrecent),
+    "Have Resume Attached": (list) =>
+      list.filter((item) => item.EmployeeProfile.resumeURL !== null),
+  };
+
+  const applyFilters = (filtersSet) => {
+    let updatedList = [...originalCandidates];
+
+
+    filtersSet.forEach((label) => {
+      const filterFunc = filterFunctions[label];
+      if (filterFunc) {
+        updatedList = filterFunc(updatedList);
+       
+      }
+    });
+
+    setCandidate(updatedList);
+  };
 
   const handlefilter = (type, value) => {
     const updatedFilters = {
@@ -247,8 +254,9 @@ const CandidateManagementPage = () => {
       [type]: value,
     };
     setActiveFilters(updatedFilters);
+    setIsFilter(true);
 
-    let filtered = [...originalCandidates]; // Start from originalCandidates
+    let filtered = [...originalCandidates];
 
     // Apply gender filter
     if (updatedFilters.gender) {
@@ -273,6 +281,8 @@ const CandidateManagementPage = () => {
 
         const qualification = highestEducation?.qualification;
 
+        console.log(qualification);
+
         switch (updatedFilters.education) {
           case "10th pass":
             return true;
@@ -284,7 +294,7 @@ const CandidateManagementPage = () => {
             return (
               qualification === "Graduate" || qualification === "Postgraduate"
             );
-          case "Post Graduate":
+          case "post Graduate":
             return qualification === "Postgraduate";
           default:
             return true;
@@ -362,8 +372,8 @@ const CandidateManagementPage = () => {
                 {data?.status === "P"
                   ? "Pending"
                   : data?.status === "A"
-                    ? "Active"
-                    : "Expired"}
+                  ? "Active"
+                  : "Expired"}
               </div>
             </div>
 
@@ -513,8 +523,24 @@ const CandidateManagementPage = () => {
             className="flex items-center gap-2 font-semibold text-sm mb-2"
             style={{ color: "#003B70" }}
           >
-            <Filter className="w-4 h-4" style={{ color: "#0784C9" }} />
-            Filters (0)
+            {isFilter ? (
+              <FilterListOffIcon
+                onClick={() => {
+                  setCandidate(originalCandidates);
+                  setIsFilter(false);
+                  setActiveFilters({
+                    time: null,
+                    education: null,
+                    gender: null,
+                  });
+                }}
+                
+                style={{ color: "#0784C9", width: "20px", height: "20px" }}
+              />
+            ) : (
+              <Filter className="w-4 h-4" style={{ color: "#0784C9" }} />
+            )}
+            Filters
           </div>
 
           <div
@@ -536,7 +562,18 @@ const CandidateManagementPage = () => {
                   style={{
                     accentColor: "#0784C9",
                   }}
-                  onClick={item.clickFunc}
+                  onChange={(e) => {
+                    const newFilters = new Set(filterSet);
+
+                    if (e.target.checked) {
+                      newFilters.add(item.label);
+                    } else {
+                      newFilters.delete(item.label);
+                    }
+
+                    setFilterSet(newFilters);
+                    applyFilters(newFilters);
+                  }}
                 />
                 <span>
                   {item.label}

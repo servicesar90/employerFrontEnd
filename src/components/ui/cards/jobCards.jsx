@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import {
   BadgeCheck,
@@ -17,7 +16,7 @@ import {
   Popover,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { updateJobById } from "../../../API/ApiFunctions";
+import { deleteJobById, updateJobById } from "../../../API/ApiFunctions";
 import { showErrorToast, showSuccessToast } from "../toast";
 import { useDispatch } from "react-redux";
 import { fetchJobs } from "../../../Redux/getData";
@@ -42,11 +41,11 @@ const JobCard = ({ job }) => {
   useEffect(() => {
     if (job?.JobApplications?.length) {
       const pendings = job.JobApplications.filter(
-        (application) => application.status === "Applied",
+        (application) => application.status === "Applied"
       );
       const pendingLength = pendings.length;
       setPendingCount((prev) =>
-        prev !== pendingLength ? pendingLength : prev,
+        prev !== pendingLength ? pendingLength : prev
       );
     }
   }, [job]);
@@ -68,6 +67,17 @@ const JobCard = ({ job }) => {
       showSuccessToast("Activated Successfully");
     } else {
       showErrorToast("could not Expired");
+    }
+  };
+
+  const deleteJob = async (id) => {
+    const response = await deleteJobById(id);
+    if (response) {
+      console.log("delete");
+      dispatch(fetchJobs());
+      showSuccessToast("Successfully Deleted");
+    } else {
+      showErrorToast("could not Deleted");
     }
   };
 
@@ -359,9 +369,6 @@ const JobCard = ({ job }) => {
           </div>
         )}
 
-       
-       
-
         {/* Applications Summary */}
         <div
           style={{
@@ -370,7 +377,7 @@ const JobCard = ({ job }) => {
             justifyContent: "space-between",
             paddingTop: "16px",
             borderTop: "2px solid #f3f4f6",
-            marginBottom:"-15px"
+            marginBottom: "-15px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -401,108 +408,108 @@ const JobCard = ({ job }) => {
               </div>
             )}
           </div>
-           <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "12px",
-            marginBottom: "16px",
-          }}
-        >
-          {job?.status === "A" ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                // Handle duplicate
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "8px 16px",
-                borderRadius: "6px",
-                border: "1px solid #0784C9",
-                backgroundColor: "#ffffff",
-                color: "#0784C9",
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#0784C9";
-                e.currentTarget.style.color = "#ffffff";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#ffffff";
-                e.currentTarget.style.color = "#0784C9";
-              }}
-            >
-              <Copy style={{ width: "16px", height: "16px" }} />
-              Duplicate
-            </button>
-          ) : job?.status === "P" ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/jobsModal/${job?.id}`);
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "8px 16px",
-                borderRadius: "6px",
-                border: "none",
-                backgroundColor: "#0784C9",
-                color: "#ffffff",
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#003B70";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#0784C9";
-              }}
-            >
-              <RefreshCcw style={{ width: "16px", height: "16px" }} />
-              Finish Posting
-            </button>
-          ) : (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                activeJob(job?.id);
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "8px 16px",
-                borderRadius: "6px",
-                border: "none",
-                backgroundColor: "#0784C9",
-                color: "#ffffff",
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#003B70";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#0784C9";
-              }}
-            >
-              <RefreshCcw style={{ width: "16px", height: "16px" }} />
-              Repost now
-            </button>
-          )}
-        </div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "12px",
+              marginBottom: "16px",
+            }}
+          >
+            {job?.status === "A" ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Handle duplicate
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  border: "1px solid #0784C9",
+                  backgroundColor: "#ffffff",
+                  color: "#0784C9",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#0784C9";
+                  e.currentTarget.style.color = "#ffffff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#ffffff";
+                  e.currentTarget.style.color = "#0784C9";
+                }}
+              >
+                <Copy style={{ width: "16px", height: "16px" }} />
+                Duplicate
+              </button>
+            ) : job?.status === "P" ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/jobsModal/${job?.id}`);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: "#0784C9",
+                  color: "#ffffff",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#003B70";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#0784C9";
+                }}
+              >
+                <RefreshCcw style={{ width: "16px", height: "16px" }} />
+                Finish Posting
+              </button>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  activeJob(job?.id);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: "#0784C9",
+                  color: "#ffffff",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#003B70";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#0784C9";
+                }}
+              >
+                <RefreshCcw style={{ width: "16px", height: "16px" }} />
+                Repost now
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -574,8 +581,13 @@ const JobCard = ({ job }) => {
 
           <div
             onClick={() => {
-              setShowEditModal(false);
-              expiredJob(job?.id);
+              if (job?.status === "E") {
+                setShowEditModal(false);
+                deleteJob(job?.id);
+              }else{
+                setShowEditModal(false);
+                expiredJob(job?.id);
+              }
             }}
             style={{
               padding: "8px 12px",
@@ -594,13 +606,10 @@ const JobCard = ({ job }) => {
           >
             {job?.status === "E" ? "Delete" : "Expire"} Job
           </div>
-         </div>
+        </div>
       )}
     </div>
   );
 };
 
 export default JobCard;
-
-
-

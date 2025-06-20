@@ -87,6 +87,22 @@ export const getProfile = async () => {
   }
 };
 
+export const updateProfile = async (data) =>{
+  try {
+    const token = localStorage.getItem("TokenId");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.patch(createProfileApi,data, { headers });
+
+    return response;
+  } catch (e) {
+    console.log("errorResponse", e);
+  }
+}
+
 export const postJob = async (data) => {
   console.log("data from function", data);
   try {
@@ -170,6 +186,25 @@ export const updateJobById = async (data, jobId) => {
     return response;
   } catch (err) {
     console.log("Error from  Update job api", err);
+  }
+};
+
+export const deleteJobById = async (jobId) => {
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+
+  
+    const response = await axios.delete(`${jobPostApi}/${jobId}`, {
+      headers,
+    });
+
+    return response;
+  } catch (err) {
+    console.log("Error from  Delete job api", err);
   }
 };
 

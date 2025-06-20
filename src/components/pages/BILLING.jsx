@@ -1,75 +1,110 @@
+// export default BillingPage;
 import { useEffect, useState } from "react";
 import { Download, Mail } from "lucide-react";
 import { getBill } from "../../API/ApiFunctions";
 import { showErrorToast } from "../ui/toast";
 
-
-
 const BillingPage = () => {
   const [filter, setFilter] = useState("All");
   const [data, setData] = useState(null);
-  const [allData, setAllData] = useState(null)
+  const [allData, setAllData] = useState(null);
 
-  useEffect(()=>{
-    const getData =async()=>{
+  useEffect(() => {
+    const getData = async () => {
       const response = await getBill();
-      if(response){
+      if (response) {
         setData(response.data.data);
-        setAllData(response.data.data)
-        console.log(response.data.data)
-      }else{
-        showErrorToast("could not fetch bills")
+        setAllData(response.data.data);
+        console.log(response.data.data);
+      } else {
+        showErrorToast("could not fetch bills");
       }
+    };
+
+    getData();
+  }, []);
+
+  const applyFilter = (filters) => {
+    if (filters == "All") {
+      setData(allData);
+    } else if (filters == "Success") {
+      const successData = allData.filter((el) => el.status == "success");
+      setData(successData);
+    } else if (filters == "Pending") {
+      const successData = allData.filter((el) => el.status == "pending");
+      setData(successData);
+    } else if (filters == "Failed") {
+      const successData = allData.filter((el) => el.status == "failed");
+      setData(successData);
     }
-
-    getData()
-
-  },[]);
-
-  const applyFilter =(filters)=>{
-
-    
-
-    if(filters == "All"){
-      setData(allData)
-    }else if(filters == "Success"){
-      const successData = allData.filter((el)=> el.status == "success");
-      setData(successData)
-    }else if(filters == "Pending"){
-      const successData = allData.filter((el)=> el.status == "pending");
-      setData(successData)
-    }else if(filters == "Failed"){
-      const successData = allData.filter((el)=> el.status == "failed");
-      setData(successData)
-    }
-  }
-
-  
-
- 
+  };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen w-full text-gray-800">
-     
-     
-
+    <div
+      style={{
+        padding: "16px",
+        backgroundColor: "#DEF3F9",
+        minHeight: "100vh",
+        width: "100%",
+        color: "#003B70",
+      }}
+    >
       {/* Billing History */}
-      <div className="bg-white p-5 rounded-xl shadow-sm">
-        <h2 className="text-xl font-semibold mb-4">Billing History</h2>
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "20px",
+          borderRadius: "8px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: "18px",
+            fontWeight: "600",
+            marginBottom: "16px",
+            color: "#003B70",
+          }}
+        >
+          Billing History
+        </h2>
 
         {/* Filter Tabs */}
-        <div className="flex gap-3 mb-4">
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginBottom: "16px",
+            flexWrap: "wrap",
+          }}
+        >
           {["All", "Success", "Pending", "Failed"].map((tab) => (
             <button
               key={tab}
-              className={`px-4 py-1.5 text-sm border rounded-full ${
-                filter === tab
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 border"
-              }`}
+              style={{
+                padding: "6px 16px",
+                fontSize: "12px",
+                border: filter === tab ? "none" : "1px solid #0784C9",
+                borderRadius: "20px",
+                backgroundColor: filter === tab ? "#0784C9" : "white",
+                color: filter === tab ? "white" : "#0784C9",
+                cursor: "pointer",
+                fontWeight: "500",
+                transition: "all 0.2s",
+              }}
               onClick={() => {
-                setFilter(tab)
-                applyFilter(tab)
+                setFilter(tab);
+                applyFilter(tab);
+              }}
+              onMouseEnter={(e) => {
+                if (filter !== tab) {
+                  e.target.style.backgroundColor = "#DEF3F9";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (filter !== tab) {
+                  e.target.style.backgroundColor = "white";
+                }
               }}
             >
               {tab}
@@ -78,71 +113,222 @@ const BillingPage = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm text-left border-t border-gray-200">
-            <thead className="bg-gray-100">
+        <div style={{ overflowX: "auto" }}>
+          <table
+            style={{
+              minWidth: "100%",
+              fontSize: "12px",
+              textAlign: "left",
+              borderTop: "1px solid #0784C9",
+              borderCollapse: "collapse",
+            }}
+          >
+            <thead style={{ backgroundColor: "#DEF3F9" }}>
               <tr>
-                <th className="px-4 py-2 font-medium">Date</th>
-                <th className="px-4 py-2 font-medium">Plan details</th>
-                <th className="px-4 py-2 font-medium">Expires on</th>
-                <th className="px-4 py-2 font-medium">Amount</th>
-                <th className="px-4 py-2 font-medium">Status</th>
-                <th className="px-4 py-2 font-medium">Action</th>
+                <th
+                  style={{
+                    padding: "12px 16px",
+                    fontWeight: "600",
+                    color: "#003B70",
+                    borderBottom: "1px solid #0784C9",
+                  }}
+                >
+                  Date
+                </th>
+                <th
+                  style={{
+                    padding: "12px 16px",
+                    fontWeight: "600",
+                    color: "#003B70",
+                    borderBottom: "1px solid #0784C9",
+                  }}
+                >
+                  Plan details
+                </th>
+                <th
+                  style={{
+                    padding: "12px 16px",
+                    fontWeight: "600",
+                    color: "#003B70",
+                    borderBottom: "1px solid #0784C9",
+                  }}
+                >
+                  Expires on
+                </th>
+                <th
+                  style={{
+                    padding: "12px 16px",
+                    fontWeight: "600",
+                    color: "#003B70",
+                    borderBottom: "1px solid #0784C9",
+                  }}
+                >
+                  Amount
+                </th>
+                <th
+                  style={{
+                    padding: "12px 16px",
+                    fontWeight: "600",
+                    color: "#003B70",
+                    borderBottom: "1px solid #0784C9",
+                  }}
+                >
+                  Status
+                </th>
+                <th
+                  style={{
+                    padding: "12px 16px",
+                    fontWeight: "600",
+                    color: "#003B70",
+                    borderBottom: "1px solid #0784C9",
+                  }}
+                >
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
               {data?.map((entry, index) => (
                 <tr
                   key={index}
-                  className="border-t border-gray-200 hover:bg-gray-50"
+                  style={{
+                    borderBottom: "1px solid #DEF3F9",
+                  }}
+                 
                 >
-                  <td className="px-4 py-2">{entry.created_at.split("T")[0]}</td>
-                  <td className="px-4 py-2 text-blue-600 underline cursor-pointer">
-                    <p>{entry.Plan?.job_credits} Jobs</p>
-                    <p>{entry.Plan?.Database_credits} Databases</p>
+                  <td style={{ padding: "12px 16px", color: "#003B70" }}>
+                    {entry.created_at.split("T")[0]}
                   </td>
-                  <td className="px-4 py-2">{entry.expired_at.split("T")[0]}</td>
-                  <td className="px-4 py-2">{entry.amount_paid}</td>
-                  <td className="px-4 py-2">
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      color: "#0784C9",
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <p style={{ margin: "0 0 2px 0" }}>
+                      {entry.Plan?.job_credits} Jobs
+                    </p>
+                    <p style={{ margin: "0" }}>
+                      {entry.Plan?.Database_credits} Databases
+                    </p>
+                  </td>
+                  <td style={{ padding: "12px 16px", color: "#003B70" }}>
+                    {entry.expired_at.split("T")[0]}
+                  </td>
+                  <td style={{ padding: "12px 16px", color: "#003B70" }}>
+                    {entry.amount_paid}
+                  </td>
+                  <td style={{ padding: "12px 16px" }}>
                     {entry.status === "success" && (
-                      <span className="text-green-600 bg-green-100 px-2 py-1 rounded-full text-xs font-semibold">
+                      <span
+                        style={{
+                          color: "#0784C9",
+                          backgroundColor: "#DEF3F9",
+                          padding: "4px 8px",
+                          borderRadius: "12px",
+                          fontSize: "10px",
+                          fontWeight: "600",
+                        }}
+                      >
                         Success
                       </span>
                     )}
                     {entry.status === "failed" && (
-                      <span className="text-red-600 bg-red-100 px-2 py-1 rounded-full text-xs font-semibold">
+                      <span
+                        style={{
+                          color: "#003B70",
+                          backgroundColor: "#DEF3F9",
+                          padding: "4px 8px",
+                          borderRadius: "12px",
+                          fontSize: "10px",
+                          fontWeight: "600",
+                        }}
+                      >
                         Failed
                       </span>
                     )}
                     {entry.status === "Pending" && (
-                      <span className="text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full text-xs font-semibold">
+                      <span
+                        style={{
+                          color: "#0784C9",
+                          backgroundColor: "#DEF3F9",
+                          padding: "4px 8px",
+                          borderRadius: "12px",
+                          fontSize: "10px",
+                          fontWeight: "600",
+                        }}
+                      >
                         Pending
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-2">
+                  <td style={{ padding: "12px 16px" }}>
                     {entry.status === "Success" ? (
-                      <button className="flex items-center text-green-600 hover:underline">
-                        <Download className="w-4 h-4 mr-1" /> Invoice
+                      <button
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: "#0784C9",
+                          textDecoration: "underline",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "12px",
+                        }}
+                      >
+                        <Download
+                          style={{
+                            width: "14px",
+                            height: "14px",
+                            marginRight: "4px",
+                          }}
+                        />
+                        Invoice
                       </button>
                     ) : (
-                      <button className="flex items-center text-red-600 hover:underline">
-                        <Mail className="w-4 h-4 mr-1" /> Contact us
+                      <button
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          color: "#003B70",
+                          textDecoration: "underline",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "12px",
+                        }}
+                      >
+                        <Mail
+                          style={{
+                            width: "14px",
+                            height: "14px",
+                            marginRight: "4px",
+                          }}
+                        />
+                        Contact us
                       </button>
                     )}
                   </td>
                 </tr>
               ))}
-              {!data || data?.length === 0 && (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="text-center text-gray-500 py-6 italic"
-                  >
-                    No records found.
-                  </td>
-                </tr>
-              )}
+              {!data ||
+                (data?.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      style={{
+                        textAlign: "center",
+                        color: "#0784C9",
+                        padding: "24px",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      No records found.
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

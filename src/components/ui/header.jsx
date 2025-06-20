@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import MenuProfileModal from "../modals/otherModals/menuProfileModal";
 import { fetchCredits, fetchUserProfile } from "../../Redux/getData";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 
 
 const Header = ({ onMenuClick }) => {
 
+  const navigate = useNavigate();
   const [showProfileModal, setShowprofileModal] = useState(false);
   const dispatch = useDispatch();
   
@@ -40,7 +42,7 @@ const Header = ({ onMenuClick }) => {
           <HandCoins className="w-5 h-5 text-gray-600" />
           <span> {jobCredit}</span>
         </div>}
-        <div className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
+        <div onClick={()=>navigate("/contact-us")} className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
           <HelpCircle className="w-5 h-5 text-gray-600" />
           <span>Support</span>
         </div>

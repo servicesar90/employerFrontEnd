@@ -1,3 +1,5 @@
+// export default SelectPlan;
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPlans } from "../../API/ApiFunctions";
@@ -27,43 +29,154 @@ const SelectPlan = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen w-full">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-6">Choose a Plan</h1>
+    <div
+      style={{
+        padding: "16px",
+        backgroundColor: "#DEF3F9",
+        minHeight: "100vh",
+        width: "100%",
+        overflow: "auto",
+      }}
+    >
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        <h1
+          style={{
+            fontSize: "20px",
+            fontWeight: "600",
+            color: "#003B70",
+            marginBottom: "20px",
+          }}
+        >
+          Choose a Plan
+        </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {plans?.map((plan) => (
-          <div
-            key={plan.id}
-            className="bg-white rounded-xl shadow-md p-6 border hover:shadow-lg transition"
-          >
-            <h2 className="text-xl font-bold text-gray-800 mb-2">{plan.name}</h2>
-            <p className="text-gray-500 text-sm mb-4">
-              Valid for <span className="font-medium">{plan.validity} days</span>
-            </p>
-
-            <div className="mb-4 space-y-2 text-sm">
-              <div className="flex items-center text-gray-700">
-                <Briefcase className="w-4 h-4 mr-2 text-blue-600" />
-                <span className="font-medium">{plan.job_Credits}</span> Job Credits
-              </div>
-              <div className="flex items-center text-gray-700">
-                <Database className="w-4 h-4 mr-2 text-purple-600" />
-                <span className="font-medium">{plan.database_Credits}</span> Database Credits
-              </div>
-            </div>
-
-            <p className="text-xl font-semibold text-green-600 mb-4">
-              ₹{plan.price}
-            </p>
-
-            <button
-              onClick={() => handleSelect(plan)}
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+            gap: "12px",
+            maxWidth: "100%",
+          }}
+        >
+          {plans?.map((plan) => (
+            <div
+              key={plan.id}
+              style={{
+                backgroundColor: "white",
+                borderRadius: "8px",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                padding: "16px",
+                border: "1px solid #0784C9",
+                transition: "box-shadow 0.2s",
+              }}
+            
             >
-              Choose Plan
-            </button>
-          </div>
-        ))}
+              <h2
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "700",
+                  color: "#003B70",
+                  marginBottom: "6px",
+                }}
+              >
+                {plan.name}
+              </h2>
+              <p
+                style={{
+                  color: "#0784C9",
+                  fontSize: "11px",
+                  marginBottom: "12px",
+                }}
+              >
+                Valid for{" "}
+                <span style={{ fontWeight: "500" }}>{plan.validity} days</span>
+              </p>
+
+              <div
+                style={{
+                  marginBottom: "12px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px",
+                  fontSize: "11px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#003B70",
+                  }}
+                >
+                  <Briefcase
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      marginRight: "6px",
+                      color: "#0784C9",
+                    }}
+                  />
+                  <span style={{ fontWeight: "500",marginRight:"5px" }}>{plan.job_credits}</span>
+                  Job Credits
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#003B70",
+                  }}
+                >
+                  <Database
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      marginRight: "6px",
+                      color: "#0784C9",
+                    }}
+                  />
+                  <span style={{ fontWeight: "500", marginRight:"5px"}}>
+                    {plan.Database_credits} </span>
+                  Database Credits
+                </div>
+              </div>
+
+              <p
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  color: "#0784C9",
+                  marginBottom: "12px",
+                }}
+              >
+                ₹{plan.price}
+              </p>
+
+              <button
+                onClick={() => handleSelect(plan)}
+                style={{
+                  width: "100%",
+                  backgroundColor: "#0784C9",
+                  color: "white",
+                  padding: "8px 0",
+                  borderRadius: "6px",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  transition: "background-color 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#065a94";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "#0784C9";
+                }}
+              >
+                Choose Plan
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
