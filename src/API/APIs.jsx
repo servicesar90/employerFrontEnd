@@ -1,4 +1,4 @@
-  const base_url = "https://backend.talentnestjob.store";
+export  const base_url = "https://backend.talentnestjob.store";
 
 
 // LoginAPIs
@@ -27,3 +27,13 @@ export const getSkillsSuggestionsApi = `${base_url}/api/v1/suggest/skills`
 export const getCategorySuggestionsApi = `${base_url}/api/v1/suggest/roles/categories`
 
 export const getJobRolesSuggestionsApi = `${base_url}/api/v1/suggest/roles`
+
+export const getPlansApi = `${base_url}/api/v1/subscription/plans`
+
+export const  giveRazorpayApi = `${base_url}/api/v1/subscription/createorder`
+
+export const verifyPaymentApi = `${base_url}/api/v1/subscription/verify_payment`
+
+export const getBillApi = `${base_url}/api/v1/subscription/bill`
+
+export const getCreditsApi = `${base_url}/api/v1/subscription/credits`

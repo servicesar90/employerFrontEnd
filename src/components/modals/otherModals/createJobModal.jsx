@@ -35,13 +35,27 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import { editPostJob, getCategorySuggestions, getCitiesbyPincode, getEducationSuggestions, getJobRolesSuggestions, getSkillSuggestions, postJob } from "../../../API/ApiFunctions";
+import {
+  editPostJob,
+  getCategorySuggestions,
+  getCitiesbyPincode,
+  getEducationSuggestions,
+  getJobRolesSuggestions,
+  getSkillSuggestions,
+  postJob,
+} from "../../../API/ApiFunctions";
 import { useNavigate, useParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../ui/toast";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchJobsById, fetchUserProfile } from "../../../Redux/getData";
 
-const steps = ["Job details", "Basic Details", "Interview Details", "Preview", "Payment Mode"];
+const steps = [
+  "Job details",
+  "Basic Details",
+  "Interview Details",
+  "Preview",
+  "Payment Mode",
+];
 
 const PERKS = [
   "Flexible Working Hours",
@@ -71,14 +85,36 @@ const educationOptions = [
   "ITI",
   "Graduate",
   "Postgraduate",
-  "Professional_Certification"
+  "Professional_Certification",
 ];
 
 const ADDITIONAL_FIELDS = {
   gender: ["Male", "Female", "Other"],
   distance: ["<10km", "10-20km", ">20km"],
-  languages: ["Assamese", "Bengali", "Bodo", "Dogri", "Gujarati", "Hindi", "Kannada", "Kashmiri", "Konkani", "Maithili",
-    "Malayalam", "Manipuri", "Marathi", "Nepali", "Odia", "Punjabi", "Sanskrit", "Santali", "Sindhi", "Tamil", "Telugu", "Urdu"],
+  languages: [
+    "Assamese",
+    "Bengali",
+    "Bodo",
+    "Dogri",
+    "Gujarati",
+    "Hindi",
+    "Kannada",
+    "Kashmiri",
+    "Konkani",
+    "Maithili",
+    "Malayalam",
+    "Manipuri",
+    "Marathi",
+    "Nepali",
+    "Odia",
+    "Punjabi",
+    "Sanskrit",
+    "Santali",
+    "Sindhi",
+    "Tamil",
+    "Telugu",
+    "Urdu",
+  ],
   skills: ["Communication", "Sales", "Excel"],
   age: ["18-25", "26-35", "36+"],
 };
@@ -86,7 +122,6 @@ const ADDITIONAL_FIELDS = {
 const englishLevels = ["Basic", "Intermediate", "Advanced"];
 
 const experienceOptions = ["Any", "Experienced Only", "Fresher Only"];
-
 
 const DetailRow = ({ label, value }) => (
   <div className="flex">
@@ -114,7 +149,7 @@ const PostJob = () => {
   const [changeSelected, setSelectedChange] = useState(true);
   const [isGetAddress, setIsGetAddress] = useState(false);
   const [skillsSuggestions, setSkillsSuggestions] = useState([]);
-  const [inputValue, setInputValue] = useState("")
+  const [inputValue, setInputValue] = useState("");
   const [categorySuggestions, setCategorySuggestions] = useState([]);
   const [category, setCategory] = useState(null);
   const [jobRoleSuggestions, setJobRoleSuggestions] = useState([]);
@@ -122,26 +157,19 @@ const PostJob = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-
   useEffect(() => {
-    dispatch(fetchUserProfile())
-  }, [dispatch])
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchJobsById(id))
+      dispatch(fetchJobsById(id));
     }
-  }, [id, dispatch])
-
-
+  }, [id, dispatch]);
 
   const { employer, jobsById } = useSelector((state) => state.getDataReducer);
 
-
-
   const navigate = useNavigate();
-
-
 
   const modules = {
     toolbar: [
@@ -210,22 +238,16 @@ const PostJob = () => {
     },
   });
 
-
-
-
-
-
   useEffect(() => {
     if (employer) {
-      setValue("companyName", employer?.company.companyName)
+      setValue("companyName", employer?.company.companyName);
     }
-  }, [employer])
+  }, [employer]);
 
   useEffect(() => {
-
     if (jobsById) {
       const selectedJob = jobsById?.[0];
-      
+
       reset({
         companyName: employer?.company.companyName,
         jobTitle: selectedJob?.jobTitle,
@@ -271,60 +293,56 @@ const PostJob = () => {
         candidateType: selectedJob.candidateType,
         notificationPreference: selectedJob.notificationPreference,
       });
-    }else{
+    } else {
       reset({
-      companyName: employer?.company.companyName,
-      jobTitle: null,
-      jobRoles: null,
-      jobType: null,
-      nightShift: "Day Shift",
-      workLocationType: null,
-      location: null,
-      state: null,
-      city: null,
-      pinCode: null,
-      payType: null,
-      minimumSalary: null,
-      maximumSalary: null,
-      incentive: null,
-      perks: [],
-      joiningFee: false,
-      joiningFeeAmount: null,
-      joiningFeeReason: null,
-      joiningFeeReasonDetail: null,
-      joiningFeeAmountTime: null,
-      education: null,
-      english: null,
-      experience: null,
-      experienceLevel: null,
-      educationSpecialization: null,
-      gender: null,
-      age: null,
-      languages: null,
-      distance: null,
-      skills: null,
-      jobDescription: null,
-      walkIn: false,
-      walkInAddress: null,
-      walkInStartDate: null,
-      WalkInEndDate: null,
-      walkInStartTime: null,
-      walkInInstruction: null,
-      contactPrefernece: null,
-      otherRecruiterName: null,
-      otherRecruiterNumber: null,
-      otherRecruiterEmail: null,
-      candidateType: null,
-      notificationPreference: null,
-    })
+        companyName: employer?.company.companyName,
+        jobTitle: null,
+        jobRoles: null,
+        jobType: null,
+        nightShift: "Day Shift",
+        workLocationType: null,
+        location: null,
+        state: null,
+        city: null,
+        pinCode: null,
+        payType: null,
+        minimumSalary: null,
+        maximumSalary: null,
+        incentive: null,
+        perks: [],
+        joiningFee: false,
+        joiningFeeAmount: null,
+        joiningFeeReason: null,
+        joiningFeeReasonDetail: null,
+        joiningFeeAmountTime: null,
+        education: null,
+        english: null,
+        experience: null,
+        experienceLevel: null,
+        educationSpecialization: null,
+        gender: null,
+        age: null,
+        languages: null,
+        distance: null,
+        skills: null,
+        jobDescription: null,
+        walkIn: false,
+        walkInAddress: null,
+        walkInStartDate: null,
+        WalkInEndDate: null,
+        walkInStartTime: null,
+        walkInInstruction: null,
+        contactPrefernece: null,
+        otherRecruiterName: null,
+        otherRecruiterNumber: null,
+        otherRecruiterEmail: null,
+        candidateType: null,
+        notificationPreference: null,
+      });
     }
-
-
   }, [jobsById]);
 
-
   const values = getValues();
-
 
   const toggleField = (field) => {
     if (expanded.includes(field)) {
@@ -334,14 +352,13 @@ const PostJob = () => {
     }
   };
 
-
   const handleLocation = async (value) => {
     if (value.length === 6) {
       try {
         const response = await getCitiesbyPincode(value);
 
         if (response && response.data.length > 0) {
-          clearErrors("pinCode")
+          clearErrors("pinCode");
           const address = response.data[0];
 
           setIsGetAddress(true);
@@ -358,7 +375,7 @@ const PostJob = () => {
           });
         }
       } catch (e) {
-        console.log(e)
+        console.log(e);
         setIsGetAddress(false);
         setError("pinCode", {
           type: "manual",
@@ -368,53 +385,48 @@ const PostJob = () => {
     }
   };
 
-
   const handleEducationSuggestions = async (value) => {
-
     const response = await getEducationSuggestions(value);
 
     if (response) {
-      console.log(response.data)
+      console.log(response.data);
       setEducation(value);
       setEducationSuggestions(response.data);
     } else {
-      showErrorToast("Could not fetch suggestionas")
+      showErrorToast("Could not fetch suggestionas");
     }
-  }
+  };
 
   const handleSkillsSuggestions = async (value) => {
-    console.log(value)
+    console.log(value);
     const response = await getSkillSuggestions(value);
     if (response) {
-      console.log(response.data.data)
-      setSkillsSuggestions(response.data.data)
+      console.log(response.data.data);
+      setSkillsSuggestions(response.data.data);
     } else {
-      showErrorToast("Could not fetch suggestions")
+      showErrorToast("Could not fetch suggestions");
     }
-  }
+  };
 
   const handlecategorySuggestions = async () => {
     const response = await getCategorySuggestions();
     if (response) {
-
-      setCategorySuggestions(response.data.data)
+      setCategorySuggestions(response.data.data);
     } else {
-      showErrorToast("Couldn't fetch suggestions")
+      showErrorToast("Couldn't fetch suggestions");
     }
-  }
+  };
 
   const handleCategory = async (value) => {
-
     const response = await getJobRolesSuggestions(value);
 
     if (response) {
       setCategory(value);
-      setJobRoleSuggestions(response.data.data)
+      setJobRoleSuggestions(response.data.data);
     } else {
-      showErrorToast("could not fetch suggestions")
+      showErrorToast("could not fetch suggestions");
     }
-  }
-
+  };
 
   const onSubmit = async (data) => {
     console.log("Form Submitted:", data);
@@ -422,16 +434,18 @@ const PostJob = () => {
     let response = null;
 
     if (id !== "null") {
-      response = await editPostJob(id, data)
+      response = await editPostJob(id, data);
     } else {
       response = await postJob(data);
     }
 
-
-
     if (response) {
-      showSuccessToast("job Post succesfully");
-      navigate("/employerHome/jobs");
+      if (response == "plan") {
+        navigate("/employerHome/selectPlan");
+      } else {
+        showSuccessToast("job Post succesfully");
+        navigate("/employerHome/jobs");
+      }
     } else {
       showErrorToast("Could not post job");
     }
@@ -570,7 +584,6 @@ const PostJob = () => {
                 Category
               </Typography>
               <Box className="flex items-start flex-row w-full gap-2 mt-2">
-
                 <Autocomplete
                   freeSolo
                   options={categorySuggestions}
@@ -578,18 +591,15 @@ const PostJob = () => {
                   onInputChange={(event, newInputValue, reason) => {
                     if (reason === "input") {
                       if (categorySuggestions.length == 0) {
-                        handlecategorySuggestions()
+                        handlecategorySuggestions();
                       }
-
                     }
                   }}
                   onChange={(event, value) => {
                     if (value) {
-                      handleCategory(value)
-
+                      handleCategory(value);
                     }
                   }}
-
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -597,14 +607,12 @@ const PostJob = () => {
                       size="small"
                       fullWidth
                     />
-
                   )}
                 />
-
               </Box>
             </Box>
 
-            {category &&
+            {category && (
               <Box className="mt-4 w-1/2 flex flex-col items-start">
                 <Typography
                   variant="h6"
@@ -637,9 +645,9 @@ const PostJob = () => {
                       />
                     )}
                   />
-
                 </Box>
-              </Box>}
+              </Box>
+            )}
 
             <Box className="mt-6 flex flex-col items-start">
               <Typography
@@ -666,10 +674,11 @@ const PostJob = () => {
                             <div
                               key={type}
                               onClick={() => field.onChange(type)}
-                              className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
-                                ? "bg-secondary text-white border-secondary"
-                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                                }`}
+                              className={`cursor-pointer px-6 py-1 rounded-full border ${
+                                field.value === type
+                                  ? "bg-secondary text-white border-secondary"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                              }`}
                             >
                               {type.replace("-", " ")}
                             </div>
@@ -677,7 +686,7 @@ const PostJob = () => {
                         }
                       )}
                     </div>
-                  )
+                  );
                 }}
               />
             </Box>
@@ -692,7 +701,9 @@ const PostJob = () => {
                       <Checkbox
                         checked={field.value === "Night Shift"}
                         onChange={(e) => {
-                          field.onChange(e.target.checked? "Night Shift" : "Day Shift");
+                          field.onChange(
+                            e.target.checked ? "Night Shift" : "Day Shift"
+                          );
                           console.log("Night shift:", e.target.checked);
                         }}
                       />
@@ -702,7 +713,6 @@ const PostJob = () => {
                 )}
               />
             </Box>
-
           </Box>
 
           <Box className="bg-white p-6 mt-2 flex justify-start flex-col items-start rounded shadow">
@@ -742,10 +752,11 @@ const PostJob = () => {
                             onClick={() => {
                               field.onChange(type);
                             }}
-                            className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
-                              ? "bg-secondary text-white border-secondary"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                              }`}
+                            className={`cursor-pointer px-6 py-1 rounded-full border ${
+                              field.value === type
+                                ? "bg-secondary text-white border-secondary"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
                           >
                             {type.replace("-", " ")}
                           </div>
@@ -780,7 +791,6 @@ const PostJob = () => {
               </Typography>
 
               <Box className="mt-6 flex flex-row flex-wrap items-start gap-4">
-
                 <Box className="flex items-start min-w-[30vw] gap-2 flex-col">
                   <Typography
                     variant="h6"
@@ -800,7 +810,6 @@ const PostJob = () => {
                           placeholder="Enter Flat No./House No."
                           size="small"
                           fullWidth
-
                         />
                       )}
                     />
@@ -808,7 +817,6 @@ const PostJob = () => {
                 </Box>
 
                 <Box className="flex items-start min-w-[30vw] gap-2 flex-col">
-
                   <Typography
                     variant="h6"
                     className="mb-2 self-start"
@@ -843,88 +851,71 @@ const PostJob = () => {
                       />
                     )}
                   />
-
-
-
                 </Box>
 
+                {isGetAddress && (
+                  <>
+                    <Box className="flex items-start min-w-[30vw] gap-2 flex-col">
+                      <Typography
+                        variant="h6"
+                        className="mb-2 self-start"
+                        sx={{ fontWeight: 700, fontSize: "0.9rem" }}
+                      >
+                        City
+                      </Typography>
 
+                      <Controller
+                        name="city"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            size="small"
+                            placeholder="Enter Your City"
+                            slotProps={{
+                              input: {
+                                readOnly: true,
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    </Box>
 
-                {isGetAddress && <>
-                  <Box className="flex items-start min-w-[30vw] gap-2 flex-col">
+                    <Box className="flex items-start min-w-[30vw] gap-2 flex-col">
+                      <Typography
+                        variant="h6"
+                        className="mb-2 self-start"
+                        sx={{ fontWeight: 700, fontSize: "0.9rem" }}
+                      >
+                        State
+                      </Typography>
 
-                    <Typography
-                      variant="h6"
-                      className="mb-2 self-start"
-                      sx={{ fontWeight: 700, fontSize: "0.9rem" }}
-                    >
-                      City
-                    </Typography>
-
-                    <Controller
-                      name="city"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          size="small"
-                          placeholder="Enter Your City"
-                          slotProps={{
-                            input: {
-                              readOnly: true,
-                            },
-                          }}
-                        />
-                      )}
-                    />
-
-                  </Box>
-
-                  <Box className="flex items-start min-w-[30vw] gap-2 flex-col">
-
-                    <Typography
-                      variant="h6"
-                      className="mb-2 self-start"
-                      sx={{ fontWeight: 700, fontSize: "0.9rem" }}
-                    >
-                      State
-                    </Typography>
-
-                    <Controller
-                      name="state"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          size="small"
-                          placeholder="Enter State"
-                          value={field.value}
-                          slotProps={{
-                            input: {
-                              readOnly: true,
-                            },
-                          }}
-
-                        />
-                      )}
-                    />
-
-                  </Box>
-
-
-                </>
-                }
-
-
+                      <Controller
+                        name="state"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            size="small"
+                            placeholder="Enter State"
+                            value={field.value}
+                            slotProps={{
+                              input: {
+                                readOnly: true,
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    </Box>
+                  </>
+                )}
               </Box>
-
-            </Box >
-
+            </Box>
           </Box>
-
-
 
           {/* Pay Type Section */}
           <Box className="bg-white p-6 mt-2 flex justify-start flex-col items-start rounded shadow">
@@ -956,25 +947,29 @@ const PostJob = () => {
                 rules={{ required: "Pay type is required" }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
-                    {["Fixed-only", "Fixed+Incentive", "Fixed+variable", "incentive"].map(
-                      (type) => {
-                        return (
-                          <div
-                            key={type}
-                            onClick={() => {
-                              field.onChange(type);
-                              setSelectedPayType(type);
-                            }}
-                            className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
+                    {[
+                      "Fixed-only",
+                      "Fixed+Incentive",
+                      "Fixed+variable",
+                      "incentive",
+                    ].map((type) => {
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => {
+                            field.onChange(type);
+                            setSelectedPayType(type);
+                          }}
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                            field.value === type
                               ? "bg-secondary text-white border-secondary"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                              }`}
-                          >
-                            {type.replace("-", " ")}
-                          </div>
-                        );
-                      }
-                    )}
+                          }`}
+                        >
+                          {type.replace("-", " ")}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               />
@@ -988,7 +983,9 @@ const PostJob = () => {
 
             <div className="w-full flex flex-wrap gap-2 items-start">
               {/* Fixed or Fixed+Incentive: Minimum Salary */}
-              {(selectedPayType === "Fixed-only" || selectedPayType === "Fixed+Incentive" || selectedPayType === "Fixed+variable") && (
+              {(selectedPayType === "Fixed-only" ||
+                selectedPayType === "Fixed+Incentive" ||
+                selectedPayType === "Fixed+variable") && (
                 <Box className="mt-6 w-[25%]">
                   <Typography
                     variant="h6"
@@ -1008,8 +1005,10 @@ const PostJob = () => {
                       },
                       validate: (value) => {
                         const numericValue = Number(value);
-                        if (numericValue < 3000) return "Minimum salary should be at least ₹3000";
-                        if (numericValue > 150000) return "Salary cannot exceed ₹1.5 Lakh";
+                        if (numericValue < 3000)
+                          return "Minimum salary should be at least ₹3000";
+                        if (numericValue > 150000)
+                          return "Salary cannot exceed ₹1.5 Lakh";
                         return true;
                       },
                     }}
@@ -1029,10 +1028,10 @@ const PostJob = () => {
                 </Box>
               )}
 
-
-
               {/* Fixed or Fixed+Incentive: Maximum Salary */}
-              {(selectedPayType === "Fixed-only" || selectedPayType === "Fixed+Incentive" || selectedPayType === "Fixed+variable") && (
+              {(selectedPayType === "Fixed-only" ||
+                selectedPayType === "Fixed+Incentive" ||
+                selectedPayType === "Fixed+variable") && (
                 <Box className="mt-6 w-[25%]">
                   <Typography
                     variant="h6"
@@ -1053,8 +1052,10 @@ const PostJob = () => {
                       validate: (value) => {
                         const numericValue = Number(value);
                         const minSalary = Number(getValues("minimumSalary"));
-                        if (numericValue < 3000) return "Maximum salary should be at least ₹3000";
-                        if (numericValue > 1000000) return "Salary cannot exceed ₹10 lakh";
+                        if (numericValue < 3000)
+                          return "Maximum salary should be at least ₹3000";
+                        if (numericValue > 1000000)
+                          return "Salary cannot exceed ₹10 lakh";
                         if (minSalary && numericValue <= minSalary) {
                           return "Maximum salary must be greater than minimum salary";
                         }
@@ -1077,10 +1078,12 @@ const PostJob = () => {
               )}
 
               {/* Incentive (either incentive-only or Fixed+Incentive) */}
-              {(selectedPayType === "incentive" || selectedPayType === "Fixed+Incentive") && (
+              {(selectedPayType === "incentive" ||
+                selectedPayType === "Fixed+Incentive") && (
                 <Box
-                  className={`mt-6 ${selectedPayType === "incentive" ? "w-[25%]" : "w-[25%]"
-                    }`}
+                  className={`mt-6 ${
+                    selectedPayType === "incentive" ? "w-[25%]" : "w-[25%]"
+                  }`}
                 >
                   <Typography
                     variant="h6"
@@ -1115,7 +1118,6 @@ const PostJob = () => {
                 </Box>
               )}
             </div>
-
 
             {/* Perks Section */}
             <Box className="mt-6 flex flex-col items-start">
@@ -1206,10 +1208,11 @@ const PostJob = () => {
                           field.onChange(option.value);
                           setjoiningfee(option.value); // optional local state
                         }}
-                        className={`cursor-pointer px-6 py-1 rounded-full border transition ${field.value === option.value
-                          ? "bg-secondary text-white border-secondary"
-                          : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                          }`}
+                        className={`cursor-pointer px-6 py-1 rounded-full border transition ${
+                          field.value === option.value
+                            ? "bg-secondary text-white border-secondary"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                        }`}
                       >
                         {option.label}
                       </div>
@@ -1244,7 +1247,8 @@ const PostJob = () => {
                         value: /^[0-9]+$/,
                         message: "Only numeric values are allowed",
                       },
-                      validate: (value) => value <= 10000 || "Amount must be 10000 or less"
+                      validate: (value) =>
+                        value <= 10000 || "Amount must be 10000 or less",
                     }}
                     render={({ field }) => (
                       <TextField
@@ -1291,10 +1295,11 @@ const PostJob = () => {
                                 field.onChange(type);
                                 setjoiningFeeReason(type);
                               }}
-                              className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
-                                ? "bg-secondary text-white border-secondary"
-                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                                }`}
+                              className={`cursor-pointer px-6 py-1 rounded-full border ${
+                                field.value === type
+                                  ? "bg-secondary text-white border-secondary"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                              }`}
                             >
                               {type.replace("-", " ")}
                             </div>
@@ -1314,32 +1319,32 @@ const PostJob = () => {
                 {(joiningFeeReason === "inventory-charge" ||
                   joiningFeeReason === "registration-fees" ||
                   joiningFeeReason === "other-reason") && (
-                    <Box className="mt-6 w-full flex flex-col items-start">
-                      <Typography
-                        variant="h6"
-                        className="mb-2 self-start"
-                        sx={{ fontWeight: 700, fontSize: "0.9rem" }}
-                      >
-                        Mention {joiningFeeReason} Here
-                      </Typography>
-                      <Controller
-                        name="joiningFeeReasonDetail"
-                        control={control}
-                        rules={{ required: "Fees Reason is required" }}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="joining fees amount reason Amount"
-                            fullWidth
-                            size="small"
-                            placeholder="Mention the Reason"
-                            error={!!errors.joiningFeeReasonDetail}
-                            helperText={errors.joiningFeeReasonDetail?.message}
-                          />
-                        )}
-                      />
-                    </Box>
-                  )}
+                  <Box className="mt-6 w-full flex flex-col items-start">
+                    <Typography
+                      variant="h6"
+                      className="mb-2 self-start"
+                      sx={{ fontWeight: 700, fontSize: "0.9rem" }}
+                    >
+                      Mention {joiningFeeReason} Here
+                    </Typography>
+                    <Controller
+                      name="joiningFeeReasonDetail"
+                      control={control}
+                      rules={{ required: "Fees Reason is required" }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="joining fees amount reason Amount"
+                          fullWidth
+                          size="small"
+                          placeholder="Mention the Reason"
+                          error={!!errors.joiningFeeReasonDetail}
+                          helperText={errors.joiningFeeReasonDetail?.message}
+                        />
+                      )}
+                    />
+                  </Box>
+                )}
 
                 <Box className="mt-4 flex flex-col items-start">
                   <Typography
@@ -1366,10 +1371,11 @@ const PostJob = () => {
                               onClick={() => {
                                 field.onChange(type);
                               }}
-                              className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
-                                ? "bg-secondary text-white border-secondary"
-                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                                }`}
+                              className={`cursor-pointer px-6 py-1 rounded-full border ${
+                                field.value === type
+                                  ? "bg-secondary text-white border-secondary"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                              }`}
                             >
                               {type.replace("-", " ")}
                             </div>
@@ -1447,16 +1453,16 @@ const PostJob = () => {
                           key={type}
                           onClick={() => {
                             field.onChange(type);
-                            setValue("educationSpecialization", null)
+                            setValue("educationSpecialization", null);
                             handleEducationSuggestions(type);
                           }}
-                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
-                            ? "bg-secondary text-white border-secondary"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                            }`}
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                            field.value === type
+                              ? "bg-secondary text-white border-secondary"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                          }`}
                         >
                           {type.replace(/_/g, " ").replace(/Categories/g, " ")}
-
                         </div>
                       );
                     })}
@@ -1471,8 +1477,7 @@ const PostJob = () => {
               )}
             </FormControl>
 
-
-            {educationLevel &&
+            {educationLevel && (
               <Box className="flex items-center flex-col w-full gap-2 mt-4">
                 <Typography
                   variant="h6"
@@ -1504,10 +1509,9 @@ const PostJob = () => {
                       />
                     )}
                   />
-
                 </Box>
-              </Box>}
-
+              </Box>
+            )}
 
             {/* English Level */}
             <FormControl fullWidth className="flex flex-col items-start">
@@ -1531,10 +1535,11 @@ const PostJob = () => {
                           onClick={() => {
                             field.onChange(type);
                           }}
-                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
-                            ? "bg-secondary text-white border-secondary"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                            }`}
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                            field.value === type
+                              ? "bg-secondary text-white border-secondary"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                          }`}
                         >
                           {type.replace("-", " ")}
                         </div>
@@ -1573,10 +1578,11 @@ const PostJob = () => {
                             field.onChange(type);
                             setExperience(type);
                           }}
-                          className={`cursor-pointer px-6 py-1 rounded-full border ${field.value === type
-                            ? "bg-secondary text-white border-secondary"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                            }`}
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                            field.value === type
+                              ? "bg-secondary text-white border-secondary"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                          }`}
                         >
                           {type.replace("-", " ")}
                         </div>
@@ -1607,13 +1613,20 @@ const PostJob = () => {
                   control={control}
                   rules={{ required: "Experience Level is required" }}
                   render={({ field }) => {
-                    const [min, max] = field.value?.split("-").map(Number) || [null, null];
+                    const [min, max] = field.value?.split("-").map(Number) || [
+                      null,
+                      null,
+                    ];
 
                     const handleChange = (type, value) => {
                       const newMin = type === "min" ? value : min;
                       const newMax = type === "max" ? value : max;
 
-                      if (newMin !== null && newMax !== null && newMin > newMax) {
+                      if (
+                        newMin !== null &&
+                        newMax !== null &&
+                        newMin > newMax
+                      ) {
                         // You can also show a warning if needed
                         return;
                       }
@@ -1627,7 +1640,9 @@ const PostJob = () => {
                           <FormLabel>Minimum</FormLabel>
                           <Select
                             value={min ?? ""}
-                            onChange={(e) => handleChange("min", e.target.value)}
+                            onChange={(e) =>
+                              handleChange("min", e.target.value)
+                            }
                             displayEmpty
                             size="small"
                           >
@@ -1644,23 +1659,26 @@ const PostJob = () => {
                           <FormLabel>Maximum</FormLabel>
                           <Select
                             value={max ?? ""}
-                            onChange={(e) => handleChange("max", e.target.value)}
+                            onChange={(e) =>
+                              handleChange("max", e.target.value)
+                            }
                             displayEmpty
                             size="small"
                           >
                             <MenuItem value="">Max</MenuItem>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ">10"].map((val) => (
-                              <MenuItem key={val} value={val}>
-                                {val} yrs
-                              </MenuItem>
-                            ))}
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ">10"].map(
+                              (val) => (
+                                <MenuItem key={val} value={val}>
+                                  {val} yrs
+                                </MenuItem>
+                              )
+                            )}
                           </Select>
                         </FormControl>
                       </div>
                     );
                   }}
                 />
-
 
                 {errors.experienceLevel && (
                   <Typography color="error" variant="caption">
@@ -1695,7 +1713,13 @@ const PostJob = () => {
                 control={control}
                 defaultValue={[]}
                 render={({ field }) => {
-                  const options = ["gender", "age", "distance", "languages", "skills"];
+                  const options = [
+                    "gender",
+                    "age",
+                    "distance",
+                    "languages",
+                    "skills",
+                  ];
                   const labels = {
                     gender: "Gender",
                     age: "Age",
@@ -1720,10 +1744,11 @@ const PostJob = () => {
                               toggleField(val); // maintain existing behavior
                               field.onChange(newValue);
                             }}
-                            className={`px-4 py-1.5 rounded-full cursor-pointer text-sm font-medium transition border ${selected
-                              ? "bg-blue-100 text-blue-700 border-blue-500"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                              }`}
+                            className={`px-4 py-1.5 rounded-full cursor-pointer text-sm font-medium transition border ${
+                              selected
+                                ? "bg-blue-100 text-blue-700 border-blue-500"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                            }`}
                           >
                             {labels[val]}
                           </Box>
@@ -1744,8 +1769,6 @@ const PostJob = () => {
                   {fieldKey} Options
                 </Typography>
 
-
-
                 <Controller
                   name={fieldKey}
                   control={control}
@@ -1760,7 +1783,9 @@ const PostJob = () => {
                                 key={idx}
                                 label={value}
                                 onDelete={() => {
-                                  const updated = field.value.filter((val) => val !== value);
+                                  const updated = field.value.filter(
+                                    (val) => val !== value
+                                  );
                                   field.onChange(updated);
                                 }}
                                 className="cursor-pointer"
@@ -1783,10 +1808,13 @@ const PostJob = () => {
                                   }
                                 }
                               }}
-                              options={
-                                (fieldKey === "skills" ? skillsSuggestions : ADDITIONAL_FIELDS[fieldKey])
-                                  .filter((option) => !(field.value || []).includes(option))
-                              }
+                              options={(fieldKey === "skills"
+                                ? skillsSuggestions
+                                : ADDITIONAL_FIELDS[fieldKey]
+                              ).filter(
+                                (option) =>
+                                  !(field.value || []).includes(option)
+                              )}
                               value={field.value || []}
                               onChange={(event, newValue) => {
                                 const currentValues = field.value || [];
@@ -1812,7 +1840,6 @@ const PostJob = () => {
                                 />
                               )}
                             />
-
                           </div>
                         </>
                       );
@@ -1823,10 +1850,11 @@ const PostJob = () => {
                             <div
                               key={type}
                               onClick={() => field.onChange(type)}
-                              className={`cursor-pointer px-6 py-1 rounded-full border transition ${field.value === type
-                                ? "bg-secondary text-white border-secondary"
-                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                                }`}
+                              className={`cursor-pointer px-6 py-1 rounded-full border transition ${
+                                field.value === type
+                                  ? "bg-secondary text-white border-secondary"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                              }`}
                             >
                               {type}
                             </div>
@@ -1836,7 +1864,6 @@ const PostJob = () => {
                     }
                   }}
                 />
-
               </Box>
             ))}
           </Box>
@@ -1876,7 +1903,6 @@ const PostJob = () => {
                     className="quill-editor"
                     placeholder="Write job description..."
                   />
-
                 )}
               />
             </Box>
@@ -1987,7 +2013,6 @@ const PostJob = () => {
                           {...field}
                           placeholder="Enter full address"
                           size="small"
-
                           error={!!errors.walkInAddress}
                           helperText={errors.walkInAddress?.message}
                         />
@@ -1999,14 +2024,15 @@ const PostJob = () => {
                               if (e.target.checked) {
                                 setValue(
                                   "walkInAddress",
-                                  `${getValues("location")}, ${getValues("city")}, ${getValues("state")}`
+                                  `${getValues("location")}, ${getValues(
+                                    "city"
+                                  )}, ${getValues("state")}`
                                 );
                               }
                             }}
                           />
                           Same as office address
                         </label>
-
                       </div>
                     )}
                   />
@@ -2078,7 +2104,6 @@ const PostJob = () => {
                           />
                         )}
                       />
-
                     </FormControl>
                   </div>
                 </Box>
@@ -2148,8 +2173,8 @@ const PostJob = () => {
             {/* Communication Preferences */}
             <Box className="bg-blue-50 p-3 mt-4 rounded border border-blue-200">
               <Typography variant="body2">
-                📥 Leads information will be accessible on Unigrow portal and can
-                be <strong>downloaded in excel format</strong>
+                📥 Leads information will be accessible on Unigrow portal and
+                can be <strong>downloaded in excel format</strong>
               </Typography>
             </Box>
 
@@ -2311,100 +2336,100 @@ const PostJob = () => {
 
             {(contactpermission === "self" ||
               contactpermission === "other") && (
-                <>
-                  <FormControl component="fieldset" fullWidth>
-                    <FormLabel
-                      className="mb-2 self-start"
-                      sx={{ fontWeight: 700, fontSize: "0.9rem" }}
-                    >
-                      Which candidates should be able to contact you ?
-                    </FormLabel>
-                    <Controller
-                      name="candidateType"
-                      control={control}
-                      rules={{ required: "Please select your preference" }}
-                      render={({ field }) => (
-                        <RadioGroup {...field}>
-                          <FormControlLabel
-                            value="all candidate"
-                            control={<Radio />}
-                            label="All candidates"
-                          />
-                          <FormControlLabel
-                            value="matched-candidate"
-                            control={<Radio />}
-                            label="Only matched candidates (~60% of all candidates)"
-                          />
-                        </RadioGroup>
-                      )}
-                    />
-                    {errors.candidateType && (
-                      <Typography color="error" variant="caption">
-                        {errors.candidateType.message}
-                      </Typography>
+              <>
+                <FormControl component="fieldset" fullWidth>
+                  <FormLabel
+                    className="mb-2 self-start"
+                    sx={{ fontWeight: 700, fontSize: "0.9rem" }}
+                  >
+                    Which candidates should be able to contact you ?
+                  </FormLabel>
+                  <Controller
+                    name="candidateType"
+                    control={control}
+                    rules={{ required: "Please select your preference" }}
+                    render={({ field }) => (
+                      <RadioGroup {...field}>
+                        <FormControlLabel
+                          value="all candidate"
+                          control={<Radio />}
+                          label="All candidates"
+                        />
+                        <FormControlLabel
+                          value="matched-candidate"
+                          control={<Radio />}
+                          label="Only matched candidates (~60% of all candidates)"
+                        />
+                      </RadioGroup>
                     )}
-                  </FormControl>
-                </>
-              )}
+                  />
+                  {errors.candidateType && (
+                    <Typography color="error" variant="caption">
+                      {errors.candidateType.message}
+                    </Typography>
+                  )}
+                </FormControl>
+              </>
+            )}
           </Box>
 
           <Box className="bg-white p-6 mt-4 rounded shadow space-y-6 flex flex-col items-start">
             {(contactpermission === "no" ||
               contactpermission === "self" ||
               contactpermission === "other") && (
-                <>
-                  <Typography
-                    variant="h6"
-                    className="mb-2 self-start"
-                    sx={{ fontWeight: 700, fontSize: "0.9rem" }}
-                  >
-                    Communication Preferences
-                  </Typography>
-                  <FormControl component="fieldset" fullWidth>
-                    <FormLabel className="mt-4 mb-2 self-start">
-                      Every time you receive a candidate application,do you
-                      wantWhatsapp Alerts from Unigrow? *
-                    </FormLabel>
-                    <Controller
-                      name="notificationPreference"
-                      control={control}
-                      rules={{ required: "Please select your preference" }}
-                      render={({ field }) => (
-                        <RadioGroup
-                          {...field}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            field.onChange(value);
-                            if (value === "self") {
-                              setContactPermission(value);
-                            }
-                          }}
-                        >
-                          <FormControlLabel
-                            value="yes"
-                            control={<Radio />}
-                            label={
-                              contactpermission === "self"
-                                ? "Yes, to myself"
-                                : "Yes, to other recruiter"
-                            }
-                          />
-                          <FormControlLabel
-                            value="no"
-                            control={<Radio />}
-                            label="No, send me summary once a day"
-                          />
-                        </RadioGroup>
-                      )}
-                    />
-                    {errors.notificationPreference && (
-                      <Typography color="error" variant="caption">
-                        {errors.notificationPreference.message}
-                      </Typography>
+              <>
+                <Typography
+                  variant="h6"
+                  className="mb-2 self-start"
+                  sx={{ fontWeight: 700, fontSize: "0.9rem" }}
+                >
+                  Communication Preferences
+                </Typography>
+                <FormControl component="fieldset" fullWidth>
+                  <FormLabel className="mt-4 mb-2 self-start">
+                    Every time you receive a candidate application,do you
+                    wantWhatsapp Alerts from Unigrow? *
+                  </FormLabel>
+                  <Controller
+                    name="notificationPreference"
+                    control={control}
+                    rules={{ required: "Please select your preference" }}
+                    render={({ field }) => (
+                      <RadioGroup
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          field.onChange(value);
+                          if (value === "self") {
+                            setContactPermission(value);
+                          }
+                        }}
+                      >
+                        <FormControlLabel
+                          value="yes"
+                          control={<Radio />}
+                          label={
+                            contactpermission === "self"
+                              ? "Yes, to myself"
+                              : "Yes, to other recruiter"
+                          }
+                        />
+                        <FormControlLabel
+                          value="no"
+                          control={<Radio />}
+                          label="No, send me summary once a day"
+                        />
+                      </RadioGroup>
                     )}
-                  </FormControl>
-                </>
-              )}
+                  />
+                  {errors.notificationPreference && (
+                    <Typography color="error" variant="caption">
+                      {errors.notificationPreference.message}
+                    </Typography>
+                  )}
+                </FormControl>
+              </>
+            )}
           </Box>
 
           <Box className="bg-white p-6 rounded mt-4 gap-4 shadow flex flex-row justify-center">
@@ -2462,36 +2487,35 @@ const PostJob = () => {
                 <div className="space-y-4 text-sm">
                   <DetailRow label="Company name" value={values.companyName} />
                   <DetailRow label="Job title" value={values.jobTitle} />
-                  <DetailRow
-                    label="category"
-                    value={category}
-                  />
-                  <DetailRow
-                    label="Job role"
-                    value={values.jobRoles}
-                  />
+                  <DetailRow label="category" value={category} />
+                  <DetailRow label="Job role" value={values.jobRoles} />
                   <DetailRow label="Job type" value={values.jobType} />
                   <DetailRow label="Is Night Shift" value={values.nightShift} />
                   <DetailRow
                     label="Work type"
                     value={values.workLocationType}
                   />
-                  <DetailRow label="Job location" value={`${values.location}, ${values.city}, ${values.state}`} />
+                  <DetailRow
+                    label="Job location"
+                    value={`${values.location}, ${values.city}, ${values.state}`}
+                  />
 
                   <DetailRow
                     label="Monthly Salary | Pay Type"
-                    value={`${values.minimumSalary}-${values.maximumSalary} ${values.incentive !== ""
-                      ? `incentive-${values.incentive}`
-                      : ""
-                      } per month (${values.payType})`}
+                    value={`${values.minimumSalary}-${values.maximumSalary} ${
+                      values.incentive !== ""
+                        ? `incentive-${values.incentive}`
+                        : ""
+                    } per month (${values.payType})`}
                   />
                   <DetailRow label="Additional perks" value={values.perks} />
                   <DetailRow
                     label="Joining Fee"
-                    value={`${values.joiningfee === "true"
-                      ? `${values.joiningFeeAmount} for ${values.joiningFeeReason}(${values.joiningFeeReasonDetail}) at ${values.joiningFeeAmountTime}`
-                      : "No"
-                      }`}
+                    value={`${
+                      values.joiningfee === "true"
+                        ? `${values.joiningFeeAmount} for ${values.joiningFeeReason}(${values.joiningFeeReasonDetail}) at ${values.joiningFeeAmountTime}`
+                        : "No"
+                    }`}
                   />
                 </div>
               </CardContent>
@@ -2587,10 +2611,11 @@ const PostJob = () => {
                 <div className="space-y-4 text-sm">
                   <DetailRow
                     label="Is this a walk-in interview ?"
-                    value={`${values.walkIn === "yes"
-                      ? `Address-${values.walkInAddress} from ${values.walkInStartDate}-${values.WalkInEndDate} on ${values.walkInStartDate}`
-                      : "No"
-                      }`}
+                    value={`${
+                      values.walkIn === "yes"
+                        ? `Address-${values.walkInAddress} from ${values.walkInStartDate}-${values.WalkInEndDate} on ${values.walkInStartDate}`
+                        : "No"
+                    }`}
                   />
                   <DetailRow
                     label="Communication"

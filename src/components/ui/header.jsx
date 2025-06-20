@@ -1,21 +1,27 @@
-import { Menu, HelpCircle, Database } from "lucide-react";
+import { Menu, HelpCircle, Database, CoinsIcon, HandCoins } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import MenuProfileModal from "../modals/otherModals/menuProfileModal";
-import { fetchUserProfile } from "../../Redux/getData";
+import { fetchCredits, fetchUserProfile } from "../../Redux/getData";
 import { useDispatch, useSelector } from "react-redux";
+
 
 
 const Header = ({ onMenuClick }) => {
 
   const [showProfileModal, setShowprofileModal] = useState(false);
   const dispatch = useDispatch();
+  
 
   useEffect(()=>{
     dispatch(fetchUserProfile());
+    dispatch(fetchCredits())
   },[dispatch])
 
+
+
   
-  const {employer } = useSelector((state)=> state.getDataReducer);
+  const {employer, jobCredit } = useSelector((state)=> state.getDataReducer);
+
 
 
   const avatarRef = useRef();
@@ -30,10 +36,10 @@ const Header = ({ onMenuClick }) => {
 
       {/* Right: Actions */}
       <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
-          {/* <Database className="w-5 h-5 text-gray-600" /> */}
-          {/* <span>Available Credits</span> */}
-        </div>
+        {jobCredit && <div className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
+          <HandCoins className="w-5 h-5 text-gray-600" />
+          <span> {jobCredit}</span>
+        </div>}
         <div className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
           <HelpCircle className="w-5 h-5 text-gray-600" />
           <span>Support</span>

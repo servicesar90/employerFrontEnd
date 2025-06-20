@@ -1,7 +1,7 @@
 
 import React, {  useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Building, Database, Notebook, UserSearch, Save, Unlock, X, ChevronDown, ChevronUp, LogOut, LogOutIcon, PowerOff, Power } from 'lucide-react';
+import { Building, Database, Notebook, UserSearch, Save, Unlock, X, ChevronDown, ChevronUp,  Power,  HandCoins, NotepadText } from 'lucide-react';
 import {  useSelector } from 'react-redux';
 
 const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
@@ -14,6 +14,8 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
     { label: 'Jobs', icon: <Building size={20} color='#0784C9' />, route: '/employerHome/Jobs' },
     { label: 'Databases', icon: <Database size={20} color='#0784C9' /> },
     { label: 'Reports', icon: <Notebook size={20} color='#0784C9' />, route: '/employerHome/Reports' },
+    { label: 'Credits', icon: <HandCoins size={20} color='#0784C9' />, route: '/employerHome/credits' },
+    { label: 'Bills', icon: <NotepadText size={20} color='#0784C9' />, route: '/employerHome/billings' },
   ];
 
   const databaseSubItems = [

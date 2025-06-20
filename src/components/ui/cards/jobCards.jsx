@@ -1,20 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { BadgeCheck, MoreVertical, Copy, RefreshCcw, LocateIcon } from 'lucide-react';
-import { Chip, Button, Menu, Paper, MenuItem, Avatar, Popover } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { updateJobById } from '../../../API/ApiFunctions';
-import { showErrorToast, showSuccessToast } from '../toast';
-import { useDispatch } from 'react-redux';
-import { fetchJobs } from '../../../Redux/getData';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import PersonIcon from '@mui/icons-material/Person';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
+import React, { useEffect, useRef, useState } from "react";
+import {
+  BadgeCheck,
+  MoreVertical,
+  Copy,
+  RefreshCcw,
+  LocateIcon,
+} from "lucide-react";
+import {
+  Chip,
+  Button,
+  Menu,
+  Paper,
+  MenuItem,
+  Avatar,
+  Popover,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { updateJobById } from "../../../API/ApiFunctions";
+import { showErrorToast, showSuccessToast } from "../toast";
+import { useDispatch } from "react-redux";
+import { fetchJobs } from "../../../Redux/getData";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PersonIcon from "@mui/icons-material/Person";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const JobCard = ({ job }) => {
-
   const [showEditModal, setShowEditModal] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const modalRef = useRef();
   const [pendingCount, setPendingCount] = useState(null);
   const dispatch = useDispatch();
@@ -28,220 +42,565 @@ const JobCard = ({ job }) => {
   useEffect(() => {
     if (job?.JobApplications?.length) {
       const pendings = job.JobApplications.filter(
-        (application) => application.status === "Applied"
+        (application) => application.status === "Applied",
       );
-
       const pendingLength = pendings.length;
-
-      setPendingCount((prev) => (prev !== pendingLength ? pendingLength : prev));
+      setPendingCount((prev) =>
+        prev !== pendingLength ? pendingLength : prev,
+      );
     }
   }, [job]);
-
 
   const expiredJob = async (id) => {
     const response = await updateJobById({ status: "E" }, id);
     if (response) {
-      dispatch(fetchJobs())
-      showSuccessToast("Successfully Expired")
+      dispatch(fetchJobs());
+      showSuccessToast("Successfully Expired");
     } else {
-      showErrorToast("could not Expired")
+      showErrorToast("could not Expired");
     }
-  }
+  };
 
   const activeJob = async (id) => {
     const response = await updateJobById({ status: "A" }, id);
     if (response) {
-      dispatch(fetchJobs())
-      showSuccessToast("Activated Successfully")
+      dispatch(fetchJobs());
+      showSuccessToast("Activated Successfully");
     } else {
-      showErrorToast("could not Expired")
+      showErrorToast("could not Expired");
     }
-  }
+  };
+
+  const getStatusConfig = (status) => {
+    switch (status) {
+      case "A":
+        return {
+          label: "Active",
+          bgColor: "#dcfce7",
+          textColor: "#15803d",
+          borderColor: "#bbf7d0",
+          iconColor: "#16a34a",
+        };
+      case "P":
+        return {
+          label: "Pending",
+          bgColor: "#fef3c7",
+          textColor: "#a16207",
+          borderColor: "#fde68a",
+          iconColor: "#d97706",
+        };
+      case "E":
+        return {
+          label: "Expired",
+          bgColor: "#fee2e2",
+          textColor: "#dc2626",
+          borderColor: "#fecaca",
+          iconColor: "#ef4444",
+        };
+      default:
+        return {
+          label: "Unknown",
+          bgColor: "#f3f4f6",
+          textColor: "#374151",
+          borderColor: "#d1d5db",
+          iconColor: "#6b7280",
+        };
+    }
+  };
+
+  const statusConfig = getStatusConfig(job.status);
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-4 mb-6  border">
-      <div onClick={() => navigate(`/employerHome/jobsDetail/${job.id}`)} className="flex justify-between items-start">
-        <div className='flex flex-col justify-start items-start'>
-          <h3 className="flex items-center gap-4 md:gap-2">
-            <span className='heading text-left w-auto'>{job?.jobTitle}</span>
-            {job?.status === 'A' && (
-              <Chip sx={{ backgroundColor: "#0784C9", color: "white", borderRadius: "5px" }} label="Active" size="small" />
-            )}
-            {job?.status === 'P' && (
-              <Chip sx={{ backgroundColor: "#0784C9", color: "white", borderRadius: "5px" }} label="pending" size="small" color="success" />
-            )}
-            {job?.status === 'E' && (
-              <Chip sx={{ color: "white", borderRadius: "5px" }} label="Expired" size="small" color="error" />
-            )}
-          </h3>
-          <ul className="flex mt-4 flex-col md:flex-row md:gap-4 gap-3 justify-start items-start text-sm md:text-md text-gray-600">
-            <li className='chips text-left'><LocationOnIcon className='text-secondary' fontSize='small' />{job?.location}</li>
-            <li className='chips text-left'><CalendarMonthIcon className='text-secondary' fontSize='small' /> {job?.createdAt?.split("T")[0]}</li>
-            <li className='chips text-left'><PersonIcon className='text-secondary' fontSize='small' />{job?.otherRecruiterName || "N/A"}</li>
-          </ul>
-        </div>
-
-
-
-        <div className="flex items-center gap-2">
-          <span
-            onMouseEnter={handleOpen}
-            onMouseLeave={handleClose}
-            className="cursor-pointer"
-          >
-            <InfoOutlinedIcon sx={{ color: 'gray' }} />
-          </span>
-
-          <Popover
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            PaperProps={{
-              onMouseEnter: handleOpen,
-              onMouseLeave: handleClose,
-              sx: {
-                p: 2,
-                maxWidth: 300,
-                boxShadow: 3,
-                borderRadius: 2,
-              },
-            }}
-          >
-            {job?.status === 'A' && (
-              <div className="text-sm text-gray-800">
-                <BadgeCheck className="inline mr-2 text-blue-600" size={16} />
-                Not receiving enough candidates? Check our suggestions to attract 2X more candidates.{' '}
-                <div className="text-blue-700 font-medium cursor-pointer hover:underline">
-                  Update requirements
-                </div>
-              </div>
-            )}
-
-            {job?.status === 'E' && (
-              <div className="text-sm text-blue-700">
-                <BadgeCheck className="inline mr-2" size={16} />
-                Repost now to receive new candidates.
-              </div>
-            )}
-          </Popover>
-
-          {job?.status === 'A' ? (
-            <button
-              className="relative group flex items-center justify-center p-1 md:px-3 md:py-1 border border-gray-300 rounded md:flex-row flex-col gap-1 text-sm text-gray-700 hover:bg-gray-100 transition"
+    <div
+      onClick={() => navigate(`/employerHome/jobsDetail/${job.id}`)}
+      style={{
+        backgroundColor: "#ffffff",
+        borderRadius: "12px",
+        boxShadow:
+          "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        overflow: "hidden",
+        cursor: "pointer",
+        transition: "all 0.3s ease",
+        border: "1px solid #f3f4f6",
+        transform: "translateY(0)",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow =
+          "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow =
+          "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)";
+      }}
+    >
+      {/* Header with gradient background */}
+      <div
+        style={{
+          background: "linear-gradient(to right, #DFF3F9, #ffffff)",
+          padding: "24px",
+          borderBottom: "1px solid #f3f4f6",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                marginBottom: "8px",
+              }}
             >
-              <Copy size={16} />
-              <span className="hidden md:inline">Duplicate</span>
-              {/* Tooltip for mobile */}
-              <span className="absolute left-1/2 top-5 transform -translate-x-1/2 text-xs bg-gray-700 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 md:hidden pointer-events-none">
-                Duplicate
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "600",
+                  color: "#003B70",
+                  margin: 0,
+                  transition: "color 0.3s ease",
+                }}
+              >
+                {job?.jobTitle}
+              </h3>
+
+              {/* Status Badge */}
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "4px 8px",
+                  borderRadius: "6px",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  backgroundColor: statusConfig.bgColor,
+                  color: statusConfig.textColor,
+                  border: `1px solid ${statusConfig.borderColor}`,
+                }}
+              >
+                {job?.status === "A" && (
+                  <BadgeCheck
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      marginRight: "4px",
+                      color: statusConfig.iconColor,
+                    }}
+                  />
+                )}
+                {job?.status === "P" && (
+                  <RefreshCcw
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      marginRight: "4px",
+                      color: statusConfig.iconColor,
+                    }}
+                  />
+                )}
+                {job?.status === "E" && (
+                  <LocateIcon
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      marginRight: "4px",
+                      color: statusConfig.iconColor,
+                    }}
+                  />
+                )}
+                {statusConfig.label}
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "16px",
+                fontSize: "14px",
+                color: "#6b7280",
+              }}
+            >
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <LocationOnIcon
+                  style={{ width: "16px", height: "16px", color: "#0784C9" }}
+                />
+                <span>{job?.location}</span>
+              </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <CalendarMonthIcon
+                  style={{ width: "16px", height: "16px", color: "#0784C9" }}
+                />
+                <span>{job?.createdAt?.split("T")[0]}</span>
+              </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <PersonIcon
+                  style={{ width: "16px", height: "16px", color: "#0784C9" }}
+                />
+                <span>{job?.otherRecruiterName || "N/A"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ position: "relative" }}>
+            <MoreVertical
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowEditModal(!showEditModal);
+              }}
+              style={{
+                color: "#6b7280",
+                cursor: "pointer",
+                width: "20px",
+                height: "20px",
+                padding: "4px",
+                borderRadius: "4px",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f3f4f6";
+                e.currentTarget.style.color = "#003B70";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#6b7280";
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: "24px" }}>
+        {/* Suggestions/Alerts */}
+        {job?.status === "A" && (
+          <div
+            style={{
+              marginBottom: "16px",
+              padding: "16px",
+              backgroundColor: "#eff6ff",
+              border: "1px solid #bfdbfe",
+              borderRadius: "8px",
+            }}
+          >
+            <div
+              style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}
+            >
+              <InfoOutlinedIcon
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  color: "#2563eb",
+                  marginTop: "2px",
+                }}
+              />
+              <div>
+                <p style={{ fontSize: "14px", color: "#1e40af", margin: 0 }}>
+                  Not receiving enough candidates? Check our suggestions to
+                  attract 2X more candidates.{" "}
+                  <button
+                    style={{
+                      fontWeight: "500",
+                      textDecoration: "underline",
+                      background: "none",
+                      border: "none",
+                      color: "#1e40af",
+                      cursor: "pointer",
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Update requirements
+                  </button>
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {job?.status === "E" && (
+          <div
+            style={{
+              marginBottom: "16px",
+              padding: "16px",
+              backgroundColor: "#fff7ed",
+              border: "1px solid #fed7aa",
+              borderRadius: "8px",
+            }}
+          >
+            <div
+              style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}
+            >
+              <RefreshCcw
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  color: "#ea580c",
+                  marginTop: "2px",
+                }}
+              />
+              <div>
+                <p style={{ fontSize: "14px", color: "#c2410c", margin: 0 }}>
+                  Repost now to receive new candidates.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+       
+       
+
+        {/* Applications Summary */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingTop: "16px",
+            borderTop: "2px solid #f3f4f6",
+            marginBottom:"-15px"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ fontSize: "14px" }}>
+              <span style={{ fontWeight: "600", color: "#003B70" }}>
+                {job?.JobApplications?.length || 0}
               </span>
+              <span style={{ color: "#6b7280", marginLeft: "4px" }}>
+                Applicants
+              </span>
+            </div>
+
+            {pendingCount !== null && pendingCount > 0 && (
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "4px 8px",
+                  borderRadius: "12px",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  backgroundColor: "#fef3c7",
+                  color: "#a16207",
+                  border: "1px solid #fde68a",
+                }}
+              >
+                {pendingCount} pending
+              </div>
+            )}
+          </div>
+           <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "12px",
+            marginBottom: "16px",
+          }}
+        >
+          {job?.status === "A" ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                // Handle duplicate
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                border: "1px solid #0784C9",
+                backgroundColor: "#ffffff",
+                color: "#0784C9",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#0784C9";
+                e.currentTarget.style.color = "#ffffff";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#ffffff";
+                e.currentTarget.style.color = "#0784C9";
+              }}
+            >
+              <Copy style={{ width: "16px", height: "16px" }} />
+              Duplicate
             </button>
-          ) : job?.status === 'P' ? (
+          ) : job?.status === "P" ? (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 navigate(`/jobsModal/${job?.id}`);
               }}
-              className="relative group flex items-center justify-center p-1 md:px-3 md:py-1 border border-gray-300 rounded md:flex-row flex-col gap-1 text-sm text-gray-700 hover:bg-gray-100 transition"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                border: "none",
+                backgroundColor: "#0784C9",
+                color: "#ffffff",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#003B70";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#0784C9";
+              }}
             >
-              <RefreshCcw size={16} />
-              <span className="hidden md:inline">Finish Posting</span>
-              <span className="absolute left-1/2 -bottom-5 transform -translate-x-1/2 text-xs bg-gray-700 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 md:hidden pointer-events-none">
-                Finish Posting
-              </span>
+              <RefreshCcw style={{ width: "16px", height: "16px" }} />
+              Finish Posting
             </button>
           ) : (
             <button
-              className="relative group flex items-center justify-center p-1 md:px-3 md:py-1 border border-gray-300 rounded md:flex-row flex-col gap-1 text-sm text-gray-700 hover:bg-gray-100 transition"
+              onClick={(e) => {
+                e.stopPropagation();
+                activeJob(job?.id);
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                border: "none",
+                backgroundColor: "#0784C9",
+                color: "#ffffff",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#003B70";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#0784C9";
+              }}
             >
-              <RefreshCcw size={16} />
-              <span className="hidden md:inline">Repost now</span>
-              <span className="absolute left-1/2 -bottom-5 transform -translate-x-1/2 text-xs bg-gray-700 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 md:hidden pointer-events-none">
-                Repost now
-              </span>
+              <RefreshCcw style={{ width: "16px", height: "16px" }} />
+              Repost now
             </button>
           )}
-
-          <MoreVertical
-            ref={modalRef}
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowEditModal(!showEditModal);
-            }}
-            className="text-gray-500 z-50 cursor-pointer"
-          />
         </div>
-
+        </div>
       </div>
 
-      <div className="flex justify-between mt-4 mr-2 text-sm text-gray-700">
-        <div className='w-full mt-2 justify-between items-center flex mb-2 '>
-          <span className="font-medium content chips bg-light px-2">{job?.JobApplications?.length} Applicants</span>
-          {pendingCount !== null && (
-            <span className="content chips bg-light px-2">
-              {pendingCount} pending
-            </span>
-          )}
-        </div>
-    
-      </div>
-
-
-      {showEditModal &&
-        <Menu
-          anchorEl={modalRef.current}
-          open={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          PaperProps={{
-            className: "w-64 p-4",
-            elevation: 4,
+      {/* Edit Modal/Dropdown */}
+      {showEditModal && (
+        <div
+          style={{
+            position: "absolute",
+            top: "60px",
+            right: "24px",
+            zIndex: 50,
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            boxShadow:
+              "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+            border: "1px solid #e5e7eb",
+            padding: "8px",
+            minWidth: "160px",
           }}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
+          onClick={(e) => e.stopPropagation()}
         >
-
-          <MenuItem onClick={() => {
-            setShowEditModal(false)
-            navigate(`/jobsModal/${job?.id}`)
-          }}>
-            <span className="text-sm text-gray-700">Edit Job</span>
-          </MenuItem>
+          <div
+            onClick={() => {
+              setShowEditModal(false);
+              navigate(`/jobsModal/${job?.id}`);
+            }}
+            style={{
+              padding: "8px 12px",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "14px",
+              color: "#374151",
+              transition: "background-color 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f9fafb";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            Edit Job
+          </div>
 
           {job?.status !== "A" && (
-
-            <MenuItem onClick={() => {
-              setShowEditModal(false)
-              activeJob(job?.id)
-            }}>
-              <span className="text-sm text-green-700"> Active Job</span>
-            </MenuItem>
+            <div
+              onClick={() => {
+                setShowEditModal(false);
+                activeJob(job?.id);
+              }}
+              style={{
+                padding: "8px 12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "14px",
+                color: "#374151",
+                transition: "background-color 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f9fafb";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+              }}
+            >
+              Active Job
+            </div>
           )}
 
-          <MenuItem onClick={() => {
-            setShowEditModal(false)
-            expiredJob(job?.id)
-          }}>
-            <span className="text-sm text-red-700">{job?.status === "E" ? "Delete" : "Expire"} Job</span>
-          </MenuItem>
-
-        </Menu>
-      }
+          <div
+            onClick={() => {
+              setShowEditModal(false);
+              expiredJob(job?.id);
+            }}
+            style={{
+              padding: "8px 12px",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "14px",
+              color: "#374151",
+              transition: "background-color 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f9fafb";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            {job?.status === "E" ? "Delete" : "Expire"} Job
+          </div>
+         </div>
+      )}
     </div>
   );
 };
 
 export default JobCard;
+
+
+

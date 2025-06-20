@@ -18,6 +18,8 @@
     "@mui/material": "^7.0.2",
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.9.0",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.9.4",
     "lucide-react": "^0.488.0",
     "react": "^19.0.0",
