@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteJobById, postJob, updateJobById } from "../../../API/ApiFunctions";
 import { showErrorToast, showSuccessToast } from "../toast";
 import { useDispatch } from "react-redux";
-import { fetchJobs } from "../../../Redux/getData";
+import { fetchCredits, fetchJobs } from "../../../Redux/getData";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonIcon from "@mui/icons-material/Person";
@@ -64,6 +64,7 @@ const JobCard = ({ job }) => {
     const response = await postJob(data,id);
     if (response) {
       dispatch(fetchJobs());
+      dispatch(fetchCredits())
       showSuccessToast("Successfully Reposted");
     } else {
       showErrorToast("could not Reposted");
