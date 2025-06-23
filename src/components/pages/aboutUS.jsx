@@ -384,68 +384,7 @@ const About = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation - Same as other pages */}
-      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="text-2xl font-bold text-blue-800">
-                  TalentHire
-                </div>
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
-                  >
-                    Features
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
-                  >
-                    Pricing
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
-                  >
-                    Resources
-                  </a>
-                  <a
-                    href="#"
-                    className="text-blue-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
-                  >
-                    About
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="hidden md:block">
-              <div className="ml-4 flex items-center md:ml-6 space-x-4">
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-blue-800 text-sm font-medium transition-colors"
-                >
-                  Log in
-                </a>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                  Get Started
-                </Button>
-              </div>
-            </div>
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-blue-800 hover:bg-gray-100"
-              >
-                {isMenuOpen ? <XIcon /> : <MenuIcon />}
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+ 
 
       {/* Hero Section */}
       <section className="relative pt-20 pb-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
