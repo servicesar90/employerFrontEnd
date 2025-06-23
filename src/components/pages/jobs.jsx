@@ -38,7 +38,7 @@ export default function Jobs() {
                </h1>
                <Button
                  variant="contained"
-                 onClick={() => navigate(`/jobsModal/${null}`)}
+                 onClick={() => navigate(`/jobsModal/${null}/new`)}
                  color="success"
                  sx={{
                    fontSize: { xs: "0.75rem", sm: "0.875rem", md: "0.9rem" },
@@ -74,7 +74,7 @@ export default function Jobs() {
              <h1 className="text-2xl font-semibold text-gray-800">Jobs</h1>
              <Button
                variant="contained"
-               onClick={() => navigate(`/jobsModal/${null}`)}
+               onClick={() => navigate(`/jobsModal/${null}/new`)}
                sx={{
                  fontSize: { xs: "0.75rem", sm: "0.875rem", md: "0.9rem" },
                  padding: { xs: "4px 10px", sm: "6px 14px", md: "8px 20px" },
@@ -90,7 +90,7 @@ export default function Jobs() {
                <h2 className="text-xl font-medium mb-8">Post your first job</h2>
                <div className="flex flex-col lg:flex-row justify-center gap-10">
                  <div
-                   onClick={() => navigate(`/jobsModal/${null}`)}
+                   onClick={() => navigate(`/jobsModal/${null}/new`)}
                    className="flex flex-col items-center"
                  >
                    <div className="bg-blue-100 text-blue-600 p-4 rounded-full">

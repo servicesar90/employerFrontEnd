@@ -47,7 +47,11 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../ui/toast";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchJobsById, fetchUserProfile } from "../../../Redux/getData";
+import {
+  fetchJobsById,
+  fetchUserProfile,
+  setJobData,
+} from "../../../Redux/getData";
 
 const steps = [
   "Job details",
@@ -90,7 +94,7 @@ const educationOptions = [
 
 const ADDITIONAL_FIELDS = {
   gender: ["Male", "Female", "Other"],
-  distance: ["<10km", "10-20km", ">20km"],
+  distance: ["<10KM", "10-20KM", ">20KM"],
   languages: [
     "Assamese",
     "Bengali",
@@ -154,7 +158,7 @@ const PostJob = () => {
   const [category, setCategory] = useState(null);
   const [jobRoleSuggestions, setJobRoleSuggestions] = useState([]);
 
-  const { id } = useParams();
+  const { id, action } = useParams();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -187,6 +191,7 @@ const PostJob = () => {
     getValues,
     setValue,
     reset,
+
     clearErrors,
     setError,
     formState: { errors },
@@ -344,6 +349,7 @@ const PostJob = () => {
 
   const values = getValues();
 
+
   const toggleField = (field) => {
     if (expanded.includes(field)) {
       setExpanded(expanded.filter((f) => f !== field));
@@ -434,13 +440,18 @@ const PostJob = () => {
     let response = null;
 
     if (id !== "null") {
-      response = await editPostJob(id, data);
+      if (action == "duplicate") {
+        response = await postJob(data, null);
+      } else {
+        response = await editPostJob(id, data);
+      }
     } else {
-      response = await postJob(data);
+      response = await postJob(data, null);
     }
 
     if (response) {
       if (response == "plan") {
+        dispatch(setJobData(data));
         navigate("/employerHome/selectPlan");
       } else {
         showSuccessToast("job Post succesfully");
@@ -560,6 +571,7 @@ const PostJob = () => {
                 <Controller
                   name="jobTitle"
                   control={control}
+                  disabled={action === "edit"}
                   rules={{ required: "Job title is required" }}
                   render={({ field }) => (
                     <TextField
@@ -603,6 +615,7 @@ const PostJob = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      disabled={action === "edit"}
                       placeholder="Enter Job Category"
                       size="small"
                       fullWidth
@@ -612,7 +625,7 @@ const PostJob = () => {
               </Box>
             </Box>
 
-            {category && (
+            {category || values.jobRoles && (
               <Box className="mt-4 w-1/2 flex flex-col items-start">
                 <Typography
                   variant="h6"
@@ -636,6 +649,7 @@ const PostJob = () => {
                           <TextField
                             {...params}
                             placeholder="Choose Job Roles"
+                             disabled={action === "edit"}
                             size="small"
                             fullWidth
                             error={!!errors.jobRoles}
@@ -809,6 +823,7 @@ const PostJob = () => {
                           {...field}
                           placeholder="Enter Flat No./House No."
                           size="small"
+                          disabled={action === "edit"}
                           fullWidth
                         />
                       )}
@@ -840,6 +855,7 @@ const PostJob = () => {
                         {...field}
                         fullWidth
                         size="small"
+                        disabled={action === "edit"}
                         placeholder="Enter PinCode"
                         inputProps={{ maxLength: 6 }}
                         onChange={(e) => {
@@ -1016,6 +1032,7 @@ const PostJob = () => {
                       <TextField
                         {...field}
                         value={field.value || ""}
+                         disabled={action === "edit"}
                         type="number"
                         size="small"
                         fullWidth
@@ -1066,6 +1083,7 @@ const PostJob = () => {
                       <TextField
                         {...field}
                         fullWidth
+                        disabled={action === "edit"}
                         size="small"
                         type="number"
                         placeholder="Enter Monthly Salary"
@@ -1106,6 +1124,7 @@ const PostJob = () => {
                       <TextField
                         {...field}
                         value={field.value || ""}
+                        disabled={action === "edit"}
                         fullWidth
                         type="number"
                         size="small"
@@ -1255,6 +1274,7 @@ const PostJob = () => {
                         {...field}
                         label="Joining Fee Amount"
                         fullWidth
+                         disabled={action === "edit"}
                         size="small"
                         placeholder="Enter Fee Amount"
                         error={!!errors.joiningFeeAmount}
@@ -1335,6 +1355,7 @@ const PostJob = () => {
                         <TextField
                           {...field}
                           label="joining fees amount reason Amount"
+                           disabled={action === "edit"}
                           fullWidth
                           size="small"
                           placeholder="Mention the Reason"
@@ -1741,7 +1762,7 @@ const PostJob = () => {
                                 ? field.value.filter((v) => v !== val)
                                 : [...field.value, val];
 
-                              toggleField(val); // maintain existing behavior
+                              toggleField(val); 
                               field.onChange(newValue);
                             }}
                             className={`px-4 py-1.5 rounded-full cursor-pointer text-sm font-medium transition border ${

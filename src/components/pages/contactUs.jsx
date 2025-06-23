@@ -1,612 +1,979 @@
-import React, { useState, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
+
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import {
-    Phone,
-    Mail,
-    MapPin,
-    Clock,
-    Send,
-    Facebook,
-    Twitter,
-    Linkedin,
-    Instagram,
-    ArrowRight,
 
-} from "lucide-react";
-import { Button, Card, CardContent, Input, CardHeader, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
+const Contact = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    subject: "",
+    message: "",
+    inquiryType: "general",
+  });
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-const ContactUs = () => {
-    const formRef = useRef({});
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-    });
+  // Icons as inline SVG components (same as other pages)
+  const MailIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+      />
+    </svg>
+  );
 
+  const PhoneIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+      />
+    </svg>
+  );
 
-    const faqs = [
-        {
-            question: "How quickly do you respond to inquiries?",
-            answer:
-                "We typically respond to all inquiries within 24 hours during business days. For urgent matters, you can call us directly and we'll assist you immediately.",
-        },
-        {
-            question: "What services do you offer?",
-            answer:
-                "We offer a comprehensive range of services including consulting, development, support, and maintenance. Contact us to discuss your specific needs and how we can help.",
-        },
-        {
-            question: "Do you offer support after project completion?",
-            answer:
-                "Yes, we provide ongoing support and maintenance services. We believe in building long-term relationships with our clients and ensuring their continued success.",
-        },
-        {
-            question: "How can I get a quote for my project?",
-            answer:
-                "Simply fill out our contact form with details about your project, or give us a call. We'll schedule a consultation to understand your needs and provide a detailed quote.",
-        },
-        {
-            question: "What makes your company different?",
-            answer:
-                "Our commitment to excellence, personalized service, and proven track record set us apart. We focus on understanding your unique needs and delivering tailored solutions.",
-        },
-    ];
+  const MapPinIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+      />
+    </svg>
+  );
 
-    const scrollToForm = (label) => {
-        setTimeout(() => {
-            formRef.current?.[label].scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-            });
-        }, 300);
+  const ClockIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  );
+
+  const MessageSquareIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+      />
+    </svg>
+  );
+
+  const HeadphonesIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+      />
+    </svg>
+  );
+
+  const GlobeIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  );
+
+  const BookOpenIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+      />
+    </svg>
+  );
+
+  const UserIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+      />
+    </svg>
+  );
+
+  const ArrowRightIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13 7l5 5m0 0l-5 5m5-5H6"
+      />
+    </svg>
+  );
+
+  const SendIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+      />
+    </svg>
+  );
+
+  const MenuIcon = ({ className = "h-6 w-6" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h16"
+      />
+    </svg>
+  );
+
+  const XIcon = ({ className = "h-6 w-6" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+  );
+
+  // Inline Button Component
+  const Button = ({
+    children,
+    className = "",
+    size = "default",
+    variant = "default",
+    type = "button",
+    ...props
+  }) => {
+    const baseClasses =
+      "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
+
+    const sizeClasses = {
+      default: "h-10 py-2 px-4",
+      sm: "h-9 px-3 rounded-md",
+      lg: "h-11 px-8 rounded-md",
+      icon: "h-10 w-10",
     };
 
-      const footerSections = [
-        {
-          title: "Find Jobs",
-          links: [
-            "Browse All Jobs",
-            "Remote Jobs",
-            "Entry Level",
-            "Senior Roles",
-            "Salary Search",
-          ],
-          href: "jobs"
-        },
-        {
-          title: "Support",
-          links: [
-            "Help Center",
-            "Contact Us",
-            "Live Chat",
-            "Career Advice",
-            "Success Stories",
-          ],
-          href: "contact-us"
-        },
-        {
-          title: "Company",
-          links: ["About Us", "Careers", "Press", "Partners"],
-          href: "about-us"
-        },
-      ];
-    
-      const socialLinks = [
-        { icon: Twitter, href: "#", label: "Twitter" },
-        { icon: Linkedin, href: "#", label: "LinkedIn" },
-        { icon: Facebook, href: "#", label: "Facebook" },
-        { icon: Instagram, href: "#", label: "Instagram" },
-      ];
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+    const variantClasses = {
+      default: "bg-blue-600 text-white hover:bg-blue-700",
+      outline:
+        "border border-gray-300 hover:bg-gray-50 hover:text-gray-900 text-gray-700",
+      secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        // Create FormData for the external service
-        const form = e.target;
-        const formData = new FormData(form);
-
-        try {
-            // Submit to formsubmit.co
-            const response = await fetch(
-                "https://formsubmit.co/sales@talentnestpeopleservices.com",
-                {
-                    method: "POST",
-                    body: formData,
-                },
-            );
-
-            if (response.ok) {
-                // Reset form on success
-                setFormData({ name: "", email: "", subject: "", message: "" });
-                alert("Thank you for your message! We'll get back to you soon.");
-            } else {
-                throw new Error("Failed to submit form");
-            }
-        } catch (error) {
-            alert("There was an error sending your message. Please try again.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const handleNewsletterSubmit = async (e) => {
-        e.preventDefault();
-        // Simulate newsletter subscription
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setNewsletterEmail("");
-        alert("Thank you for subscribing to our newsletter!");
-    };
-
-    const fadeInUp = {
-        hidden: { opacity: 0, y: 60 },
-        visible: { opacity: 1, y: 0 },
-    };
-
-    const stagger = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    };
-
-    const navItems = [
-        { label: "Home", href: "/home" },
-        { label: "Features", href: "/features" },
-        { label: "AboutUs", href: "/about-us" },
-        { label: "ContactUs", href: "/contact-us" },
-    ];
-
+    const classes = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-
-
-            {/* Hero Section */}
-
-            <motion.section
-                initial="hidden"
-                animate="visible"
-                variants={fadeInUp}
-
-                className="relative py-20 px-4 sm:px-6 lg:px-8 text-center"
-            >
-                <div className="absolute inset-0 pointer-events-none overflow-hidden z-40" >
-                    {/* Main gradient orbs */}
-                    <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl animate-pulse"></div>
-                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-400/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
-
-                    {/* Geometric accent shapes */}
-                    <motion.div
-
-                        className="absolute top-1/3 right-1/3 w-32 h-32 bg-gradient-to-r from-cyan-400/30 to-blue-500/30 transform rotate-45 blur-xl"
-                        animate={{
-                            rotate: [45, 135, 45],
-                            scale: [1, 1.2, 1],
-                        }}
-                        transition={{
-                            duration: 8,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                        }}
-                    />
-
-                    {/* Triangular elements */}
-                    <div className="absolute top-10 left-1/2 w-0 h-0 border-l-[100px] border-r-[100px] border-b-[150px] border-l-transparent border-r-transparent border-b-blue-400/20 transform -translate-x-1/2 rotate-12"></div>
-                    <div className="absolute bottom-10 left-1/4 w-0 h-0 border-l-[80px] border-r-[80px] border-t-[120px] border-l-transparent border-r-transparent border-t-indigo-400/25 transform -rotate-12"></div>
-
-                    {/* Layered mountain silhouettes */}
-                    <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-blue-600/20 via-blue-500/15 via-blue-400/10 to-transparent transform skew-x-3"></div>
-                    <div className="absolute bottom-0 right-0 w-3/4 h-32 bg-gradient-to-t from-indigo-600/18 via-purple-500/12 to-transparent transform -skew-x-6"></div>
-                    <div className="absolute bottom-0 left-1/4 w-1/2 h-24 bg-gradient-to-t from-cyan-600/15 via-blue-500/10 to-transparent transform skew-x-12"></div>
-
-                    {/* Floating geometric particles */}
-                    {Array.from({ length: 8 }).map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className={`absolute w-${Math.floor(Math.random() * 4) + 2} h-${Math.floor(Math.random() * 4) + 2
-                                } bg-blue-400/40 rounded`}
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                            }}
-                            animate={{
-                                y: [0, -30, 0],
-                                rotate: [0, 180, 360],
-                                scale: [1, 1.3, 1],
-                                opacity: [0.4, 0.8, 0.4],
-                            }}
-                            transition={{
-                                duration: 4 + Math.random() * 4,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: Math.random() * 2,
-                            }}
-                        />
-                    ))}
-
-                    {/* Radial grid pattern */}
-                    <div className="absolute inset-0 opacity-5">
-                        <div className="flex items-center justify-center h-full">
-                            <div className="w-96 h-96 border border-blue-300 rounded-full"></div>
-                            <div className="absolute w-80 h-80 border border-blue-300 rounded-full"></div>
-                            <div className="absolute w-64 h-64 border border-blue-300 rounded-full"></div>
-                            <div className="absolute w-48 h-48 border border-blue-300 rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
-                <div className="max-w-4xl mx-auto z-50" >
-                    <motion.h1
-                        variants={fadeInUp}
-                        className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent"
-                    >
-                        Get in Touch with Us
-                    </motion.h1>
-                    <motion.p
-                        variants={fadeInUp}
-                        className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed"
-                    >
-                        We're here to help you succeed. Whether you have questions, need
-                        support, or want to explore how we can work together, we'd love to
-                        hear from you.
-                    </motion.p>
-
-                    <Button
-                        size="lg"
-                        onClick={() => scrollToForm("form")}
-                        className="z-50 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:shadow-lg cursor-pointer"
-                    >
-                        <p className="text-white ">Enquiry Now</p>
-                        <ArrowRight className="ml-2 w-4 h-4 text-white " />
-                    </Button>
-
-                </div>
-            </motion.section>
-
-            {/* Contact Information Section */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={stagger}
-                className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50/40"
-            >
-                <div className="max-w-7xl mx-auto">
-                    <motion.div variants={fadeInUp} className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            Contact Information
-                        </h2>
-                        <p className="text-xl text-gray-600">
-                            Multiple ways to reach us - choose what works best for you
-                        </p>
-                    </motion.div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[
-                            {
-                                icon: MapPin,
-                                title: "Visit Us",
-                                details: [
-                                    "435A, 4th Floor Orbit Plaza",
-                                    "Crossing Republic ,NH 24",
-                                    "Ghaziabad, UP-201016, India",
-                                ],
-                                color: "from-red-500 to-red-600",
-                            },
-                            {
-                                icon: Phone,
-                                title: "Call Us",
-                                details: [
-                                    "+91 120-4178-702",
-                                    "+91 120-4178-702",
-                                    "Mon-Fri 9AM-6PM",
-                                ],
-                                color: "from-green-500 to-green-600",
-                            },
-                            {
-                                icon: Mail,
-                                title: "Email Us",
-                                details: [
-                                    "info@unigrowtalent.com",
-                                    "support@unigrowtalent.com",
-                                    "sales@unigrowtalent.com",
-                                ],
-                                color: "from-blue-500 to-blue-600",
-                            },
-                            {
-                                icon: Clock,
-                                title: "Business Hours",
-                                details: ["Mon-sat: 10AM-7PM", "Sunday: Closed"],
-                                color: "from-purple-500 to-purple-600",
-                            },
-                        ].map((item, index) => (
-                            <motion.div key={index} variants={fadeInUp}>
-                                <Card className="h-full text-center hover:shadow-lg transition-all duration-300 group">
-                                    <CardHeader>
-                                        <div
-                                            className={`w-12 h-12 mx-auto rounded-full bg-gradient-to-r ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
-                                        >
-                                            <item.icon className="w-6 h-6 text-white" />
-                                        </div>
-                                        <h2 className="text-lg mb-3">{item.title}</h2>
-                                    </CardHeader>
-                                    <CardContent>
-                                        {item.details.map((detail, idx) => (
-                                            <p key={idx} className="text-gray-600 mb-1">
-                                                {detail}
-                                            </p>
-                                        ))}
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </motion.section>
-
-            {/* Contact Form Section */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeInUp}
-                className="py-16 px-4 sm:px-6 lg:px-8 bg-white"
-            >
-                <div className="max-w-4xl mx-auto">
-                    <div className="text-center mb-4">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            Send Us a Message
-                        </h2>
-                        <p className="text-xl text-gray-600">
-                            Fill out the form below and we'll get back to you as soon as
-                            possible
-                        </p>
-                    </div>
-
-                    <Card className="shadow-xl border-0">
-                        <CardHeader>
-                            {/* <CardTitle className="text-2xl text-center">
-                Contact Form
-              </CardTitle> */}
-                            {/* <CardDescription className="text-center">
-                We typically respond within 24 hours
-              </CardDescription> */}
-                        </CardHeader>
-                        <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div ref={(el) => (formRef.current["form"] = el)} className="grid md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label
-                                            htmlFor="name"
-                                            className="block text-sm font-medium text-gray-700 mb-2"
-                                        >
-                                            Full Name *
-                                        </label>
-                                        <Input
-                                            id="name"
-                                            name="name"
-                                            type="text"
-                                            required
-                                            value={formData.name}
-                                            onChange={handleInputChange}
-                                            placeholder="Your full name"
-                                            className="transition-all duration-300 focus:scale-105"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor="email"
-                                            className="block text-sm font-medium text-gray-700 mb-2"
-                                        >
-                                            Email Address *
-                                        </label>
-                                        <Input
-                                            id="email"
-                                            name="email"
-                                            type="email"
-                                            required
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            placeholder="your.email@example.com"
-                                            className="transition-all duration-300 focus:scale-105"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label
-                                        htmlFor="subject"
-                                        className="block text-sm font-medium text-gray-700 mb-2"
-                                    >
-                                        Subject *
-                                    </label>
-                                    <Input
-                                        id="subject"
-                                        name="subject"
-                                        type="text"
-                                        required
-                                        value={formData.subject}
-                                        onChange={handleInputChange}
-                                        placeholder="What's this about?"
-                                        className="transition-all duration-300 focus:scale-105"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label
-                                        htmlFor="message"
-                                        className="block text-sm font-medium text-gray-700 mb-2"
-                                    >
-                                        Message *
-                                    </label>
-                                    <textarea
-                                        id="message"
-                                        name="message"
-                                        required
-                                        rows={6}
-                                        value={formData.message}
-                                        onChange={handleInputChange}
-                                        placeholder="Tell us more about your inquiry..."
-                                        className="transition-all duration-300 focus:scale-105 w-full p-2 border rounded"
-                                    />
-
-                                </div>
-
-                                <div className="text-center">
-                                    <Button
-                                        type="submit"
-                                        size="lg"
-                                        disabled={isSubmitting}
-                                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8"
-                                    >
-                                        {isSubmitting ? (
-                                            <div className="flex items-center text-white">
-                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                                Sending...
-                                            </div>
-                                        ) : (
-                                            <div className="text-white flex flex-row gap-1 items-center px-2">
-                                                Send Message
-                                                <Send className="ml-2 w-4 h-4" />
-                                            </div>
-                                        )}
-                                    </Button>
-                                </div>
-                            </form>
-                        </CardContent>
-                    </Card>
-                </div>
-            </motion.section>
-
-            {/* FAQ Section */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeInUp}
-                className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50"
-            >
-                <div className="max-w-4xl mx-auto">
-                    <div className="text-center mb-12">
-                        <h2 className="bg-gradient-to-r from-[#336ECF] to-[#0c39cf] bg-clip-text text-transparent text-3xl md:text-4xl font-bold mb-4">
-                            Frequently Asked Questions
-                        </h2>
-                        <p className="text-xl text-gray-600">
-                            Quick answers to common questions about our services
-                        </p>
-                    </div>
-
-                    <Card>
-                        <CardContent className="p-6">
-                            <div className="space-y-4">
-                                {faqs.map((faq, index) => (
-                                    <Accordion key={index}>
-                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                            <Typography className="text-left font-medium">{faq.question}</Typography>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            <Typography className="text-gray-600">{faq.answer}</Typography>
-                                        </AccordionDetails>
-                                    </Accordion>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </motion.section>
-
-            {/* footer section */}
-            <footer className="bg-gray-900 w-full text-white py-20">
-                <div className="container mx-auto px-6">
-                    {/* Main Footer Content */}
-                    <div className="grid lg:grid-cols-5 gap-12 mb-12">
-                        {/* Company Info */}
-                        <div className="lg:col-span-2">
-                            <div className="flex items-center space-x-3 mb-6">
-                                <img src="./unigrowLogo.png" width={200} height={80} />
-                            </div>
-                            <p className="text-gray-400 mb-6 leading-relaxed">
-                                The world's leading career advancement platform, connecting
-                                exceptional professionals with dream opportunities since 2020.
-                            </p>
-                            <div className="space-y-3">
-                                <div className="flex items-center space-x-3">
-                                    <Mail className="w-5 h-5 text-gray-400" />
-                                    <span className="text-gray-400">info@unigrowTalent.com</span>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <Phone className="w-5 h-5 text-gray-400" />
-                                    <span className="text-gray-400">+91 120-4178-702</span>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <MapPin className="w-5 h-5 text-gray-400" />
-                                    <span className="text-gray-400">Crossing Republic, Ghaziabad, U.P</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Footer Links */}
-                        {footerSections.map((section, index) => (
-                            <div key={section.title}>
-                                <h4 className="text-lg font-semibold mb-6">{section.title}</h4>
-                                <ul className="space-y-3">
-                                    {section.links.map((link) => (
-                                        <li key={link}>
-                                            <a
-                                                href={section.href}
-                                                className="text-gray-400 hover:text-white transition-colors duration-200"
-                                            >
-                                                {link}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-
-
-                    </div>
-
-                    {/* Bottom Footer */}
-                    <div className="border-t border-gray-800 pt-8">
-                        <div className="flex flex-col lg:flex-row justify-between items-center">
-                            <p className="text-gray-400 mb-4 lg:mb-0">
-                                © 2025 UnigrowTalent. All rights reserved.
-                            </p>
-                            <div className="flex space-x-6">
-                                {socialLinks.map((social) => (
-                                    <a
-                                        key={social.label}
-                                        href={social.href}
-                                        className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-blue-600 transition-all duration-300"
-                                        aria-label={social.label}
-                                    >
-                                        <social.icon className="w-5 h-5" />
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
+      <button type={type} className={classes} {...props}>
+        {children}
+      </button>
     );
+  };
+
+  // Contact Methods Data
+  const contactMethods = [
+    {
+      icon: MailIcon,
+      title: "Email Support",
+      description: "Send us an email and we'll respond within 24 hours",
+      contact: "hello@talenthire.com",
+      action: "Send Email",
+      color: "from-blue-500 to-blue-600",
+    },
+    {
+      icon: PhoneIcon,
+      title: "Phone Support",
+      description: "Call us for immediate assistance during business hours",
+      contact: "+1 (555) 123-4567",
+      action: "Call Now",
+      color: "from-green-500 to-green-600",
+    },
+    {
+      icon: MessageSquareIcon,
+      title: "Live Chat",
+      description: "Chat with our support team in real-time",
+      contact: "Available 24/7",
+      action: "Start Chat",
+      color: "from-purple-500 to-purple-600",
+    },
+  ];
+
+  // Office Locations Data
+  const offices = [
+    {
+      city: "San Francisco",
+      country: "USA",
+      address: "123 Innovation Drive, San Francisco, CA 94105",
+      phone: "+1 (555) 123-4567",
+      hours: "Mon-Fri: 9:00 AM - 6:00 PM PST",
+      isHeadquarters: true,
+    },
+    {
+      city: "New York",
+      country: "USA",
+      address: "456 Tech Avenue, New York, NY 10001",
+      phone: "+1 (555) 234-5678",
+      hours: "Mon-Fri: 9:00 AM - 6:00 PM EST",
+      isHeadquarters: false,
+    },
+    {
+      city: "London",
+      country: "UK",
+      address: "789 Business Street, London, UK EC2A 4DP",
+      phone: "+44 20 7123 4567",
+      hours: "Mon-Fri: 9:00 AM - 5:00 PM GMT",
+      isHeadquarters: false,
+    },
+    {
+      city: "Tokyo",
+      country: "Japan",
+      address: "321 Corporate Plaza, Tokyo, Japan 100-0005",
+      phone: "+81 3-1234-5678",
+      hours: "Mon-Fri: 9:00 AM - 6:00 PM JST",
+      isHeadquarters: false,
+    },
+  ];
+
+  // Support Categories
+  const supportCategories = [
+    {
+      icon: UserIcon,
+      title: "General Inquiries",
+      description: "Questions about our platform and services",
+    },
+    {
+      icon: BookOpenIcon,
+      title: "Technical Support",
+      description: "Help with platform features and troubleshooting",
+    },
+    {
+      icon: HeadphonesIcon,
+      title: "Sales Questions",
+      description: "Pricing, plans, and enterprise solutions",
+    },
+    {
+      icon: GlobeIcon,
+      title: "Partnership",
+      description: "Collaboration and integration opportunities",
+    },
+  ];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission here
+    console.log("Form submitted:", formData);
+    // You would typically send this to your backend
+  };
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Navigation - Same as other pages */}
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="text-2xl font-bold text-blue-800">
+                  TalentHire
+                </div>
+              </div>
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Features
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Pricing
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Resources
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    About
+                  </a>
+                  <a
+                    href="#"
+                    className="text-blue-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Contact
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="ml-4 flex items-center md:ml-6 space-x-4">
+                <a
+                  href="#"
+                  className="text-gray-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                >
+                  Log in
+                </a>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  Get Started
+                </Button>
+              </div>
+            </div>
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-blue-800 hover:bg-gray-100"
+              >
+                {isMenuOpen ? <XIcon /> : <MenuIcon />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent)] opacity-50"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <div className="flex items-center justify-center mb-6">
+              <MessageSquareIcon className="h-6 w-6 text-blue-500 mr-3" />
+              <span className="text-blue-600 font-semibold text-lg">
+                Contact Us
+              </span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+              <span className="block">Get In Touch</span>
+              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                We're Here to Help
+              </span>
+            </h1>
+
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              Have questions about TalentHire? Need help getting started? Our
+              expert team is ready to assist you with all your hiring needs.
+            </p>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600 mb-1">
+                  24/7
+                </div>
+                <div className="text-sm text-gray-600">Support Available</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600 mb-1">
+                  &lt;2h
+                </div>
+                <div className="text-sm text-gray-600">Response Time</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-600 mb-1">
+                  100+
+                </div>
+                <div className="text-sm text-gray-600">Countries Served</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-orange-600 mb-1">
+                  99.9%
+                </div>
+                <div className="text-sm text-gray-600">Satisfaction Rate</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Contact Methods Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Choose Your Preferred{" "}
+              <span className="text-blue-600">Contact Method</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We offer multiple ways to get in touch. Pick the method that works
+              best for you.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {contactMethods.map((method, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group"
+              >
+                <div className="bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-xl transition-all duration-300 hover:border-blue-200 text-center">
+                  <div
+                    className={`w-16 h-16 bg-gradient-to-r ${method.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}
+                  >
+                    <method.icon className="h-8 w-8 text-white" />
+                  </div>
+
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                    {method.title}
+                  </h3>
+                  <p className="text-gray-600 mb-6">{method.description}</p>
+                  <div className="text-lg font-semibold text-blue-600 mb-6">
+                    {method.contact}
+                  </div>
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full">
+                    {method.action}
+                    <ArrowRightIcon className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Send Us a <span className="text-blue-600">Message</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              Fill out the form below and we'll get back to you within 24 hours.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-2xl shadow-xl p-8"
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Inquiry Type */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-4">
+                  What can we help you with?
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {supportCategories.map((category, index) => (
+                    <label
+                      key={index}
+                      className="relative cursor-pointer group"
+                    >
+                      <input
+                        type="radio"
+                        name="inquiryType"
+                        value={category.title.toLowerCase().replace(" ", "_")}
+                        checked={
+                          formData.inquiryType ===
+                          category.title.toLowerCase().replace(" ", "_")
+                        }
+                        onChange={handleInputChange}
+                        className="sr-only"
+                      />
+                      <div className="p-4 border-2 border-gray-200 rounded-xl text-center transition-all duration-200 group-hover:border-blue-300 peer-checked:border-blue-500 peer-checked:bg-blue-50">
+                        <category.icon className="h-6 w-6 mx-auto mb-2 text-gray-600 group-hover:text-blue-600" />
+                        <div className="text-sm font-medium text-gray-900">
+                          {category.title}
+                        </div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Name and Email */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    placeholder="john@company.com"
+                  />
+                </div>
+              </div>
+
+              {/* Company and Subject */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    Company Name
+                  </label>
+                  <input
+                    type="text"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    placeholder="Your Company"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    Subject *
+                  </label>
+                  <input
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    placeholder="How can we help?"
+                  />
+                </div>
+              </div>
+
+              {/* Message */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Message *
+                </label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  rows={6}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+                  placeholder="Tell us more about your inquiry..."
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="text-center pt-4">
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  <SendIcon className="w-5 h-5 mr-2" />
+                  Send Message
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Office Locations Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Our Global <span className="text-blue-600">Offices</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We have offices around the world to better serve our global
+              customer base.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {offices.map((office, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                <div className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+                  {office.isHeadquarters && (
+                    <div className="absolute -top-3 -right-3">
+                      <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        HQ
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <MapPinIcon className="h-8 w-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {office.city}
+                    </h3>
+                    <p className="text-blue-600 font-medium">
+                      {office.country}
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 text-sm text-gray-600">
+                    <div className="flex items-start">
+                      <MapPinIcon className="h-4 w-4 mt-0.5 mr-2 flex-shrink-0" />
+                      <span>{office.address}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <PhoneIcon className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span>{office.phone}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <ClockIcon className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span>{office.hours}</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Support Hours Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Support <span className="text-blue-600">Hours</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              Our support team is available when you need us most.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <MessageSquareIcon className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Live Chat
+              </h3>
+              <p className="text-gray-600 text-sm">Available 24/7</p>
+              <p className="text-green-600 font-semibold text-sm">Online Now</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <PhoneIcon className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Phone Support
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Mon-Fri: 6:00 AM - 8:00 PM
+              </p>
+              <p className="text-gray-600 text-sm">
+                Sat-Sun: 8:00 AM - 6:00 PM
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <MailIcon className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Email Support
+              </h3>
+              <p className="text-gray-600 text-sm">24/7 Response</p>
+              <p className="text-gray-600 text-sm">Typically within 2 hours</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl font-bold text-white mb-6">
+              Ready to Get Started?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Don't wait – transform your hiring process today. Our team is
+              standing by to help you succeed.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-[#2563EB] text-blue-600"
+              >
+                Start Free Trial
+                <ArrowRightIcon className="w-5 h-5 ml-2" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-blue-600"
+              >
+                Schedule Demo
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="text-2xl font-bold text-white mb-4">
+                TalentHire
+              </div>
+              <p className="text-gray-400 mb-6 leading-relaxed max-w-md">
+                The world's leading talent acquisition platform, connecting
+                exceptional candidates with forward-thinking companies since
+                2020.
+              </p>
+              <div className="space-y-2 text-gray-400">
+                <div className="flex items-center">
+                  <MailIcon className="h-4 w-4 mr-3" />
+                  hello@talenthire.com
+                </div>
+                <div className="flex items-center">
+                  <PhoneIcon className="h-4 w-4 mr-3" />
+                  +1 (555) 123-4567
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 className="font-semibold text-white mb-4">Contact</h3>
+              <ul className="space-y-3 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Support Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Live Chat
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Phone Support
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Email Support
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-white mb-4">Resources</h3>
+              <ul className="space-y-3 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    API Reference
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    System Status
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+            <p>© 2024 TalentHire. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
 };
 
-export default ContactUs;
+export default Contact;

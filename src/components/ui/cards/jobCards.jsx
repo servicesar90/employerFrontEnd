@@ -16,7 +16,7 @@ import {
   Popover,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { deleteJobById, updateJobById } from "../../../API/ApiFunctions";
+import { deleteJobById, postJob, updateJobById } from "../../../API/ApiFunctions";
 import { showErrorToast, showSuccessToast } from "../toast";
 import { useDispatch } from "react-redux";
 import { fetchJobs } from "../../../Redux/getData";
@@ -59,6 +59,16 @@ const JobCard = ({ job }) => {
       showErrorToast("could not Expired");
     }
   };
+
+  const repostJob = async (data,id) =>{
+    const response = await postJob(data,id);
+    if (response) {
+      dispatch(fetchJobs());
+      showSuccessToast("Successfully Reposted");
+    } else {
+      showErrorToast("could not Reposted");
+    }
+  }
 
   const activeJob = async (id) => {
     const response = await updateJobById({ status: "A" }, id);
@@ -295,50 +305,7 @@ const JobCard = ({ job }) => {
 
       <div style={{ padding: "24px" }}>
         {/* Suggestions/Alerts */}
-        {job?.status === "A" && (
-          <div
-            style={{
-              marginBottom: "16px",
-              padding: "16px",
-              backgroundColor: "#eff6ff",
-              border: "1px solid #bfdbfe",
-              borderRadius: "8px",
-            }}
-          >
-            <div
-              style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}
-            >
-              <InfoOutlinedIcon
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  color: "#2563eb",
-                  marginTop: "2px",
-                }}
-              />
-              <div>
-                <p style={{ fontSize: "14px", color: "#1e40af", margin: 0 }}>
-                  Not receiving enough candidates? Check our suggestions to
-                  attract 2X more candidates.{" "}
-                  <button
-                    style={{
-                      fontWeight: "500",
-                      textDecoration: "underline",
-                      background: "none",
-                      border: "none",
-                      color: "#1e40af",
-                      cursor: "pointer",
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Update requirements
-                  </button>
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
+      
         {job?.status === "E" && (
           <div
             style={{
@@ -420,7 +387,7 @@ const JobCard = ({ job }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  // Handle duplicate
+                  navigate(`/jobsModal/${job?.id}/duplicate`)
                 }}
                 style={{
                   display: "flex",
@@ -482,7 +449,7 @@ const JobCard = ({ job }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  activeJob(job?.id);
+                  repostJob(null,job?.id);
                 }}
                 style={{
                   display: "flex",
@@ -531,10 +498,10 @@ const JobCard = ({ job }) => {
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div
+          {job?.status !== "E" && <div
             onClick={() => {
               setShowEditModal(false);
-              navigate(`/jobsModal/${job?.id}`);
+              navigate(`/jobsModal/${job?.id}/edit`);
             }}
             style={{
               padding: "8px 12px",
@@ -552,7 +519,7 @@ const JobCard = ({ job }) => {
             }}
           >
             Edit Job
-          </div>
+          </div>}
 
           {job?.status !== "A" && (
             <div

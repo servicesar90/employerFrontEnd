@@ -2,9 +2,17 @@
 import { useEffect } from "react";
 
 import { giveRazor, loadRazorpay } from "../../API/ApiFunctions";
+import { useDispatch, useSelector } from "react-redux";
+import { setJobData } from "../../Redux/getData";
 
 const Checkout = () => {
   const plan = JSON.parse(localStorage.getItem("selectedPlan"));
+  const dispatch = useDispatch();
+
+  const jobData = useSelector((state)=> state.getDataReducer.jobData);
+
+
+ 
  
 
   useEffect(() => {
@@ -13,7 +21,9 @@ const Checkout = () => {
       const giveData = async () => {
         const response = await giveRazor(plan.id);
         if (response) {
-          loadRazorpay(plan, response.data.orderId);
+          
+          loadRazorpay(plan, response.data.orderId, jobData);
+          dispatch(setJobData(null))
         }
       };
 
@@ -23,7 +33,7 @@ const Checkout = () => {
 
   return (
     <div
-    className="w-full"
+    className="w-full "
       style={{
         minHeight: "100vh",
         backgroundColor: "#DEF3F9",

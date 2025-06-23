@@ -88,7 +88,7 @@ export default function Routess() {
       </Route>
 
       <Route
-        path="/jobsModal/:id"
+        path="/jobsModal/:id/:action"
         element={
           <ProtectedRoute>
             <PostJob />

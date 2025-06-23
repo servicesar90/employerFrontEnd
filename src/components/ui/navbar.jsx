@@ -90,7 +90,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-white shadow p-4 flex justify-between w-full h-20 items-center fixed top-0">
+      <nav className="bg-white shadow p-4 flex justify-between w-full h-20 items-center fixed top-0 z-5000">
         <img
           onClick={() => navigate("/")}
           src="/unigrowLogo.png"

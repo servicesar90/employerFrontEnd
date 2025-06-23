@@ -34,22 +34,29 @@ export const fetchJobsById = createAsyncThunk(
     try {
       const response = await getJobById(id);
 
+      console.log(response)
+
       // simulate API returning error-like data
       if (response.status !== 200) {
         return rejectWithValue({ error: response.message, response });
       }
 
-      return response;
+      return response.data;
     } catch (error) {
       return rejectWithValue({ error: error.message });
     }
   }
 );
 
+export const setJobDataFunc =(data)=>{
+  
+}
+
 const initialState = {
   employer: null,
   jobs: null,
   jobsById: null,
+  jobData: null,
   jobCredit: null,
   dataBaseCredit: null,
   creditsData: null,
@@ -60,7 +67,11 @@ const initialState = {
 const getDataSlice = createSlice({
   name: "getData",
   initialState,
-  reducers: {},
+  reducers: {
+    setJobData: (state, action) =>{
+      state.jobData= action.payload
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserProfile.pending, (state) => {
@@ -95,7 +106,7 @@ const getDataSlice = createSlice({
       })
       .addCase(fetchJobsById.fulfilled, (state, action) => {
         state.loading = false;
-        state.jobsById = action.payload.data.data;
+        state.jobsById = action.payload.data;
       })
       .addCase(fetchJobsById.rejected, (state, action) => {
         state.loading = false;
@@ -121,5 +132,7 @@ const getDataSlice = createSlice({
       });
   },
 });
+
+export const { setJobData } = getDataSlice.actions;
 
 export default getDataSlice.reducer;

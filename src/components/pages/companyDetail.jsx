@@ -1,4 +1,3 @@
-
 import { PlusCircle } from "lucide-react";
 import { Linkedin, Facebook, Instagram } from "lucide-react";
 import DynamicModal from "../modals/otherModals/dynamicModal";
@@ -13,30 +12,74 @@ const CompanyProfile = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalField, setModalField] = useState(null);
   const [openFileModal, setOpenFileModal] = useState(false);
+
+  const [fields, setField] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchUserProfile());
-  }, [dispatch]);
+  }, [openModal]);
 
   const { employer } = useSelector((state) => state.getDataReducer);
 
-  const company = employer?.company;
-
-  const fields = [
-    { label: "Company name", value: company?.companyName },
-    { label: "Founded", value: "Not available" },
-    { label: "Website", value: "Not available" },
-    { label: "Company size", value: company?.numOfEmployees },
-    { label: "Type of company", value: "Not available" },
-    { label: "Industry", value: company?.industry },
-    { label: "About Company", value: company?.about },
-  ];
+  useEffect(() => {
+    if (employer) {
+      setField([
+        {
+          label: "Company name",
+          name: "companyName",
+          value: employer?.company?.companyName,
+        },
+        {
+          label: "Founded",
+          name: "founded",
+          value: employer?.company?.founded
+            ? employer?.company.founded
+            : "Not available",
+        },
+        {
+          label: "Website",
+          name: "website",
+          value: employer?.company?.website
+            ? employer?.company.website
+            : "Not available",
+        },
+        {
+          label: "Company size",
+          name: "numOfEmployees",
+          value: employer?.company?.numOfEmployees,
+        },
+        {
+          label: "Type of company",
+          name: "isConsultancy",
+          value: employer?.company?.isConsultancy
+            ? "Consultancy"
+            : "Not Consultancy",
+        },
+        {
+          label: "Industry",
+          name: "industry",
+          value: employer?.company?.industry
+            ? employer?.company.industry
+            : "Not Available",
+        },
+        {
+          label: "About Company",
+          name: "about",
+          value: employer?.company?.about
+            ? employer?.company.about
+            : "Not Available",
+        },
+      ]);
+    }
+  }, [employer]);
 
   const showModal = (item) => {
     setModalField(item);
     setOpenModal(true);
   };
+
+ 
 
   return (
     <div
@@ -81,9 +124,9 @@ const CompanyProfile = () => {
 
         {/* Company Logo and Name */}
         <div className="flex items-start space-x-4 mb-6">
-          {company?.logoUrl ? (
+          {employer?.company?.logoUrl ? (
             <img
-              src={company.logoUrl}
+              src={employer?.company.logoUrl}
               alt="Logo"
               className="w-14 h-14 rounded-full flex items-center justify-center font-semibold text-lg"
               style={{
@@ -98,14 +141,14 @@ const CompanyProfile = () => {
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
               }}
             >
-              {company?.companyName?.split("")[0]?.toUpperCase()}
+              {employer?.company?.companyName?.split("")[0]?.toUpperCase()}
             </div>
           )}
 
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <h3 className="text-xl font-bold" style={{ color: "#003B70" }}>
-                {company?.companyName || "Your Company Name"}
+                {employer?.company?.companyName || "Your Company Name"}
               </h3>
               <button
                 onClick={() => setOpenFileModal(!openFileModal)}
@@ -128,7 +171,7 @@ const CompanyProfile = () => {
                   color: "white",
                 }}
               >
-                {company?.industry || "Industry"}
+                {employer?.company?.industry || "Industry"}
               </span>
               <span
                 className="px-3 py-1 rounded-full text-xs font-medium border"
@@ -138,7 +181,7 @@ const CompanyProfile = () => {
                   backgroundColor: "white",
                 }}
               >
-                {company?.numOfEmployees || "Team Size"}
+                {employer?.company?.numOfEmployees || "Team Size"}
               </span>
             </div>
           </div>
@@ -176,7 +219,9 @@ const CompanyProfile = () => {
                     {item.label}
                   </p>
                   <p
-                    className={`text-sm ${item.value === "Not available" ? "italic" : ""}`}
+                    className={`text-sm ${
+                      item.value === "Not available" ? "italic" : ""
+                    }`}
                     style={{
                       color:
                         item.value === "Not available" ? "#6c757d" : "#003B70",
@@ -284,9 +329,16 @@ const CompanyProfile = () => {
         <DynamicModal
           open={openModal}
           onClose={() => setOpenModal(false)}
-          fields={{ [modalField.label]: modalField.value }}
-          type={{ [modalField.label]: "text" }}
-          suggestions={[]}
+          fields={{ [modalField.name]: modalField.value }}
+          type={{
+            [modalField.name]:
+              modalField.name === "isConsultancy" ? "radio" : "text",
+          }}
+          suggestions={
+            modalField.name === "isConsultancy"
+              ? {isConsultancy:["true", "false"]}
+              : []
+          }
         />
       )}
 

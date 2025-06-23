@@ -1,754 +1,879 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay";
-import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
 
-import {
- 
-  ArrowDown,
-
-  ArrowRight,
-
-  Linkedin,
-  Twitter,
-  
-  Mail,
-  Facebook,
-  Instagram,
-
-  Star,
-  Bell,
-  MapPin,
-  Heart,
-  Target,
-  Sparkles,
-
-  CheckCircle,
-
-  Phone,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 const Features = () => {
-  // Particle Background Component Logic
-  const canvasRef = useRef(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId;
-    let particles = [];
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    const createParticles = () => {
-      const colors = ["#0ea5e9", "#38bdf8", "#7dd3fc", "#bae6fd", "#0284c7"];
-      const shapes = ["circle", "triangle", "square"];
-
-      particles = [];
-      const particleCount = Math.min(50, window.innerWidth / 20);
-
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 4 + 2,
-          speedX: (Math.random() - 0.5) * 0.5,
-          speedY: (Math.random() - 0.5) * 0.5,
-          opacity: Math.random() * 0.3 + 0.1,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          shape: shapes[Math.floor(Math.random() * shapes.length)],
-          rotation: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.02,
-        });
-      }
-    };
-
-    const drawParticle = (particle) => {
-      ctx.save();
-      ctx.globalAlpha = particle.opacity;
-      ctx.fillStyle = particle.color;
-      ctx.translate(particle.x, particle.y);
-      ctx.rotate(particle.rotation);
-
-      switch (particle.shape) {
-        case "circle":
-          ctx.beginPath();
-          ctx.arc(0, 0, particle.size, 0, Math.PI * 2);
-          ctx.fill();
-          break;
-        case "triangle":
-          ctx.beginPath();
-          ctx.moveTo(0, -particle.size);
-          ctx.lineTo(-particle.size, particle.size);
-          ctx.lineTo(particle.size, particle.size);
-          ctx.closePath();
-          ctx.fill();
-          break;
-        case "square":
-          ctx.fillRect(
-            -particle.size,
-            -particle.size,
-            particle.size * 2,
-            particle.size * 2,
-          );
-          break;
-      }
-      ctx.restore();
-    };
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((particle) => {
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
-        particle.rotation += particle.rotationSpeed;
-
-        if (particle.x < -10) particle.x = canvas.width + 10;
-        if (particle.x > canvas.width + 10) particle.x = -10;
-        if (particle.y < -10) particle.y = canvas.height + 10;
-        if (particle.y > canvas.height + 10) particle.y = -10;
-
-        drawParticle(particle);
-      });
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    resizeCanvas();
-    createParticles();
-    animate();
-
-    const handleResize = () => {
-      resizeCanvas();
-      createParticles();
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
-  const footerSections = [
-    {
-      title: "Find Jobs",
-      links: [
-        "Browse All Jobs",
-        "Remote Jobs",
-        "Entry Level",
-        "Senior Roles",
-        "Salary Search",
-      ],
-      href: "jobs"
-    },
-    {
-      title: "Support",
-      links: [
-        "Help Center",
-        "Contact Us",
-        "Live Chat",
-        "Career Advice",
-        "Success Stories",
-      ],
-      href: "contact-us"
-    },
-    {
-      title: "Company",
-      links: ["About Us", "Careers", "Press", "Partners"],
-      href: "about-us"
-    },
-  ];
-
-  const socialLinks = [
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-  ];
-
- 
-
-  // Newsletter Component Logic
-  const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (email) {
-      setIsSubmitted(true);
-      setEmail("");
-      setTimeout(() => setIsSubmitted(false), 3000);
-    }
-  };
-
-  // Floating particles animation
-  const particles = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    delay: Math.random() * 2,
-    duration: 3 + Math.random() * 2,
-  }));
-
-  // Companies Carousel Logic
-  const [companiesRef, companiesApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: "start",
-      slidesToScroll: 1,
-    },
-    [Autoplay({ delay: 3000, stopOnInteraction: false })],
+  // Icons as inline SVG components (same as Index.tsx)
+  const StarIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+    </svg>
   );
 
-  // Ref hooks for animations
-  const headerRef = useRef(null);
-  const companiesContainerRef = useRef(null);
-  const featuresRef = useRef(null);
-  const ctaRef = useRef(null);
-  const footerRef = useRef(null);
+  const SparklesIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 3l7 7 7-7M5 21l7-7 7 7"
+      />
+    </svg>
+  );
 
-  // In-view hooks
-  const headerInView = useInView(headerRef, { once: true, margin: "-100px" });
-  const companiesInView = useInView(companiesContainerRef, {
-    once: true,
-    margin: "-100px",
-  });
-  const featuresInView = useInView(featuresRef, {
-    once: true,
-    margin: "-100px",
-  });
-  const ctaInView = useInView(ctaRef, { once: true, margin: "-100px" });
-  const footerInView = useInView(footerRef, { once: true, margin: "-100px" });
+  const TargetIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  );
 
-  // Companies data
-  const collaboratedCompanies = [
-    { name: "Google", logo: "🔍", industry: "Technology", employees: "100K+" },
+  const BarChart3Icon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+      />
+    </svg>
+  );
+
+  const ZapIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13 10V3L4 14h7v7l9-11h-7z"
+      />
+    </svg>
+  );
+
+  const ShieldIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+      />
+    </svg>
+  );
+
+  const ClockIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  );
+
+  const UsersIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-3-5.197m-3 5.197v1z"
+      />
+    </svg>
+  );
+
+  const BrainIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+      />
+    </svg>
+  );
+
+  const CalendarIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+      />
+    </svg>
+  );
+
+  const CheckCircleIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  );
+
+  const ArrowRightIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13 7l5 5m0 0l-5 5m5-5H6"
+      />
+    </svg>
+  );
+
+  const MenuIcon = ({ className = "h-6 w-6" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h16"
+      />
+    </svg>
+  );
+
+  const XIcon = ({ className = "h-6 w-6" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+  );
+
+  const GlobeIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+      />
+    </svg>
+  );
+
+  const DatabaseIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+      />
+    </svg>
+  );
+
+  const MobileIcon = ({ className = "h-5 w-5" }) => (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 18h.01M8 21h8a1 1 0 001-1V4a1 1 0 00-1-1H8a1 1 0 00-1 1v16a1 1 0 001 1z"
+      />
+    </svg>
+  );
+
+  // Inline Button Component
+  const Button = ({
+    children,
+    className = "",
+    size = "default",
+    variant = "default",
+    ...props
+  }) => {
+    const baseClasses =
+      "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
+
+    const sizeClasses = {
+      default: "h-10 py-2 px-4",
+      sm: "h-9 px-3 rounded-md",
+      lg: "h-11 px-8 rounded-md",
+      icon: "h-10 w-10",
+    };
+
+    const variantClasses = {
+      default: "bg-blue-600 text-white hover:bg-blue-700",
+      outline:
+        "border border-input hover:bg-accent hover:text-accent-foreground",
+      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    };
+
+    const classes = `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
+
+    return (
+      <button className={classes} {...props}>
+        {children}
+      </button>
+    );
+  };
+
+  // Core Features Data
+  const coreFeatures = [
     {
-      name: "Microsoft",
-      logo: "💻",
-      industry: "Technology",
-      employees: "220K+",
+      icon: TargetIcon,
+      title: "AI-Powered Matching",
+      description:
+        "Advanced machine learning algorithms analyze candidate profiles and job requirements to deliver precision matches with 98% accuracy rate.",
+      features: [
+        "50+ data points analysis",
+        "Behavioral pattern recognition",
+        "Skills compatibility scoring",
+        "Cultural fit assessment",
+      ],
+      color: "from-blue-500 to-blue-600",
     },
-    { name: "Amazon", logo: "📦", industry: "E-commerce", employees: "1.5M+" },
-    { name: "Apple", logo: "🍎", industry: "Technology", employees: "154K+" },
-    { name: "Meta", logo: "👥", industry: "Social Media", employees: "87K+" },
     {
-      name: "Netflix",
-      logo: "🎬",
-      industry: "Entertainment",
-      employees: "12K+",
+      icon: BarChart3Icon,
+      title: "Real-Time Analytics",
+      description:
+        "Comprehensive hiring metrics and insights delivered through interactive dashboards that update in real-time as your hiring progresses.",
+      features: [
+        "Live conversion tracking",
+        "Performance benchmarking",
+        "Predictive hiring insights",
+        "Custom report builder",
+      ],
+      color: "from-purple-500 to-purple-600",
     },
-    { name: "Tesla", logo: "⚡", industry: "Automotive", employees: "127K+" },
-    { name: "Spotify", logo: "🎵", industry: "Music", employees: "9K+" },
-    { name: "Airbnb", logo: "🏠", industry: "Travel", employees: "6K+" },
-    { name: "Uber", logo: "🚗", industry: "Transportation", employees: "32K+" },
-    { name: "Salesforce", logo: "☁️", industry: "Cloud", employees: "79K+" },
-    { name: "Adobe", logo: "🎨", industry: "Software", employees: "26K+" },
+    {
+      icon: ZapIcon,
+      title: "Lightning-Fast Hiring",
+      description:
+        "Streamlined workflows and automated processes reduce time-to-hire by 70% while maintaining quality standards.",
+      features: [
+        "Automated screening",
+        "One-click scheduling",
+        "Instant notifications",
+        "Smart pipeline management",
+      ],
+      color: "from-orange-500 to-orange-600",
+    },
+    {
+      icon: ShieldIcon,
+      title: "Enterprise Security",
+      description:
+        "Bank-grade security with SOC 2 compliance, end-to-end encryption, and comprehensive audit trails for peace of mind.",
+      features: [
+        "256-bit encryption",
+        "GDPR compliance",
+        "Role-based access",
+        "Activity monitoring",
+      ],
+      color: "from-green-500 to-green-600",
+    },
+    {
+      icon: UsersIcon,
+      title: "Team Collaboration",
+      description:
+        "Built-in collaboration tools enable seamless teamwork with shared feedback, decision workflows, and unified communication.",
+      features: [
+        "Shared candidate notes",
+        "Team feedback system",
+        "Decision workflows",
+        "Integrated messaging",
+      ],
+      color: "from-teal-500 to-teal-600",
+    },
+    {
+      icon: ClockIcon,
+      title: "24/7 Support",
+      description:
+        "Round-the-clock expert support with dedicated account managers, comprehensive training, and rapid response times.",
+      features: [
+        "Live chat support",
+        "Video tutorials",
+        "Dedicated account manager",
+        "API documentation",
+      ],
+      color: "from-red-500 to-red-600",
+    },
   ];
 
-  // Feature cards data
-  const features = [
+  // Advanced Features Data
+  const advancedFeatures = [
     {
-      icon: Bell,
-      title: "Email Notifications",
+      icon: BrainIcon,
+      title: "Smart Recommendations",
       description:
-        "Get instant email alerts for job matches, application updates, and interview invitations. Never miss an opportunity again.",
-      color: "from-blue-500 to-cyan-500",
-      bgColor: "bg-blue-50",
-      benefits: [
-        "Real-time job alerts",
-        "Application status updates",
-        "Interview reminders",
-        "Personalized recommendations",
-      ],
-    },
-    {
-      icon: MapPin,
-      title: "Area-Based Search",
-      description:
-        "Find jobs in your preferred locations with our advanced geo-targeting system. Discover opportunities near you or anywhere in the world.",
-      color: "from-green-500 to-emerald-500",
-      bgColor: "bg-green-50",
-      benefits: [
-        "Location-specific search",
-        "Distance-based filtering",
-        "Remote job discovery",
-        "Commute time calculator",
-      ],
-    },
-    {
-      icon: Heart,
-      title: "Priority for Handicap",
-      description:
-        "Dedicated support and priority placement for differently-abled professionals with inclusive employer partnerships.",
-      color: "from-purple-500 to-pink-500",
-      bgColor: "bg-purple-50",
-      benefits: [
-        "Inclusive job matching",
-        "Accessibility support",
-        "Partner company network",
-        "Career counseling",
-      ],
-    },
-    {
-      icon: Target,
-      title: "Most Preferred Jobs",
-      description:
-        "Get matched with high-quality positions from top-tier companies that align with your career goals and preferences.",
-      color: "from-orange-500 to-red-500",
-      bgColor: "bg-orange-50",
-      benefits: [
-        "Premium job listings",
-        "Company culture match",
+        "AI-driven suggestions for optimizing job descriptions, improving candidate experiences, and enhancing hiring strategies.",
+      details: [
+        "Job description optimization",
         "Salary benchmarking",
-        "Career growth tracking",
+        "Interview question suggestions",
+        "Process improvement recommendations",
       ],
     },
     {
-      icon: Sparkles,
-      title: "Best Recommended for You",
+      icon: GlobeIcon,
+      title: "Global Reach",
       description:
-        "AI-powered recommendations that learn from your preferences, skills, and career history to suggest perfect job matches.",
-      color: "from-indigo-500 to-purple-500",
-      bgColor: "bg-indigo-50",
-      benefits: [
-        "AI-powered matching",
-        "Skill assessment",
-        "Career path planning",
-        "Personalized insights",
+        "Access to a worldwide talent pool with multi-language support and location-specific compliance features.",
+      details: [
+        "100+ countries supported",
+        "Multi-language interface",
+        "Local compliance tools",
+        "Currency conversion",
       ],
     },
+    {
+      icon: DatabaseIcon,
+      title: "Advanced Integrations",
+      description:
+        "Seamless connectivity with 500+ HR tools, applicant tracking systems, and productivity platforms.",
+      details: [
+        "ATS integrations",
+        "HRIS connectivity",
+        "Calendar sync",
+        "Video interview platforms",
+      ],
+    },
+    {
+      icon: MobileIcon,
+      title: "Mobile-First Design",
+      description:
+        "Fully responsive platform with native mobile apps for hiring on-the-go and improved candidate accessibility.",
+      details: [
+        "iOS & Android apps",
+        "Offline capabilities",
+        "Push notifications",
+        "Mobile-optimized workflows",
+      ],
+    },
+  ];
+
+  // Comparison Features
+  const comparisonFeatures = [
+    { feature: "AI-Powered Matching", talenthire: true, traditional: false },
+    {
+      feature: "Real-Time Analytics",
+      talenthire: true,
+      traditional: "Limited",
+    },
+    { feature: "Automated Screening", talenthire: true, traditional: false },
+    { feature: "Team Collaboration", talenthire: true, traditional: "Basic" },
+    { feature: "Mobile Apps", talenthire: true, traditional: false },
+    {
+      feature: "24/7 Support",
+      talenthire: true,
+      traditional: "Business Hours",
+    },
+    {
+      feature: "Custom Integrations",
+      talenthire: true,
+      traditional: "Limited",
+    },
+    { feature: "Global Compliance", talenthire: true, traditional: false },
   ];
 
   return (
-    <div className="min-h-screen bg-white relative mt-20 overflow-x-hidden">
-      {/* Particle Canvas Background */}
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{ background: "transparent" }}
-      />
- 
-      {/* Background Graphics */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {/* Primary gradient orbs */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/4 right-0 w-80 h-80 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-gradient-to-r from-green-400/20 to-blue-400/20 rounded-full blur-3xl animate-pulse delay-2000" />
-
-        {/* Geometric shapes */}
-        <div className="absolute top-1/3 left-1/4 w-32 h-32 border border-blue-300/30 rounded-full animate-spin-slow transform rotate-45" />
-        <div className="absolute top-1/2 right-1/4 w-24 h-24 border border-purple-300/30 animate-bounce" />
-
-        {/* Floating particles */}
-        <div className="absolute inset-0">
-          {particles.map((particle) => (
-            <motion.div
-              key={particle.id}
-              className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-30"
-              animate={{
-                y: [-20, 20, -20],
-                x: [-10, 10, -10],
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: particle.duration,
-                delay: particle.delay,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              style={{
-                left: `${particle.x}%`,
-                top: `${particle.y}%`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <main className="relative z-10">
-        {/* Header Section */}
-        <motion.section
-          ref={headerRef}
-          className="relative py-20 md:py-32 overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={headerInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={
-                headerInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
-              }
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
-                Powerful Features for
-                <br />
-                Your Career Success
-              </h1>
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Discover advanced tools and intelligent features designed to
-                accelerate your job search and connect you with the perfect
-                opportunities.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  size="lg"
-                  onClick={() => {
-                    const section = document.getElementById("features");
-                    section?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600  hover:from-blue-700 hover:to-indigo-700 font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                >
-                  <p className="text-white z-50">Explore Features</p>
-                  <ArrowDown className="ml-2 h-5 w-5 text-white z-50" />
-                </Button>
-
-                {/* <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3 rounded-xl transition-all duration-300"
-                >
-                  Watch Demo
-                </Button> */}
-              </div>
-            </motion.div>
-          </div>
-        </motion.section>
-
-        {/* Collaborated Companies Section */}
-        <motion.section
-          ref={companiesContainerRef}
-          className="py-16 bg-gray-50/50"
-          initial={{ opacity: 0 }}
-          animate={companiesInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              className="text-center mb-12"
-              initial={{ opacity: 0, y: 30 }}
-              animate={
-                companiesInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
-              }
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                🏆 Trusted by Industry Leaders
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Join millions of professionals who trust our platform to connect
-                with top companies worldwide
-              </p>
-            </motion.div>
-
-            <div className="relative">
-              <div className="overflow-hidden" ref={companiesRef}>
-                <div className="flex">
-                  {collaboratedCompanies.map((company, index) => (
-                    <motion.div
-                      key={company.name}
-                      className="flex-[0_0_300px] mx-4"
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={
-                        companiesInView
-                          ? { opacity: 1, y: 0 }
-                          : { opacity: 0, y: 30 }
-                      }
-                      transition={{ duration: 0.8, delay: index * 0.1 }}
-                    >
-                      <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-100">
-                        <div className="flex items-center space-x-4 mb-4">
-                          <div className="text-4xl">{company.logo}</div>
-                          <div>
-                            <h3 className="font-bold text-lg text-gray-900">
-                              {company.name}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              {company.industry}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex justify-between items-center text-sm">
-                          <span className="text-gray-500">Employees</span>
-                          <span className="font-semibold text-blue-600">
-                            {company.employees}
-                          </span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+    <div className="min-h-screen bg-white">
+      {/* Navigation - Same as Index.tsx */}
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="text-2xl font-bold text-blue-800">
+                  TalentHire
                 </div>
               </div>
-
-              {/* Carousel Controls */}
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  <a
+                    href="#"
+                    className="text-blue-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Features
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Pricing
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Resources
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-600 hover:text-blue-800 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    About
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="ml-4 flex items-center md:ml-6 space-x-4">
+                <a
+                  href="#"
+                  className="text-gray-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                >
+                  Log in
+                </a>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  Get Started
+                </Button>
+              </div>
+            </div>
+            <div className="md:hidden">
               <button
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:bg-white z-10"
-                onClick={() => companiesApi?.scrollPrev()}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-blue-800 hover:bg-gray-100"
               >
-                <ChevronLeft className="h-5 w-5 text-gray-700" />
-              </button>
-              <button
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:bg-white z-10"
-                onClick={() => companiesApi?.scrollNext()}
-              >
-                <ChevronRight className="h-5 w-5 text-gray-700" />
+                {isMenuOpen ? <XIcon /> : <MenuIcon />}
               </button>
             </div>
           </div>
-        </motion.section>
+        </div>
+      </nav>
 
-        {/* Features Cards Section */}
-        <motion.section
-          ref={featuresRef}
-          className="py-20"
-          initial={{ opacity: 0 }}
-          animate={featuresInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="features">
-            <motion.div
-              className="text-center mb-16"
-              initial={{ opacity: 0, y: 30 }}
-              animate={
-                featuresInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
-              }
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-                Features That Set Us Apart
-              </h2>
-              <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
-                Discover the intelligent tools and personalized features that
-                make job searching effortless and effective
-              </p>
-            </motion.div>
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent)] opacity-50"></div>
 
-            <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-8">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  className="group"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={
-                    featuresInView
-                      ? { opacity: 1, y: 0 }
-                      : { opacity: 0, y: 30 }
-                  }
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                  whileHover={{ y: -10 }}
-                >
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <div className="flex items-center justify-center mb-6">
+              <SparklesIcon className="h-6 w-6 text-blue-500 mr-3" />
+              <span className="text-blue-600 font-semibold text-lg">
+                Platform Features
+              </span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+              <span className="block">Powerful Features for</span>
+              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Modern Hiring
+              </span>
+            </h1>
+
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              Discover the comprehensive suite of tools and capabilities that
+              make TalentHire the leading choice for companies looking to
+              revolutionize their hiring process.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Start Free Trial
+                <ArrowRightIcon className="w-5 h-5 ml-2" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-blue-200 text-blue-700 hover:bg-blue-50"
+              >
+                Schedule Demo
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Core Features Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Core Platform <span className="text-blue-600">Capabilities</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Essential features that power your hiring success, designed to
+              streamline every step of your recruitment process from candidate
+              discovery to final hiring decisions.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {coreFeatures.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group"
+              >
+                <div className="h-full bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-xl transition-all duration-300 hover:border-blue-200">
                   <div
-                    className={`${feature.bgColor} rounded-3xl p-8 h-full transition-all duration-300 hover:shadow-2xl border border-gray-100 group-hover:border-gray-200`}
+                    className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
                   >
-                    <div
-                      className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <feature.icon className="h-8 w-8 text-white" />
-                    </div>
+                    <feature.icon className="h-8 w-8 text-white" />
+                  </div>
 
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {feature.description}
+                  </p>
+
+                  <ul className="space-y-3">
+                    {feature.features.map((item, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-center text-sm text-gray-600"
+                      >
+                        <CheckCircleIcon className="h-4 w-4 text-green-500 mr-3 flex-shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Advanced Features Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Advanced <span className="text-blue-600">Functionality</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Next-generation features that set TalentHire apart, providing
+              enterprise-grade capabilities for organizations of all sizes.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {advancedFeatures.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300"
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <feature.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">
                       {feature.title}
                     </h3>
-
-                    <p className="text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-gray-600 mb-4 leading-relaxed">
                       {feature.description}
                     </p>
-
-                    <div className="space-y-3">
-                      {feature.benefits.map((benefit, benefitIndex) => (
-                        <div
-                          key={benefitIndex}
-                          className="flex items-center space-x-3"
+                    <ul className="space-y-2">
+                      {feature.details.map((detail, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-center text-sm text-gray-600"
                         >
-                          <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-700">
-                            {benefit}
-                          </span>
-                        </div>
+                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
+                          {detail}
+                        </li>
                       ))}
-                    </div>
-
-                    {/* <Button
-                      variant="ghost"
-                      className="mt-6 w-full justify-between group-hover:bg-white/50 transition-colors duration-300"
-                    >
-                      Learn More
-                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    </Button> */}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* CTA Section */}
-        <motion.section
-          ref={ctaRef}
-          className="py-20 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 relative overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={ctaInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          {/* CTA Background Graphics */}
-          <div className="absolute inset-0">
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/90 via-indigo-600/90 to-purple-600/90" />
-            <div className="absolute top-10 right-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-10 left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse delay-2000" />
-          </div>
-
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={ctaInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                Ready to Transform Your Career?
-              </h2>
-              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                Join millions of professionals who have found their dream jobs
-                through our intelligent platform. Your next opportunity is just
-                a click away.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <Button
-                  size="lg"
-                  className="bg-white/50 text-blue-600 hover:bg-gray-50 hover:text-blue-600 font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                >
-                  <p className="text-white hover:text-blue-600 z-50">Get Started Free</p>
-                  <ArrowRight className="ml-2 h-5 w-5 text-white hover:text-blue-600 z-50" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-2 border-white text-white hover:bg-white/10  font-semibold px-8 py-3 rounded-xl transition-all duration-300"
-                >
-                  Schedule Demo
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                {[
-                  { number: "2M+", label: "Active Users" },
-                  { number: "50K+", label: "Companies" },
-                  { number: "1M+", label: "Jobs Posted" },
-                  { number: "95%", label: "Success Rate" },
-                ].map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={
-                      ctaInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                    }
-                    transition={{ duration: 0.8, delay: 0.2 + index * 0.1 }}
-                  >
-                    <div className="text-2xl md:text-3xl font-bold text-white mb-1">
-                      {stat.number}
-                    </div>
-                    <div className="text-blue-100 text-sm">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </motion.section>
-
-          {/* footer section */}
-          <footer className="bg-gray-900 w-full text-white py-20">
-                <div className="container mx-auto px-6">
-                  {/* Main Footer Content */}
-                  <div className="grid lg:grid-cols-5 gap-12 mb-12">
-                    {/* Company Info */}
-                    <div className="lg:col-span-2">
-                      <div className="flex items-center space-x-3 mb-6">
-                       <img src="./unigrowLogo.png" width={200} height={80} />
-                      </div>
-                      <p className="text-gray-400 mb-6 leading-relaxed">
-                        The world's leading career advancement platform, connecting
-                        exceptional professionals with dream opportunities since 2020.
-                      </p>
-                      <div className="space-y-3">
-                        <div className="flex items-center space-x-3">
-                          <Mail className="w-5 h-5 text-gray-400" />
-                          <span className="text-gray-400">info@unigrowTalent.com</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <Phone className="w-5 h-5 text-gray-400" />
-                          <span className="text-gray-400">+91 120-4178-702</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <MapPin className="w-5 h-5 text-gray-400" />
-                          <span className="text-gray-400">Crossing Republic, Ghaziabad, U.P</span>
-                        </div>
-                      </div>
-                    </div>
-        
-                    {/* Footer Links */}
-                    {footerSections.map((section, index) => (
-                      <div key={section.title}>
-                        <h4 className="text-lg font-semibold mb-6">{section.title}</h4>
-                        <ul className="space-y-3">
-                          {section.links.map((link) => (
-                            <li key={link}>
-                              <a
-                                href={section.href}
-                                className="text-gray-400 hover:text-white transition-colors duration-200"
-                              >
-                                {link}
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-        
-                    
-                  </div>
-        
-                  {/* Bottom Footer */}
-                  <div className="border-t border-gray-800 pt-8">
-                    <div className="flex flex-col lg:flex-row justify-between items-center">
-                      <p className="text-gray-400 mb-4 lg:mb-0">
-                        © 2025 UnigrowTalent. All rights reserved.
-                      </p>
-                      <div className="flex space-x-6">
-                        {socialLinks.map((social) => (
-                          <a
-                            key={social.label}
-                            href={social.href}
-                            className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-blue-600 transition-all duration-300"
-                            aria-label={social.label}
-                          >
-                            <social.icon className="w-5 h-5" />
-                          </a>
-                        ))}
-                      </div>
-                    </div>
+                    </ul>
                   </div>
                 </div>
-          </footer>
-      </main>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Feature Comparison Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Why Choose <span className="text-blue-600">TalentHire</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              See how TalentHire compares to traditional hiring methods and
+              legacy platforms.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-2xl border border-gray-200 overflow-hidden"
+          >
+            <div className="grid grid-cols-3 bg-gray-50 text-center py-4">
+              <div className="text-gray-600 font-medium">Feature</div>
+              <div className="text-blue-600 font-bold">TalentHire</div>
+              <div className="text-gray-600 font-medium">
+                Traditional Methods
+              </div>
+            </div>
+
+            {comparisonFeatures.map((item, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-3 border-t border-gray-100 py-4 px-6"
+              >
+                <div className="text-gray-900 font-medium">{item.feature}</div>
+                <div className="text-center">
+                  {item.talenthire === true ? (
+                    <CheckCircleIcon className="h-6 w-6 text-green-500 mx-auto" />
+                  ) : (
+                    <span className="text-blue-600 font-medium">
+                      {item.talenthire}
+                    </span>
+                  )}
+                </div>
+                <div className="text-center">
+                  {item.traditional === true ? (
+                    <CheckCircleIcon className="h-6 w-6 text-green-500 mx-auto" />
+                  ) : item.traditional === false ? (
+                    <div className="w-6 h-6 mx-auto rounded-full bg-gray-200 flex items-center justify-center">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                    </div>
+                  ) : (
+                    <span className="text-gray-500 text-sm">
+                      {item.traditional}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl font-bold text-white mb-6">
+              Ready to Experience These Features?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Join thousands of companies already using TalentHire to transform
+              their hiring process. Start your free trial today and see the
+              difference our features can make.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-[#2563EB] text-blue-600 "
+              >
+                Start Free Trial
+                <ArrowRightIcon className="w-5 h-5 ml-2" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-blue-600"
+              >
+                Contact Sales
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="text-2xl font-bold text-white mb-4">
+                TalentHire
+              </div>
+              <p className="text-gray-400 mb-6 leading-relaxed max-w-md">
+                The world's leading talent acquisition platform, connecting
+                exceptional candidates with forward-thinking companies since
+                2020.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-white mb-4">Platform</h3>
+              <ul className="space-y-3 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Security
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Integrations
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-white mb-4">Company</h3>
+              <ul className="space-y-3 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Careers
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Contact
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Support
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+            <p>© 2024 TalentHire. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -89,7 +89,7 @@ const SelectPlan = () => {
                 }}
               >
                 Valid for{" "}
-                <span style={{ fontWeight: "500" }}>{plan.validity} days</span>
+                <span style={{ fontWeight: "500" }}>{plan.Validity} days</span>
               </p>
 
               <div

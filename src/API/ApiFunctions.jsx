@@ -16,9 +16,10 @@ import {
   mobileApi,
   otpApi,
   profilePicUploadApi,
+  updateCompanyApi,
   verifyPaymentApi,
 } from "./APIs";
-import { showErrorToast } from "../components/ui/toast";
+import { showErrorToast, showSuccessToast } from "../components/ui/toast";
 
 // data={ phone: "string", role: "string" }
 export const handlelogin = async (data) => {
@@ -87,7 +88,7 @@ export const getProfile = async () => {
   }
 };
 
-export const updateProfile = async (data) =>{
+export const updateProfile = async (data) => {
   try {
     const token = localStorage.getItem("TokenId");
 
@@ -95,15 +96,15 @@ export const updateProfile = async (data) =>{
       Authorization: `Bearer ${token}`,
     };
 
-    const response = await axios.patch(createProfileApi,data, { headers });
+    const response = await axios.patch(createProfileApi, data, { headers });
 
     return response;
   } catch (e) {
     console.log("errorResponse", e);
   }
-}
+};
 
-export const postJob = async (data) => {
+export const postJob = async (data, id) => {
   console.log("data from function", data);
   try {
     const token = localStorage.getItem("TokenId");
@@ -111,7 +112,14 @@ export const postJob = async (data) => {
     const headers = {
       Authorization: `Bearer ${token}`,
     };
-    const response = await axios.post(jobPostApi, data, { headers });
+
+    let response;
+    if (id) {
+      console.log(id)
+      response = await axios.post(jobPostApi, { jobId: id }, { headers });
+    } else {
+      response = await axios.post(jobPostApi, data, { headers });
+    }
 
     return response;
   } catch (err) {
@@ -196,8 +204,6 @@ export const deleteJobById = async (jobId) => {
       Authorization: `Bearer ${token}`,
     };
 
-
-  
     const response = await axios.delete(`${jobPostApi}/${jobId}`, {
       headers,
     });
@@ -242,6 +248,23 @@ export const profilePicUpload = async (data) => {
     return response;
   } catch (e) {
     console.log("error from update Application", e);
+  }
+};
+
+export const updateCompany = async (data) => {
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.post(updateCompanyApi, data, {
+      headers,
+    });
+
+    return response;
+  } catch (e) {
+    console.log("error from update company", e);
   }
 };
 
@@ -375,7 +398,7 @@ export const giveRazor = async (id) => {
   }
 };
 
-export const loadRazorpay = (plan, orderId) => {
+export const loadRazorpay = (plan, orderId, jobData) => {
   const token = localStorage.getItem("TokenId");
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -408,7 +431,18 @@ export const loadRazorpay = (plan, orderId) => {
       if (res.status == 200) {
         localStorage.removeItem("jobData");
         localStorage.removeItem("selectedPlan");
-        window.location.href = "/employerHome/jobs";
+        if (jobData) {
+          const response = await postJob(jobData);
+          if (response) {
+            showSuccessToast("successfully Posted");
+            window.location.href = "/employerHome/jobs";
+          } else {
+            showErrorToast("Could not post");
+            window.location.href = "/employerHome/jobs";
+          }
+        } else {
+          window.location.href = "/employerHome/jobs";
+        }
       } else {
         showErrorToast("Failed to post job");
       }
@@ -437,7 +471,6 @@ export const getBill = async () => {
     console.log("Error from give get bill api", err);
   }
 };
-
 
 export const getCredits = async () => {
   try {

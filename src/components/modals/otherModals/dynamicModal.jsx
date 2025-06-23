@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -16,14 +16,26 @@ import {
   Input,
   Box
 } from "@mui/material";
+import { updateCompany } from "../../../API/ApiFunctions";
+import { showErrorToast, showSuccessToast } from "../../ui/toast";
 
 const DynamicModal = ({ open, onClose, fields, type, suggestions }) => {
   const { register, handleSubmit, setValue, watch } = useForm({
     defaultValues: fields,
   });
+  
+  const [buttonEnable, setButtonEnable] = useState(true)
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
+  const onSubmit = async(data) => {
+    setButtonEnable(false)
+    const response = await updateCompany(data);
+    if(response){
+      console.log(response)
+      showSuccessToast("Successfully updated")
+    }else{
+      showErrorToast("could not updated");
+      setButtonEnable(true)
+    }
     onClose();
   };
 
@@ -49,6 +61,8 @@ const DynamicModal = ({ open, onClose, fields, type, suggestions }) => {
           {Object.entries(fields).map(([key, value]) => {
             const fieldType = type?.[key] || "text";
             const fieldSuggestions = suggestions?.[key];
+
+ 
 
             // Render radio buttons
             if (fieldType === "radio" && Array.isArray(fieldSuggestions)) {
@@ -154,7 +168,7 @@ const DynamicModal = ({ open, onClose, fields, type, suggestions }) => {
             <Button onClick={onClose} variant="outlined" color="secondary">
               Cancel
             </Button>
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" disabled={!buttonEnable} variant="contained" color="primary">
               Save
             </Button>
           </div>

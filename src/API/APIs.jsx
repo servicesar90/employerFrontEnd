@@ -1,5 +1,7 @@
 export  const base_url = "https://backend.talentnestjob.store";
 
+// export  const base_url = "http://192.168.1.12:5000";
+
 
 // LoginAPIs
 export const mobileApi=`${base_url}/api/v1/auth/signup`
@@ -37,3 +39,5 @@ export const verifyPaymentApi = `${base_url}/api/v1/subscription/verify_payment`
 export const getBillApi = `${base_url}/api/v1/subscription/bill`
 
 export const getCreditsApi = `${base_url}/api/v1/subscription/credits`
+
+export const updateCompanyApi = `${base_url}/api/v1/employer/company`
