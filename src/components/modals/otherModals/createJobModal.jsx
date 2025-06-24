@@ -625,7 +625,7 @@ const PostJob = () => {
               </Box>
             </Box>
 
-            {category || values.jobRoles && (
+            {(category || values.jobRoles) && (
               <Box className="mt-4 w-1/2 flex flex-col items-start">
                 <Typography
                   variant="h6"
