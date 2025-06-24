@@ -30,6 +30,7 @@ import Navbar from "../components/ui/navbar.jsx";
 function Layout() {
   return (
     <div className="max-w-[100vw]">
+      
       <Navbar />
       <Outlet />
     </div>
@@ -65,11 +66,11 @@ export default function Routess() {
       <Route
         path="/employerHome"
         element={
-          <ProtectedRoute>
+         
             <RedirectedRouteForHome>
               <EmployerHome />
             </RedirectedRouteForHome>
-          </ProtectedRoute>
+         
         }
       >
         <Route index element={<Jobs />} />

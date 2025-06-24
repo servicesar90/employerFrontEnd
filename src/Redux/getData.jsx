@@ -48,9 +48,6 @@ export const fetchJobsById = createAsyncThunk(
   }
 );
 
-export const setJobDataFunc =(data)=>{
-  
-}
 
 const initialState = {
   employer: null,

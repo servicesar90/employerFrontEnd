@@ -144,7 +144,7 @@ const PostJob = () => {
   const [educationSuggestions, setEducationSuggestions] = useState(["hello"]);
   const [expanded, setExpanded] = useState([]);
   const [walkIn, setWalkIn] = useState(false);
-  const [contactpermission, setContactPermission] = useState(null);
+  const [contactpermission, setContactPermission] = useState("self");
   const [showJobDetailpreview, setShowJobDetailpreview] = useState(false);
   const [showCandidateRequirementsPreview, setShowCandidateRequirementPreview] =
     useState(false);
@@ -265,7 +265,11 @@ const PostJob = () => {
         minimumSalary: selectedJob.minimumSalary,
         maximumSalary: selectedJob.maximumSalary,
         incentive: selectedJob.incentive,
-        perks: JSON.parse(selectedJob.perks) || [],
+        perks: selectedJob?.perks
+          ? Array.isArray(selectedJob.perks)
+            ? selectedJob.perks
+            : JSON.parse(selectedJob.perks)
+          : [],
         joiningFee: selectedJob.joiningFee,
         joiningFeeAmount: selectedJob.joiningFeeAmount,
         joiningFeeReason: selectedJob.joiningFeeReason,
@@ -278,12 +282,20 @@ const PostJob = () => {
         educationSpecialization: selectedJob.educationSpecialization,
         gender: selectedJob.gender,
         age: selectedJob.age,
-        languages: JSON.parse(selectedJob.languages),
+        languages: selectedJob?.languages
+          ? Array.isArray(selectedJob.languages)
+            ? selectedJob.languages
+            : JSON.parse(selectedJob.languages)
+          : [],
         distance: selectedJob.distance,
         state: selectedJob.state,
         city: selectedJob.city,
         pinCode: selectedJob.pinCode,
-        skills: JSON.parse(selectedJob.skills),
+        skills: selectedJob?.skills
+          ? Array.isArray(selectedJob.skills)
+            ? selectedJob.skills
+            : JSON.parse(selectedJob.skills)
+          : [],
         jobDescription: selectedJob.jobDescription,
         walkIn: selectedJob.walkIn,
         walkInAddress: selectedJob.walkInAddress,
@@ -348,7 +360,6 @@ const PostJob = () => {
   }, [jobsById]);
 
   const values = getValues();
-
 
   const toggleField = (field) => {
     if (expanded.includes(field)) {
@@ -466,7 +477,16 @@ const PostJob = () => {
     <Box className="p-6 pt-0 bg-gray-200 min-h-screen">
       <div className="w-full z-50 fixed bg-white flex flex-row justify-between rounded-lg shadow-md">
         <div className="flex flex-row gap-4 text-lg font-bold p-4">
-          <ArrowLeft onClick={() => navigate("/employerHome/jobs")} />
+          <ArrowLeft
+            onClick={() => {
+              const confirmed = window.confirm(
+                "Are you sure?\nYou will lose all the filled data."
+              );
+              if (confirmed) {
+                navigate("/employerHome/jobs");
+              }
+            }}
+          />
           Jobs
         </div>
       </div>
@@ -649,7 +669,7 @@ const PostJob = () => {
                           <TextField
                             {...params}
                             placeholder="Choose Job Roles"
-                             disabled={action === "edit"}
+                            disabled={action === "edit"}
                             size="small"
                             fullWidth
                             error={!!errors.jobRoles}
@@ -1032,7 +1052,7 @@ const PostJob = () => {
                       <TextField
                         {...field}
                         value={field.value || ""}
-                         disabled={action === "edit"}
+                        disabled={action === "edit"}
                         type="number"
                         size="small"
                         fullWidth
@@ -1274,7 +1294,7 @@ const PostJob = () => {
                         {...field}
                         label="Joining Fee Amount"
                         fullWidth
-                         disabled={action === "edit"}
+                        disabled={action === "edit"}
                         size="small"
                         placeholder="Enter Fee Amount"
                         error={!!errors.joiningFeeAmount}
@@ -1355,7 +1375,7 @@ const PostJob = () => {
                         <TextField
                           {...field}
                           label="joining fees amount reason Amount"
-                           disabled={action === "edit"}
+                          disabled={action === "edit"}
                           fullWidth
                           size="small"
                           placeholder="Mention the Reason"
@@ -1762,7 +1782,7 @@ const PostJob = () => {
                                 ? field.value.filter((v) => v !== val)
                                 : [...field.value, val];
 
-                              toggleField(val); 
+                              toggleField(val);
                               field.onChange(newValue);
                             }}
                             className={`px-4 py-1.5 rounded-full cursor-pointer text-sm font-medium transition border ${
@@ -2199,7 +2219,7 @@ const PostJob = () => {
               </Typography>
             </Box>
 
-            <FormControl component="fieldset" fullWidth>
+            {/* <FormControl component="fieldset" fullWidth>
               <FormLabel
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
@@ -2245,6 +2265,48 @@ const PostJob = () => {
               {errors.contactPrefernece && (
                 <Typography color="error" variant="caption">
                   {errors.contactPrefernece.message}
+                </Typography>
+              )}
+            </FormControl> */}
+
+            <FormControl component="fieldset" fullWidth>
+              <FormLabel className="mt-2 mb-2 self-start">
+                Every time you receive a candidate application,do you want
+                Whatsapp Alerts from Unigrow? *
+              </FormLabel>
+              <Controller
+                name="notificationPreference"
+                control={control}
+                rules={{ required: "Please select your preference" }}
+                render={({ field }) => (
+                  <RadioGroup
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value);
+                      if (value === "yes") {
+                        setContactPermission("other");
+                      } else {
+                        setContactPermission("self");
+                      }
+                    }}
+                  >
+                    <FormControlLabel
+                      value="yes"
+                      control={<Radio />}
+                      label="Yes, to other recruiter"
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio />}
+                      label="No, send me the notifications"
+                    />
+                  </RadioGroup>
+                )}
+              />
+              {errors.notificationPreference && (
+                <Typography color="error" variant="caption">
+                  {errors.notificationPreference.message}
                 </Typography>
               )}
             </FormControl>
@@ -2379,7 +2441,7 @@ const PostJob = () => {
                         <FormControlLabel
                           value="matched-candidate"
                           control={<Radio />}
-                          label="Only matched candidates (~60% of all candidates)"
+                          label="Only matched candidates (~20% of all candidates)"
                         />
                       </RadioGroup>
                     )}
@@ -2387,65 +2449,6 @@ const PostJob = () => {
                   {errors.candidateType && (
                     <Typography color="error" variant="caption">
                       {errors.candidateType.message}
-                    </Typography>
-                  )}
-                </FormControl>
-              </>
-            )}
-          </Box>
-
-          <Box className="bg-white p-6 mt-4 rounded shadow space-y-6 flex flex-col items-start">
-            {(contactpermission === "no" ||
-              contactpermission === "self" ||
-              contactpermission === "other") && (
-              <>
-                <Typography
-                  variant="h6"
-                  className="mb-2 self-start"
-                  sx={{ fontWeight: 700, fontSize: "0.9rem" }}
-                >
-                  Communication Preferences
-                </Typography>
-                <FormControl component="fieldset" fullWidth>
-                  <FormLabel className="mt-4 mb-2 self-start">
-                    Every time you receive a candidate application,do you
-                    wantWhatsapp Alerts from Unigrow? *
-                  </FormLabel>
-                  <Controller
-                    name="notificationPreference"
-                    control={control}
-                    rules={{ required: "Please select your preference" }}
-                    render={({ field }) => (
-                      <RadioGroup
-                        {...field}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          field.onChange(value);
-                          if (value === "self") {
-                            setContactPermission(value);
-                          }
-                        }}
-                      >
-                        <FormControlLabel
-                          value="yes"
-                          control={<Radio />}
-                          label={
-                            contactpermission === "self"
-                              ? "Yes, to myself"
-                              : "Yes, to other recruiter"
-                          }
-                        />
-                        <FormControlLabel
-                          value="no"
-                          control={<Radio />}
-                          label="No, send me summary once a day"
-                        />
-                      </RadioGroup>
-                    )}
-                  />
-                  {errors.notificationPreference && (
-                    <Typography color="error" variant="caption">
-                      {errors.notificationPreference.message}
                     </Typography>
                   )}
                 </FormControl>

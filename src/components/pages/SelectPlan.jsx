@@ -1,18 +1,15 @@
-// export default SelectPlan;
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPlans } from "../../API/ApiFunctions";
 import { showErrorToast } from "../ui/toast";
-import { BadgeCheck, Briefcase, Database } from "lucide-react";
-import { Chip, Stack } from "@mui/material";
+import { Briefcase, Database } from "lucide-react";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import AlignVerticalTopIcon from '@mui/icons-material/AlignVerticalTop';
-import HighlightIcon from '@mui/icons-material/Highlight';
+import AlignVerticalTopIcon from "@mui/icons-material/AlignVerticalTop";
+import HighlightIcon from "@mui/icons-material/Highlight";
 import ManIcon from "@mui/icons-material/Man";
-import AvTimerIcon from '@mui/icons-material/AvTimer';
+import AvTimerIcon from "@mui/icons-material/AvTimer";
 
 const SelectPlan = () => {
   const [allplans, setAllPlans] = useState([]);
@@ -29,27 +26,22 @@ const SelectPlan = () => {
         showErrorToast("Could not fetch Plans");
       }
     };
-
     getData();
   }, []);
 
   useEffect(() => {
-    setPlan(allplans);
     if (filter === "Starter") {
-      const newPlan = allplans.filter((ele) => ele.Validity == 20);
-      setPlan(newPlan);
+      setPlan(allplans.filter((ele) => ele.Validity === 20));
     } else if (filter === "Monthly") {
-      const newPlan = allplans.filter((ele) => ele.Validity == 30);
-      setPlan(newPlan);
+      setPlan(allplans.filter((ele) => ele.Validity === 30));
     } else if (filter === "Quarterly") {
-      const newPlan = allplans.filter((ele) => ele.Validity == 90);
-      setPlan(newPlan);
+      setPlan(allplans.filter((ele) => ele.Validity === 90));
     } else if (filter === "Half Yearly") {
-      const newPlan = allplans.filter((ele) => ele.Validity == 180);
-      setPlan(newPlan);
+      setPlan(allplans.filter((ele) => ele.Validity === 180));
     } else if (filter === "Yearly") {
-      const newPlan = allplans.filter((ele) => ele.Validity == 365);
-      setPlan(newPlan);
+      setPlan(allplans.filter((ele) => ele.Validity === 365));
+    } else {
+      setPlan(allplans);
     }
   }, [allplans, filter]);
 
@@ -58,234 +50,342 @@ const SelectPlan = () => {
     navigate("/employerHome/checkout");
   };
 
-  const icons = [{icon:RemoveRedEyeIcon, color: "black"},{ icon: AvTimerIcon, color: "blue"},{ icon:WhatsAppIcon, color:"green"},{icon:LocalFireDepartmentIcon, color: "orange"},{icon:AlignVerticalTopIcon, color:"darkBlue"},{icon: HighlightIcon, color: "yellow"}, {icon: ManIcon, color:"black"}
+  const icons = [
+    { icon: RemoveRedEyeIcon, color: "black" },
+    { icon: AvTimerIcon, color: "blue" },
+    { icon: WhatsAppIcon, color: "green" },
+    { icon: LocalFireDepartmentIcon, color: "orange" },
+    { icon: AlignVerticalTopIcon, color: "darkBlue" },
+    { icon: HighlightIcon, color: "yellow" },
+    { icon: ManIcon, color: "black" },
   ];
 
   return (
     <div
       style={{
-        padding: "16px",
-        backgroundColor: "#DEF3F9",
+        background: "#DEF3F9",
         minHeight: "100vh",
-        width: "100%",
-        overflow: "auto",
+        padding: "20px 10px",
       }}
     >
-      <Stack
-        direction="row"
-        spacing={2}
-        flexWrap="wrap"
-        sx={{
-          p: 2,
-          backgroundColor: "#fff",
-          borderRadius: 2,
-          boxShadow: 2,
-          marginBottom: 4,
-        }}
-      >
-        {["Starter", "Monthly", "Quarterly", "Half Yearly", "Yearly"].map(
-          (type, index) => (
-            <Chip
-              key={index}
-              label={type}
-              onClick={() => setFilter(type)}
-              clickable
-              variant={filter === type ? "filled" : "outlined"}
-              color={filter === type ? "primary" : "default"}
-              sx={{
-                fontWeight: 500,
-                fontSize: "0.875rem",
-                px: 2,
-                py: 1,
-                borderRadius: "16px",
-                "&:hover": {
-                  backgroundColor:
-                    filter === type ? undefined : "rgba(0, 0, 0, 0.04)",
-                },
-              }}
-            />
-          )
-        )}
-      </Stack>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      {/* Header */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <h1
           style={{
-            fontSize: "20px",
-            fontWeight: "600",
-            color: "#003B70",
-            marginBottom: "20px",
+            color: "#065a94",
+            fontSize: "36px",
+            fontWeight: "800",
+            marginBottom: "8px",
+          
           }}
         >
-          Choose a Plan
+          Choose Your Plan
         </h1>
-
-        <div
+        <p
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: "12px",
-            maxWidth: "100%",
+            color: "#065a94",
+            fontSize: "18px",
+            fontWeight: "400",
+            margin: "0",
           }}
         >
-          {plans?.map((plan) => (
+          Select the perfect plan that fits your needs
+        </p>
+      </div>
+
+      {/* Filter Buttons */}
+    <div className="flex justify-center flex-wrap gap-2 mb-12">
+  {["Starter", "Monthly", "Quarterly", "Half Yearly", "Yearly"].map((type) => (
+    <div
+      key={type}
+      onClick={() => setFilter(type)}
+      className={`px-5 py-2 rounded-full border font-semibold text-sm cursor-pointer transition-all duration-300 backdrop-blur-sm shadow-sm ${
+        filter === type
+          ? "bg-white text-[#0784C9] border-white scale-105"
+          : "bg-white/70 text-slate-700 border-slate-300 hover:bg-white hover:scale-105"
+      }`}
+    >
+      {type}
+    </div>
+  ))}
+</div>
+
+
+
+      {/* Plans */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          gap: "24px",
+          maxWidth: "1200px",
+          margin: "0 auto",
+        }}
+      >
+        {plans.map((plan) => (
+          <div
+            key={plan.id}
+            style={{
+              width: "280px",
+              background: "rgba(255,255,255,0.95)",
+              borderRadius: "12px",
+              padding: "30px 24px",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.3)",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+              transition: "all 0.4s ease",
+              position: "relative",
+              overflow: "hidden",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-10px) scale(1.02)";
+              e.currentTarget.style.boxShadow = "0 30px 60px rgba(0,0,0,0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0) scale(1)";
+              e.currentTarget.style.boxShadow = "0 20px 40px rgba(0,0,0,0.1)";
+            }}
+          >
             <div
-              key={plan.id}
               style={{
-                position: "relative",
-                height: "100%",
-                backgroundColor: "white",
-                borderRadius: "8px",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                padding: "16px",
-                border: "1px solid #0784C9",
-                transition: "box-shadow 0.2s",
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: "60px",
+                height: "60px",
+                background: "linear-gradient(135deg, #0784C9, #065a94)",
+                borderBottomLeftRadius: "100%",
               }}
-            >
-              <h2
+            />
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+              <h3
                 style={{
-                  fontSize: "16px",
+                  fontSize: "22px",
                   fontWeight: "700",
-                  color: "#003B70",
-                  marginBottom: "6px",
+                  color: "#2d3748",
+                  margin: "0 0 8px",
                 }}
               >
                 {plan.name}
-              </h2>
-              <p
-                style={{
-                  color: "#0784C9",
-                  fontSize: "11px",
-                  marginBottom: "12px",
-                }}
-              >
-                Plan Valid for{" "}
-                <span style={{ fontWeight: "500" }}>{plan.Validity} days</span>
-              </p>
-
+              </h3>
               <div
                 style={{
-                  marginBottom: "12px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "6px",
-                  fontSize: "11px",
+                  fontSize: "12px",
+                  color: "#718096",
+                  background: "#f7fafc",
+                  padding: "4px 8px",
+                  borderRadius: "12px",
+                  display: "inline-block",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    color: "#003B70",
-                  }}
-                >
-                  <Briefcase
-                    style={{
-                      width: "12px",
-                      height: "12px",
-                      marginRight: "6px",
-                      color: "#0784C9",
-                    }}
-                  />
-                  <span style={{ fontWeight: "500", marginRight: "5px" }}>
-                    {plan.job_credits}
-                  </span>
-                  Job Credits
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    color: "#003B70",
-                  }}
-                >
-                  <Database
-                    style={{
-                      width: "12px",
-                      height: "12px",
-                      marginRight: "6px",
-                      color: "#0784C9",
-                    }}
-                  />
-                  <span style={{ fontWeight: "500", marginRight: "5px" }}>
-                    {plan.Database_credits}{" "}
-                  </span>
-                  Database Credits
-                </div>
+                {plan.Validity} days validity
               </div>
+            </div>
 
-              {(Array.isArray(plan?.features)? plan?.features : JSON.parse(plan?.features))?.map((item, index) => {
-                const IconComponent = icons[index].icon; 
-                return (
-                  <div key={index} className="flex items-center gap-2 my-2">
-                    {IconComponent && (
-                      <IconComponent
-                        style={{ color: `${icons[index].color}`, fontSize: 15 }}
-                      />
-                    )}
-                    <p
-                      style={{
-                        fontWeight: "500",
-                        margin: 0,
-                        color: "#003B70",
-                      }}
-                      className="text-left text-12"
-                    >
-                      {item}
-                    </p>
-                  </div>
-                );
-              })}
-
-               <div className="h-10"></div>
-
-
-              <p
+{/* plan price */}
+            <div style={{ textAlign: "center", marginBottom: "12px" }}>
+              <span
                 style={{
-                  position: "absolute",
-                  width: "40%",
-                  right: "30%",
-                  bottom: "15%",
-                  fontSize: "18px",
-                  fontWeight: "700",
-                  color: "#0784C9",
-                  marginBottom: "12px",
+                  fontSize: "22px",
+                  fontWeight: "800",
+                  background: "linear-gradient(135deg, #0784C9, #065a94)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
                 }}
               >
                 ₹{plan.price}
-              </p>
+              </span>
+            </div>
 
-              <div className="h-10"></div>
-
-              <button
-                onClick={() => handleSelect(plan)}
+            {/* Credits */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "12px",
+                marginBottom: "24px",
+              }}
+            >
+              <div
                 style={{
-                  position: "absolute",
-                  bottom: "5%",
-                  right: "10%",
-                  width: "80%",
-                  backgroundColor: "#0784C9",
-                  color: "white",
-                  padding: "8px 0",
-                  borderRadius: "6px",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  transition: "background-color 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "#065a94";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "#0784C9";
+                  background: "linear-gradient(135deg, #ebf8ff, #bee3f8)",
+                  padding: "10px 18px",
+                  borderRadius: "12px",
+                  textAlign: "center",
+                  border: "1px solid #90cdf4",
                 }}
               >
-                Choose Plan
-              </button>
+                <div className="w-full flex items-center justify-center">
+                  <Briefcase
+                    style={{
+                      fontSize: "20px",
+                      color: "#0784C9",
+                      marginBottom: "4px",
+                    }}
+                  />
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "700",
+                    color: "#0784C9",
+                  }}
+                >
+                  {plan.job_credits}
+                </div>
+                <div
+                  style={{
+                    fontSize: "10px",
+                    color: "#4a5568",
+                    fontWeight: "500",
+                  }}
+                >
+                  Job Credits
+                </div>
+              </div>
+
+              <div
+                style={{
+                  background: "linear-gradient(135deg, #f0fff4, #c6f6d5)",
+                  padding: "10px 8px",
+                  borderRadius: "12px",
+                  textAlign: "center",
+                  border: "1px solid #9ae6b4",
+                }}
+              >
+                <div className="w-full flex items-center justify-center">
+                  <Database
+                    style={{
+                      fontSize: "20px",
+                      color: "#16a34a",
+                      marginBottom: "4px",
+                    }}
+                  />
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "700",
+                    color: "#16a34a",
+                  }}
+                >
+                  {plan.Database_credits}
+                </div>
+                <div
+                  style={{
+                    fontSize: "10px",
+                    color: "#4a5568",
+                    fontWeight: "500",
+                  }}
+                >
+                  Database
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
+
+            {/* Features */}
+            <div style={{ marginBottom: "30px" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateRows: "1fr 1fr",
+                  gap: "2px",
+                  textAlign: "left",
+                }}
+              >
+                {(Array.isArray(plan.features)
+                  ? plan.features
+                  : JSON.parse(plan.features)
+                ).map((item, index) => {
+                  const IconComponent = icons[index]?.icon;
+                  const iconColor =
+                    {
+                      black: "#000000",
+                      blue: "#2563eb",
+                      green: "#16a34a",
+                      orange: "#ea580c",
+                      darkBlue: "#1e40af",
+                      yellow: "#eab308",
+                    }[icons[index]?.color] || "#666";
+
+                  return (
+                    <div
+                      key={index}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "6px 4px",
+                        fontSize: "11px",
+                        color: "#4a5568",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {IconComponent && (
+                        <IconComponent
+                          style={{ fontSize: 14, color: iconColor }}
+                        />
+                      )}
+                      <span>{item}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="h-[35px] w-full"></div>
+
+            <button
+              onClick={() => handleSelect(plan)}
+              style={{
+                width: "90%",
+                background: "linear-gradient(135deg, #0784C9, #065a94)",
+                color: "white",
+                border: "none",
+                borderRadius: "12px",
+                padding: "14px 0",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                boxShadow: "0 4px 15px rgba(7, 132, 201, 0.4)",
+                position: "absolute",
+                bottom: "5%",
+                right: "5%",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = "translateY(-2px)";
+                e.target.style.boxShadow = "0 6px 20px rgba(7, 132, 201, 0.6)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "0 4px 15px rgba(7, 132, 201, 0.4)";
+              }}
+            >
+              Choose Plan
+            </button>
+          </div>
+        ))}
       </div>
+
+      {plans.length === 0 && (
+        <div style={{ textAlign: "center", color: "white", marginTop: "60px" }}>
+          <div style={{ fontSize: "48px", marginBottom: "20px", opacity: 0.7 }}>
+            📋
+          </div>
+          <h3
+            style={{ fontSize: "24px", fontWeight: "600", marginBottom: "8px" }}
+          >
+            No plans available
+          </h3>
+          <p style={{ fontSize: "16px", opacity: 0.8 }}>
+            Please try selecting a different plan type.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -954,41 +955,17 @@ const Index = () => {
     );
   };
 
+  const navigate = useNavigate()
   return (
     <div className="min-h-screen bg-white">
    
      
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent)] opacity-50"></div>
+      <section className="relative min-h-screen flex z-0 items-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      
 
-        {/* Floating Elements */}
-        {floatingElements.map((element, index) => (
-          <motion.div
-            key={index}
-            className="absolute text-blue-500/20 hidden lg:block"
-            style={{
-              left: `${50 + element.x}%`,
-              top: `${50 + element.y}%`,
-            }}
-            animate={{
-              y: [0, -20, 0],
-              rotate: [0, 5, 0],
-            }}
-            transition={{
-              duration: 6,
-              delay: element.delay,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            <element.icon className="h-8 w-8" />
-          </motion.div>
-        ))}
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+        <div className="relative z-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <motion.div
@@ -1042,20 +1019,21 @@ const Index = () => {
                 <Button
                   size="lg"
                   className="bg-blue-600 hover:bg-blue-700 text-white group"
+                  onClick={()=>navigate("/employerHome")}
                 >
                   <BriefcaseIcon className="w-5 h-5 mr-2" />
                   Post a Job Now
                   <ArrowRightIcon className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
 
-                <Button
+                {/* <Button
                   size="lg"
                   variant="outline"
                   className="border-blue-200 text-blue-700 hover:bg-blue-50"
                 >
                   <SearchIcon className="w-5 h-5 mr-2" />
                   Watch Demo
-                </Button>
+                </Button> */}
               </motion.div>
 
               {/* Stats */}

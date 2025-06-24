@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { showErrorToast } from "../components/ui/toast";
 
 export const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("TokenId");
@@ -27,6 +28,8 @@ export const RedirectedRouteForLogin = ({children}) =>{
     }
   }
 
+  
+
   return children
 }
 
@@ -46,11 +49,15 @@ export const RedirectedRoute =({children}) =>{
     }
   }
 
+  
+
   return <Navigate to="/" replace />
 }
 
 
 export const RedirectedRouteForHome =({children}) =>{
+
+
   const token = localStorage.getItem("TokenId");
 
   if(token){
@@ -64,6 +71,8 @@ export const RedirectedRouteForHome =({children}) =>{
       return children
     }
   }
+
+    showErrorToast("Please Login First")
 
   return <Navigate to="/" replace />
 }
