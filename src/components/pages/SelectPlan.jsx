@@ -12,6 +12,7 @@ import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import AlignVerticalTopIcon from '@mui/icons-material/AlignVerticalTop';
 import HighlightIcon from '@mui/icons-material/Highlight';
 import ManIcon from "@mui/icons-material/Man";
+import AvTimerIcon from '@mui/icons-material/AvTimer';
 
 const SelectPlan = () => {
   const [allplans, setAllPlans] = useState([]);
@@ -57,13 +58,7 @@ const SelectPlan = () => {
     navigate("/employerHome/checkout");
   };
 
-  const icons = [
-    RemoveRedEyeIcon,
-    WhatsAppIcon,
-    LocalFireDepartmentIcon,
-    AlignVerticalTopIcon,
-    HighlightIcon,
-    ManIcon,
+  const icons = [{icon:RemoveRedEyeIcon, color: "black"},{ icon:WhatsAppIcon, color:"green"},{ icon: AvTimerIcon, color: "blue"},{icon:LocalFireDepartmentIcon, color: "orange"},{icon:AlignVerticalTopIcon, color:"darkBlue"},{icon: HighlightIcon, color: "yellow"}, {icon: ManIcon, color:"black"}
   ];
 
   return (
@@ -163,7 +158,7 @@ const SelectPlan = () => {
                   marginBottom: "12px",
                 }}
               >
-                Valid for{" "}
+                Plan Valid for{" "}
                 <span style={{ fontWeight: "500" }}>{plan.Validity} days</span>
               </p>
 
@@ -218,13 +213,13 @@ const SelectPlan = () => {
                 </div>
               </div>
 
-              {JSON.parse(plan?.features)?.map((item, index) => {
-                const IconComponent = icons[index]; 
+              {(Array.isArray(plan?.features)? plan?.features : JSON.parse(plan?.features))?.map((item, index) => {
+                const IconComponent = icons[index].icon; 
                 return (
                   <div key={index} className="flex items-center gap-2 my-2">
                     {IconComponent && (
                       <IconComponent
-                        style={{ color: "#0784C9", fontSize: 15 }}
+                        style={{ color: `${icons[index].color}`, fontSize: 15 }}
                       />
                     )}
                     <p
