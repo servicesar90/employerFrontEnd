@@ -59,8 +59,14 @@ const EmployerHome = () => {
           mobileVisible={mobileVisible}
           onCloseMobile={handleMenuClick}
           />
+          <div style={{
+            height: "calc(100vh - 50px)",
+            width:"100%",
+            overflow: "auto"
+          }}>
 
           <Outlet />
+          </div>
      
       </div>
     </div>

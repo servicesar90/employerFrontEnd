@@ -5,16 +5,25 @@ import { useNavigate } from "react-router-dom";
 import { getPlans } from "../../API/ApiFunctions";
 import { showErrorToast } from "../ui/toast";
 import { BadgeCheck, Briefcase, Database } from "lucide-react";
+import { Chip, Stack } from "@mui/material";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import AlignVerticalTopIcon from '@mui/icons-material/AlignVerticalTop';
+import HighlightIcon from '@mui/icons-material/Highlight';
+import ManIcon from "@mui/icons-material/Man";
 
 const SelectPlan = () => {
-  const [plans, setPlans] = useState([]);
+  const [allplans, setAllPlans] = useState([]);
+  const [filter, setFilter] = useState("Starter");
+  const [plans, setPlan] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getData = async () => {
       const response = await getPlans();
       if (response) {
-        setPlans(response.data.data);
+        setAllPlans(response.data.data);
       } else {
         showErrorToast("Could not fetch Plans");
       }
@@ -23,10 +32,39 @@ const SelectPlan = () => {
     getData();
   }, []);
 
+  useEffect(() => {
+    setPlan(allplans);
+    if (filter === "Starter") {
+      const newPlan = allplans.filter((ele) => ele.Validity == 20);
+      setPlan(newPlan);
+    } else if (filter === "Monthly") {
+      const newPlan = allplans.filter((ele) => ele.Validity == 30);
+      setPlan(newPlan);
+    } else if (filter === "Quarterly") {
+      const newPlan = allplans.filter((ele) => ele.Validity == 90);
+      setPlan(newPlan);
+    } else if (filter === "Half Yearly") {
+      const newPlan = allplans.filter((ele) => ele.Validity == 180);
+      setPlan(newPlan);
+    } else if (filter === "Yearly") {
+      const newPlan = allplans.filter((ele) => ele.Validity == 365);
+      setPlan(newPlan);
+    }
+  }, [allplans, filter]);
+
   const handleSelect = (plan) => {
     localStorage.setItem("selectedPlan", JSON.stringify(plan));
     navigate("/employerHome/checkout");
   };
+
+  const icons = [
+    RemoveRedEyeIcon,
+    WhatsAppIcon,
+    LocalFireDepartmentIcon,
+    AlignVerticalTopIcon,
+    HighlightIcon,
+    ManIcon,
+  ];
 
   return (
     <div
@@ -38,6 +76,42 @@ const SelectPlan = () => {
         overflow: "auto",
       }}
     >
+      <Stack
+        direction="row"
+        spacing={2}
+        flexWrap="wrap"
+        sx={{
+          p: 2,
+          backgroundColor: "#fff",
+          borderRadius: 2,
+          boxShadow: 2,
+          marginBottom: 4,
+        }}
+      >
+        {["Starter", "Monthly", "Quarterly", "Half Yearly", "Yearly"].map(
+          (type, index) => (
+            <Chip
+              key={index}
+              label={type}
+              onClick={() => setFilter(type)}
+              clickable
+              variant={filter === type ? "filled" : "outlined"}
+              color={filter === type ? "primary" : "default"}
+              sx={{
+                fontWeight: 500,
+                fontSize: "0.875rem",
+                px: 2,
+                py: 1,
+                borderRadius: "16px",
+                "&:hover": {
+                  backgroundColor:
+                    filter === type ? undefined : "rgba(0, 0, 0, 0.04)",
+                },
+              }}
+            />
+          )
+        )}
+      </Stack>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <h1
           style={{
@@ -62,6 +136,8 @@ const SelectPlan = () => {
             <div
               key={plan.id}
               style={{
+                position: "relative",
+                height: "100%",
                 backgroundColor: "white",
                 borderRadius: "8px",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
@@ -69,7 +145,6 @@ const SelectPlan = () => {
                 border: "1px solid #0784C9",
                 transition: "box-shadow 0.2s",
               }}
-            
             >
               <h2
                 style={{
@@ -116,7 +191,9 @@ const SelectPlan = () => {
                       color: "#0784C9",
                     }}
                   />
-                  <span style={{ fontWeight: "500",marginRight:"5px" }}>{plan.job_credits}</span>
+                  <span style={{ fontWeight: "500", marginRight: "5px" }}>
+                    {plan.job_credits}
+                  </span>
                   Job Credits
                 </div>
                 <div
@@ -134,14 +211,45 @@ const SelectPlan = () => {
                       color: "#0784C9",
                     }}
                   />
-                  <span style={{ fontWeight: "500", marginRight:"5px"}}>
-                    {plan.Database_credits} </span>
+                  <span style={{ fontWeight: "500", marginRight: "5px" }}>
+                    {plan.Database_credits}{" "}
+                  </span>
                   Database Credits
                 </div>
               </div>
 
+              {JSON.parse(plan?.features)?.map((item, index) => {
+                const IconComponent = icons[index]; 
+                return (
+                  <div key={index} className="flex items-center gap-2 my-2">
+                    {IconComponent && (
+                      <IconComponent
+                        style={{ color: "#0784C9", fontSize: 15 }}
+                      />
+                    )}
+                    <p
+                      style={{
+                        fontWeight: "500",
+                        margin: 0,
+                        color: "#003B70",
+                      }}
+                      className="text-left text-12"
+                    >
+                      {item}
+                    </p>
+                  </div>
+                );
+              })}
+
+               <div className="h-10"></div>
+
+
               <p
                 style={{
+                  position: "absolute",
+                  width: "40%",
+                  right: "30%",
+                  bottom: "15%",
                   fontSize: "18px",
                   fontWeight: "700",
                   color: "#0784C9",
@@ -151,10 +259,15 @@ const SelectPlan = () => {
                 ₹{plan.price}
               </p>
 
+              <div className="h-10"></div>
+
               <button
                 onClick={() => handleSelect(plan)}
                 style={{
-                  width: "100%",
+                  position: "absolute",
+                  bottom: "5%",
+                  right: "10%",
+                  width: "80%",
                   backgroundColor: "#0784C9",
                   color: "white",
                   padding: "8px 0",
