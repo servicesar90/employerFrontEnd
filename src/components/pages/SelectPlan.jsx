@@ -58,7 +58,7 @@ const SelectPlan = () => {
     navigate("/employerHome/checkout");
   };
 
-  const icons = [{icon:RemoveRedEyeIcon, color: "black"},{ icon:WhatsAppIcon, color:"green"},{ icon: AvTimerIcon, color: "blue"},{icon:LocalFireDepartmentIcon, color: "orange"},{icon:AlignVerticalTopIcon, color:"darkBlue"},{icon: HighlightIcon, color: "yellow"}, {icon: ManIcon, color:"black"}
+  const icons = [{icon:RemoveRedEyeIcon, color: "black"},{ icon: AvTimerIcon, color: "blue"},{ icon:WhatsAppIcon, color:"green"},{icon:LocalFireDepartmentIcon, color: "orange"},{icon:AlignVerticalTopIcon, color:"darkBlue"},{icon: HighlightIcon, color: "yellow"}, {icon: ManIcon, color:"black"}
   ];
 
   return (
