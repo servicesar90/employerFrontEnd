@@ -60,33 +60,7 @@ export default function Navbar() {
     window.location.reload();
   };
 
-  const services = [
-    {
-      title: "AI Resume builder",
-      subtitle: "Create your best resume using AI",
-      link: "/ai-resume-builder",
-    },
-    {
-      title: "AI Resume checker",
-      subtitle: "Get instant resume feedback",
-      link: "/ai-resume-checker",
-    },
-    {
-      title: "AI Cover letter generator",
-      subtitle: "Stand out and get hired faster",
-      link: "/ai-cover-letter-generator",
-    },
-    {
-      title: "Direct connection with recruiter",
-      subtitle: "Stand out and get hired faster",
-      link: "/recruiter-connection",
-    },
-    {
-      title: "Blog",
-      subtitle: "Guidance for securing your dream job",
-      link: "/blog",
-    },
-  ];
+ 
 
   return (
     <>

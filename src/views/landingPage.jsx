@@ -1,12 +1,45 @@
-
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import CandidateLoginModal from "../components/modals/loginModals/CandidateLoginModal";
+import OtpModal from "../components/modals/loginModals/OtpModal";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserProfile } from "../Redux/getData";
+//import ContactUs from '../components/pages/contactUs'
+
 
 const Index = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [openIndex, setOpenIndex] = useState(0);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mobile, setMobile] = useState("");
+  const [showOtp, setShowOtp] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useDispatch();
+ 
+
+  const { employee } = useSelector((state) => state.getDataReducer);
+
+  const storedUser = localStorage.getItem("User");
+
+  useEffect(() => {
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setIsLoggedIn(true);
+
+      if (user.profile && !employee) {
+        dispatch(fetchUserProfile());
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [dispatch, storedUser, employee]);
+
+  useEffect(() => {
+    if (employee) {
+      setProfile(employee);
+    }
+  }, [employee]);
 
   // Icons as inline SVG components
   const StarIcon = ({ className = "h-5 w-5" }) => (
@@ -532,7 +565,7 @@ const Index = () => {
     { name: "InnovateLab", logo: "IL", color: "from-purple-500 to-purple-600" },
     { name: "DataFlow", logo: "DF", color: "from-green-500 to-green-600" },
     { name: "CloudSync", logo: "CS", color: "from-orange-500 to-orange-600" },
-    { name: "AI Dynamics", logo: "AD", color: "from-red-500 to-red-600" },
+    { name: "Dynamics", logo: "AD", color: "from-red-500 to-red-600" },
     { name: "FutureWork", logo: "FW", color: "from-teal-500 to-teal-600" },
     { name: "CodeCraft", logo: "CC", color: "from-indigo-500 to-indigo-600" },
     { name: "NextGen", logo: "NG", color: "from-pink-500 to-pink-600" },
@@ -541,9 +574,9 @@ const Index = () => {
   const features = [
     {
       icon: TargetIcon,
-      title: "Smart AI Matching",
+      title: "Smart Matching",
       description:
-        "Our advanced AI algorithm analyzes 50+ data points including skills, experience, cultural fit, and personality traits to find your perfect candidates.",
+        "Our advanced algorithm analyzes 50+ data points including skills, experience, cultural fit, and personality traits to find your perfect candidates.",
       color: "from-blue-500 to-blue-600",
       stats: "98% accuracy",
       delay: 0,
@@ -674,9 +707,9 @@ const Index = () => {
       icon: CalendarIcon,
       title: "Smart Interview Scheduling",
       description:
-        "Seamlessly coordinate interviews with AI-powered scheduling, integrated calendar management, and automated reminder systems.",
+        "Seamlessly coordinate interviews with scheduling, integrated calendar management, and automated reminder systems.",
       features: [
-        "AI-powered scheduling",
+        "Scheduling",
         "Calendar integration",
         "Automated reminders",
         "Timezone optimization",
@@ -703,7 +736,7 @@ const Index = () => {
       company: "TechCorp Solutions",
       image: "SM",
       rating: 5,
-      text: "TalentHire transformed our hiring process completely. We reduced our time-to-hire by 60% and found candidates that are perfect cultural fits. The AI matching is incredibly accurate.",
+      text: "Unigrow Talent transformed our hiring process completely. We reduced our time-to-hire by 60% and found candidates that are perfect cultural fits. The matching is incredibly accurate.",
       stats: { hired: 45, timeReduced: "60%" },
     },
     {
@@ -712,7 +745,7 @@ const Index = () => {
       company: "InnovateLab",
       image: "DC",
       rating: 5,
-      text: "As a startup, we needed to hire fast without compromising quality. TalentHire delivered exceptional candidates within days. The platform is intuitive and the support team is fantastic.",
+      text: "As a startup, we needed to hire fast without compromising quality. Unigrow Talent delivered exceptional candidates within days. The platform is intuitive and the support team is fantastic.",
       stats: { hired: 12, timeReduced: "75%" },
     },
     {
@@ -721,7 +754,7 @@ const Index = () => {
       company: "DataFlow Inc",
       image: "MR",
       rating: 5,
-      text: "The quality of candidates we receive through TalentHire is unmatched. The pre-screening process saves us countless hours, and the analytics help us make data-driven hiring decisions.",
+      text: "The quality of candidates we receive through Unigrow Talent is unmatched. The pre-screening process saves us countless hours, and the analytics help us make data-driven hiring decisions.",
       stats: { hired: 28, timeReduced: "50%" },
     },
     {
@@ -730,7 +763,7 @@ const Index = () => {
       company: "CloudSync",
       image: "JW",
       rating: 5,
-      text: "We have tried multiple hiring platforms, but TalentHire stands out. The candidate quality is exceptional, and the collaborative features make team hiring decisions seamless.",
+      text: "We have tried multiple hiring platforms, but Unigrow Talent stands out. The candidate quality is exceptional, and the collaborative features make team hiring decisions seamless.",
       stats: { hired: 67, timeReduced: "65%" },
     },
   ];
@@ -788,9 +821,9 @@ const Index = () => {
 
   const faqs = [
     {
-      question: "How does TalentHire match candidates to job postings?",
+      question: "How does Unigrow Talent match candidates to job postings?",
       answer:
-        "Our AI-powered matching system analyzes multiple factors including skills, experience, location preferences, salary expectations, and cultural fit indicators. The algorithm continuously learns from successful matches to improve accuracy over time.",
+        "Our  matching system analyzes multiple factors including skills, experience, location preferences, salary expectations, and cultural fit indicators. The algorithm continuously learns from successful matches to improve accuracy over time.",
     },
     {
       question: "What is the average time to fill a position?",
@@ -805,7 +838,7 @@ const Index = () => {
     {
       question: "Can I collaborate with my team during the hiring process?",
       answer:
-        "Absolutely! TalentHire includes built-in collaboration tools allowing team members to leave feedback, rate candidates, schedule interviews, and make collective decisions through our shared dashboard.",
+        "Absolutely! Unigrow Talent includes built-in collaboration tools allowing team members to leave feedback, rate candidates, schedule interviews, and make collective decisions through our shared dashboard.",
     },
     {
       question: "What pricing plans do you offer?",
@@ -834,8 +867,8 @@ const Index = () => {
       title: "How to Write Job Descriptions That Attract Top Talent",
       excerpt:
         "Learn the key elements of compelling job descriptions that resonate with qualified candidates and improve your application rates.",
-      author: "Sarah Johnson",
-      date: "Dec 15, 2024",
+      author: "Ramesh kaul",
+      date: "Jan 15, 2025",
       readTime: "5 min read",
       category: "Hiring Tips",
       image: "bg-gradient-to-br from-blue-500 to-purple-600",
@@ -844,8 +877,8 @@ const Index = () => {
       title: "Mastering Remote Interview Techniques",
       excerpt:
         "Best practices for conducting effective virtual interviews that help you evaluate candidates accurately in a remote setting.",
-      author: "Mike Chen",
-      date: "Dec 12, 2024",
+      author: "Aditya Chuhan",
+      date: "Jan 12, 2025",
       readTime: "7 min read",
       category: "Interviewing",
       image: "bg-gradient-to-br from-green-500 to-teal-600",
@@ -854,8 +887,8 @@ const Index = () => {
       title: "2024 Salary Trends Across Tech Industries",
       excerpt:
         "Comprehensive analysis of salary trends and compensation packages to help you make competitive offers.",
-      author: "Lisa Rodriguez",
-      date: "Dec 10, 2024",
+      author: "Mansi Awasthi",
+      date: "Feb 10, 2025",
       readTime: "8 min read",
       category: "Market Insights",
       image: "bg-gradient-to-br from-orange-500 to-red-600",
@@ -936,7 +969,7 @@ const Index = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1,
+        prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
       );
     }, 5000);
 
@@ -945,26 +978,21 @@ const Index = () => {
 
   const goToPrevious = () => {
     setCurrentIndex(
-      currentIndex === 0 ? testimonials.length - 1 : currentIndex - 1,
+      currentIndex === 0 ? testimonials.length - 1 : currentIndex - 1
     );
   };
 
   const goToNext = () => {
     setCurrentIndex(
-      currentIndex === testimonials.length - 1 ? 0 : currentIndex + 1,
+      currentIndex === testimonials.length - 1 ? 0 : currentIndex + 1
     );
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-white">
-   
-     
-
       {/* Hero Section */}
       <section className="relative min-h-screen flex z-0 items-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      
-
         <div className="relative z-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -1004,9 +1032,7 @@ const Index = () => {
                 className="text-xl text-gray-600 mb-8 max-w-lg mx-auto lg:mx-0"
               >
                 Connect with qualified candidates instantly using our{" "}
-                <span className="text-blue-600 font-semibold">
-                  AI-powered platform
-                </span>{" "}
+                <span className="text-blue-600 font-semibold">Platform</span>{" "}
                 that matches you with perfect talent for your company's needs.
               </motion.p>
 
@@ -1019,7 +1045,7 @@ const Index = () => {
                 <Button
                   size="lg"
                   className="bg-blue-600 hover:bg-blue-700 text-white group"
-                  onClick={()=>navigate("/employerHome")}
+                  onClick={() => navigate("/employerHome")}
                 >
                   <BriefcaseIcon className="w-5 h-5 mr-2" />
                   Post a Job Now
@@ -1200,7 +1226,7 @@ const Index = () => {
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               From startups to Fortune 500 companies, leading organizations
-              trust TalentHire to find their perfect matches
+              trust Unigrow Talent to find their perfect matches
             </p>
           </motion.div>
 
@@ -1267,7 +1293,7 @@ const Index = () => {
             <div className="flex items-center justify-center mb-4">
               <SparklesIcon className="h-5 w-5 text-blue-500 mr-2" />
               <span className="text-blue-600 font-medium">
-                Why Choose TalentHire
+                Why Choose Unigrow Talent
               </span>
             </div>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -1277,9 +1303,9 @@ const Index = () => {
               </span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Experience the next generation of hiring with powerful AI-driven
-              features designed to streamline your recruitment process and
-              connect you with top talent faster than ever before.
+              Experience the next generation of hiring with powerful features
+              designed to streamline your recruitment process and connect you
+              with top talent faster than ever before.
             </p>
           </motion.div>
 
@@ -1312,10 +1338,7 @@ const Index = () => {
                     </p>
 
                     <div className="flex items-center justify-between">
-                      <Badge
-                        variant=""
-                        className="bg-gray-100 text-gray-700"
-                      >
+                      <Badge variant="" className="bg-gray-100 text-gray-700">
                         {feature.stats}
                       </Badge>
                       <ArrowRightIcon className="h-5 w-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-300" />
@@ -1339,12 +1362,13 @@ const Index = () => {
                 Ready to Transform Your Hiring?
               </h3>
               <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-                Join thousands of companies already using TalentHire to build
-                their dream teams
+                Join thousands of companies already using Unigrow Talent to
+                build their dream teams
               </p>
               <Button
                 size="lg"
                 className="bg-[#2563EB] text-blue-600 "
+                onClick={() => setShowLoginModal(true)}
               >
                 <ArrowRightIcon className="w-5 h-5 mr-2" />
                 Start Hiring Today
@@ -1600,7 +1624,7 @@ const Index = () => {
                     {[...Array(testimonials[currentIndex].rating)].map(
                       (_, i) => (
                         <StarIcon key={i} className="h-5 w-5 text-yellow-400" />
-                      ),
+                      )
                     )}
                   </div>
 
@@ -1675,7 +1699,7 @@ const Index = () => {
             </h2>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
               Our numbers speak for themselves. Join thousands of companies that
-              have transformed their hiring process with TalentHire.
+              have transformed their hiring process with Unigrow Talent.
             </p>
           </motion.div>
 
@@ -1719,7 +1743,8 @@ const Index = () => {
             </p>
             <Button
               size="lg"
-              className="bg-white text-blue-900 hover:bg-gray-100"
+              className="bg-[#2563EB] text-blue-900 "
+              onClick={() => setShowLoginModal(true)}
             >
               Start Hiring Now
             </Button>
@@ -1741,7 +1766,7 @@ const Index = () => {
               Frequently Asked <span className="text-blue-600">Questions</span>
             </h2>
             <p className="text-xl text-gray-600">
-              Everything you need to know about hiring with TalentHire
+              Everything you need to know about hiring with Unigrow Talent
             </p>
           </motion.div>
 
@@ -1802,7 +1827,7 @@ const Index = () => {
               Our support team is here to help you succeed with your hiring
               goals.
             </p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => navigate("/contact-us")}>
               Contact Support
             </Button>
           </motion.div>
@@ -1879,17 +1904,8 @@ const Index = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
-            className="text-center mt-12"
-          >
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-blue-200 text-blue-700 hover:bg-blue-50"
-            >
-              <BookOpenIcon className="w-5 h-5 mr-2" />
-              View All Articles
-            </Button>
-          </motion.div>
+            className="text-center mt-12 -mb-15"
+          ></motion.div>
         </div>
       </section>
 
@@ -1957,25 +1973,26 @@ const Index = () => {
             {/* Company Info */}
             <div className="lg:col-span-2">
               <div className="text-2xl font-bold text-white mb-4">
-                TalentHire
+                Unigrow Talent
               </div>
-              <p className="text-gray-400 mb-6 leading-relaxed">
+              <p className="text-gray-400 mb-6 leading-relaxed text-left">
                 The world's leading talent acquisition platform, connecting
                 exceptional candidates with forward-thinking companies since
-                2020.
+                2025.
               </p>
               <div className="space-y-3">
                 <div className="flex items-center text-gray-400">
                   <MailIcon className="h-4 w-4 mr-3" />
-                  hello@talenthire.com
+                  sales@unigrowtalent.com
                 </div>
                 <div className="flex items-center text-gray-400">
                   <PhoneIcon className="h-4 w-4 mr-3" />
-                  +1 (555) 123-4567
+                  +91 120-4178-702
                 </div>
                 <div className="flex items-center text-gray-400">
-                  <MapPinIcon className="h-4 w-4 mr-3" />
-                  San Francisco, CA
+                  <MapPinIcon className="w-7 mr-3" />
+                  <p className="text-left">Office No:-435A, 4th Floor Orbit Plaza, Crossing Republic
+                  Ghaziabad, India</p>
                 </div>
               </div>
             </div>
@@ -2003,7 +2020,7 @@ const Index = () => {
           </div>
 
           {/* Newsletter Signup */}
-          <div className="py-8 border-t border-gray-800">
+          {/* <div className="py-8 border-t border-gray-800">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">
@@ -2024,7 +2041,7 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Bottom Footer */}
           <div className="py-6 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between">
@@ -2043,7 +2060,7 @@ const Index = () => {
 
             {/* Legal Links */}
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-gray-400">
-              <span>© 2024 TalentHire. All rights reserved.</span>
+              <span>© 2025 Unigrow Talent. All rights reserved.</span>
               <a href="#" className="hover:text-white transition-colors">
                 Privacy Policy
               </a>
@@ -2057,6 +2074,29 @@ const Index = () => {
           </div>
         </div>
       </footer>
+      {/* Modals */}
+      {showLoginModal && (
+        <CandidateLoginModal
+          mobile={mobile}
+          setMobile={setMobile}
+          onClose={() => {
+            setShowLoginModal(false);
+          }}
+          onSubmit={() => {
+            setShowOtp(true);
+            setShowLoginModal(false);
+          }}
+        />
+      )}
+      {showOtp && (
+        <OtpModal
+          mobile={mobile}
+          onClose={() => setShowOtp(false)}
+          onSubmit={() => {
+            setIsLoggedIn(true);
+          }}
+        />
+      )}
     </div>
   );
 };

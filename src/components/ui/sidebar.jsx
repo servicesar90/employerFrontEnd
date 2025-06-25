@@ -20,7 +20,7 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
 
   const databaseSubItems = [
     { label: 'Search Candidates', icon: <UserSearch size={18} color='#0784C9' />, route: '/employerHome/SearchCandidates' },
-    { label: 'Saved Searches', icon: <Save size={18} color='#0784C9' />, route: '/employerHome/SavedSearches' },
+    { label: 'Saved Searches', icon: <Save size={18} color='#0784C9' />, route: '/employerHome/SavedSearch' },
     { label: 'Unlocked Candidates', icon: <Unlock size={18} color='#0784C9' />, route: '/employerHome/UnlockedCandidates' },
   ];
 
