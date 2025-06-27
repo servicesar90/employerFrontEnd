@@ -38,10 +38,10 @@ const Header = ({ onMenuClick }) => {
 
       {/* Right: Actions */}
       <div className="flex items-center gap-6">
-        {jobCredit && <div className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
+         <div className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
           <HandCoins className="w-5 h-5 text-gray-600" />
           <span> {jobCredit}</span>
-        </div>}
+        </div>
         <div onClick={()=>navigate("/contact-us")} className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer">
           <HelpCircle className="w-5 h-5 text-gray-600" />
           <span>Support</span>
