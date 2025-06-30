@@ -1,14 +1,16 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../../Redux/getData";
 import { updateProfile } from "../../../API/ApiFunctions";
 import { showErrorToast, showSuccessToast } from "../../ui/toast";
+import axios from "axios";
 
 const ProfileUpdate = () => {
   const [isDisabled, setIsDisabled] = useState(true);
   const dispatch = useDispatch();
+  const gstInputRef = useRef();
 
   useEffect(() => {
     dispatch(fetchUserProfile());
@@ -28,15 +30,33 @@ const ProfileUpdate = () => {
     },
   });
 
-  const onSubmit = async(data) => {
-    
-    setIsDisabled(true); 
+  const verifyGst = async () => {
+    try {
+      const header = {
+        Authorization: "Bearer 0ab31ef7392227173c6e8d34195e86d5eb0da1e9",
+        client_id: "JarZChUcsytSBbnkpt",
+      };
+      const response = await axios.get(
+        `https://commonapi.mastersindia.co/commonapis/searchgstin?gstin=${gstInputRef.current.value}`,
+        header
+      );
+      if (response) {
+        console.log(response);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  
+  const onSubmit = async (data) => {
+    setIsDisabled(true);
     const response = await updateProfile(data);
-    if(response){
-        showSuccessToast("Successfully Update")
-        dispatch(fetchUserProfile())
-    }else{
-        showErrorToast("Could not updated")
+    if (response) {
+      showSuccessToast("Successfully Update");
+      dispatch(fetchUserProfile());
+    } else {
+      showErrorToast("Could not updated");
     }
   };
 
@@ -273,78 +293,79 @@ const ProfileUpdate = () => {
                 </div>
               </form>
             </div>
-<div className="-mt-12">
-    <h2
-              className="text-lg font-medium mt-6 mb-2"
-              style={{
-                color: "#003B70",
-                fontSize: "18px",
-                fontWeight: "500",
-                marginTop: "48px",
-                marginBottom: "16px",
-              }}
-            >
-              GST Details
-            </h2>
+            <div className="-mt-12">
+              <h2
+                className="text-lg font-medium mt-6 mb-2"
+                style={{
+                  color: "#003B70",
+                  fontSize: "18px",
+                  fontWeight: "500",
+                  marginTop: "60px",
+                  marginBottom: "16px",
+                }}
+              >
+                GST Details
+              </h2>
 
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: "16px",
-              }}
-            >
-              <div>
-                <label
-                  className="block text-sm font-medium mb-2"
-                  style={{
-                    color: "#003B70",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    marginBottom: "8px",
-                    display: "block",
-                  }}
-                >
-                  GST No.
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 rounded-md border transition-all duration-200 focus:outline-none focus:ring-2"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    borderRadius: "6px",
-                    border: "1px solid #d1d5db",
-                    backgroundColor: "white",
-                    color: "#003B70",
-                    fontSize: "14px",
-                    focusRingColor: "#0784C9",
-                  }}
-                />
-              </div>
-              <div className="flex items-end">
-                <button
-                  type="button"
-                  className="w-full px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105"
-                  style={{
-                    width: "100%",
-                    backgroundColor: "transparent",
-                    color: "#0784C9",
-                    border: "2px solid #0784C9",
-                    cursor: "pointer",
-                    borderRadius: "6px",
-                    padding: "12px 24px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                  }}
-                >
-                  Verify
-                </button>
+              <div
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: "16px",
+                }}
+              >
+                <div>
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{
+                      color: "#003B70",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      marginBottom: "8px",
+                      display: "block",
+                    }}
+                  >
+                    GST No.
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 rounded-md border transition-all duration-200 focus:outline-none focus:ring-2"
+                    style={{
+                      width: "100%",
+                      padding: "12px 16px",
+                      borderRadius: "6px",
+                      border: "1px solid #d1d5db",
+                      backgroundColor: "white",
+                      color: "#003B70",
+                      fontSize: "14px",
+                      focusRingColor: "#0784C9",
+                    }}
+                    ref={gstInputRef}
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={verifyGst}
+                    className="w-full px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105"
+                    style={{
+                      width: "100%",
+                      backgroundColor: "transparent",
+                      color: "#0784C9",
+                      border: "2px solid #0784C9",
+                      cursor: "pointer",
+                      borderRadius: "6px",
+                      padding: "12px 24px",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Verify
+                  </button>
+                </div>
               </div>
             </div>
-</div>
-            
           </div>
         </div>
       </div>

@@ -25,6 +25,11 @@ import {
   Grid,
   InputAdornment,
   IconButton,
+  Menu,
+  Popper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -33,6 +38,7 @@ import {
   BriefcaseBusiness,
   ChevronDown,
   ChevronUp,
+  Cross,
   Handshake,
   MapPin,
   Pencil,
@@ -56,6 +62,7 @@ import {
   fetchUserProfile,
   setJobData,
 } from "../../../Redux/getData";
+import { Close } from "@mui/icons-material";
 
 const steps = [
   "Job details",
@@ -161,6 +168,12 @@ const PostJob = () => {
   const [categorySuggestions, setCategorySuggestions] = useState([]);
   const [category, setCategory] = useState(null);
   const [jobRoleSuggestions, setJobRoleSuggestions] = useState([]);
+  const [showCompanyChangeOptions, setShowCompanyChangeOoptions] =
+    useState(false);
+  const [anchorEl, setAnchorE1] = useState(null);
+  const [showCompanyModal, setShowCompanyModal] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState(null);
+  const [isConsultancyCompany, setIsConsultancyCompany] = useState(false)
 
   const { id, action } = useParams();
   const dispatch = useDispatch();
@@ -502,6 +515,11 @@ const PostJob = () => {
     }
   };
 
+  const handleChageCompany = (e) => {
+    setShowCompanyChangeOoptions(!showCompanyChangeOptions);
+    setAnchorE1(e);
+  };
+
   const onSubmit = async (data) => {
     console.log("Form Submitted:", data);
 
@@ -529,6 +547,8 @@ const PostJob = () => {
       showErrorToast("Could not post job");
     }
   };
+
+  console.log(showCompanyModal);
 
   return (
     <Box className="p-6 pt-0 bg-gray-200 min-h-screen">
@@ -620,7 +640,7 @@ const PostJob = () => {
                         helperText={errors.companyName?.message}
                       />
                       <Button
-                        onClick={() => setSelectedChange(!changeSelected)}
+                        onClick={(e) => handleChageCompany(e.currentTarget)}
                         variant="text"
                         sx={{
                           color: "secondary",
@@ -759,23 +779,26 @@ const PostJob = () => {
 
                   return (
                     <div className="flex flex-wrap gap-4 mt-2">
-                      {[{val:"Full-Time", lab: "Full Time"}, {val: "Part-Time", lab: "Part Time"}, {val:"internship", lab: "Internship"}, {val:"contract", lab: "Contract"}].map(
-                        (type) => {
-                          return (
-                            <div
-                              key={type.val}
-                              onClick={() => field.onChange(type.val)}
-                              className={`cursor-pointer px-6 py-1 rounded-full border ${
-                                field.value === type.val
-                                  ? "bg-secondary text-white border-secondary"
-                                  : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                              }`}
-                            >
-                              {type.lab}
-                            </div>
-                          );
-                        }
-                      )}
+                      {[
+                        { val: "Full-Time", lab: "Full Time" },
+                        { val: "Part-Time", lab: "Part Time" },
+                        { val: "internship", lab: "Internship" },
+                        { val: "contract", lab: "Contract" },
+                      ].map((type) => {
+                        return (
+                          <div
+                            key={type.val}
+                            onClick={() => field.onChange(type.val)}
+                            className={`cursor-pointer px-6 py-1 rounded-full border ${
+                              field.value === type.val
+                                ? "bg-secondary text-white border-secondary"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                          >
+                            {type.lab}
+                          </div>
+                        );
+                      })}
                     </div>
                   );
                 }}
@@ -835,25 +858,28 @@ const PostJob = () => {
                 rules={{ required: "Location type is required" }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
-                    {[{val:"onSite", lab: "On-Site"}, {val:"remote", lab: "Remote"}, {val:"hybrid", lab:"Hybrid"}, {val:"field-work", lab: "Field-Work"}].map(
-                      (type) => {
-                        return (
-                          <div
-                            key={type.val}
-                            onClick={() => {
-                              field.onChange(type.val);
-                            }}
-                            className={`cursor-pointer px-6 py-1 rounded-full border ${
-                              field.value === type.val
-                                ? "bg-secondary text-white border-secondary"
-                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                            }`}
-                          >
-                            {type.lab}
-                          </div>
-                        );
-                      }
-                    )}
+                    {[
+                      { val: "onSite", lab: "On-Site" },
+                      { val: "remote", lab: "Remote" },
+                      { val: "hybrid", lab: "Hybrid" },
+                      { val: "field-work", lab: "Field-Work" },
+                    ].map((type) => {
+                      return (
+                        <div
+                          key={type.val}
+                          onClick={() => {
+                            field.onChange(type.val);
+                          }}
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                            field.value === type.val
+                              ? "bg-secondary text-white border-secondary"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                          }`}
+                        >
+                          {type.lab}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               />
@@ -1041,10 +1067,10 @@ const PostJob = () => {
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
                     {[
-                      {val: "Fixed-only", lab: "Fixed Only"},
-                      {val: "Fixed+Incentive", lab: "Fixed+Incentive"},
-                      {val:"Fixed+variable", lab: "Fixed+Variable"},
-                      {val:"incentive", lab: "Incentive"}
+                      { val: "Fixed-only", lab: "Fixed Only" },
+                      { val: "Fixed+Incentive", lab: "Fixed+Incentive" },
+                      { val: "Fixed+variable", lab: "Fixed+Variable" },
+                      { val: "incentive", lab: "Incentive" },
                     ].map((type) => {
                       return (
                         <div
@@ -1875,7 +1901,9 @@ const PostJob = () => {
                 className="mt-6 border-t border-gray-300 py-4 flex flex-col items-start"
               >
                 <Typography className="mb-1 font-medium">
-                  {`${fieldKey.charAt(0).toUpperCase()}${fieldKey.slice(1)} Options`}
+                  {`${fieldKey.charAt(0).toUpperCase()}${fieldKey.slice(
+                    1
+                  )} Options`}
                 </Typography>
 
                 <Controller
@@ -2888,6 +2916,151 @@ const PostJob = () => {
             </Button>
           </div>
         </div>
+      )}
+      {showCompanyChangeOptions && (
+        <Menu
+          open={showCompanyChangeOptions}
+          onClose={() => setShowCompanyChangeOoptions(false)}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          sx={{ padding: "40px", borderRadius: "50%", maxWidth: "500px" }}
+        >
+          <RadioGroup
+            onChange={(e) => setShowCompanyModal(e.target.value)}
+            className="flex flex-col gap-4 ml-6 py-2 rounded-lg"
+          >
+            <FormControlLabel
+              value="same"
+              className="border p-2 flex border-gray text-sm shadow-lg rounded-lg"
+              control={<Radio />}
+              label="I changed my company"
+            />
+            <FormControlLabel
+              value="consultancy"
+              control={<Radio />}
+              className="border p-2 flex border-gray shadow-lg rounded-lg "
+              label="I belong to a consultancy & want to post for my client's company"
+            />
+            <FormControlLabel
+              value="other"
+              className="border p-2 flex  border-gray shadow-lg rounded-lg"
+              control={<Radio />}
+              label="I want to post for another company/business/consultancy of my own"
+            />
+          </RadioGroup>
+        </Menu>
+      )}
+
+      {showCompanyModal && (
+        <Dialog
+          open={showCompanyModal}
+          onClose={() => setShowCompanyModal(null)}
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography fontWeight={600}>Company Hiring For</Typography>
+            <IconButton size="small" onClick={() => setShowCompanyModal(null)}>
+              <Close />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent dividers>
+            {/* Description */}
+            <Typography fontSize={14} mb={2}>
+              You're changing your company from{" "}
+              <b>{employer?.company.companyName}</b> Please select/add company
+              below:
+            </Typography>
+
+            {/* Company Name Input */}
+            <Box mb={2}>
+              <Typography fontSize={14} fontWeight={500} mb={0.5}>
+                Your company name <span style={{ color: "red" }}>*</span>
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Select company"
+                size="small"
+                variant="outlined"
+                value={
+                  showCompanyModal == "consultancy"
+                    ? employer?.company?.companyName
+                    : ""
+                }
+              />
+            </Box>
+
+            {/* Checkbox */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={
+                    showCompanyModal === "consultancy" ? true : isConsultancyCompany
+                  }
+                  disabled={showCompanyModal === "consultancy"}
+                  onChange={(e) => setIsConsultancyCompany(e.target.checked)}
+                />
+              }
+              label="This is a Consultancy (Hiring or Staffing agency)"
+            />
+
+            {/* Employee Chips */}
+            <Box mt={3}>
+              <Typography fontSize={14} fontWeight={500} mb={1}>
+                Number of employees in your company{" "}
+                <span style={{ color: "red" }}>*</span>
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={1}>
+                {[
+                  "0-50",
+                  "51-100",
+                  "101-300",
+                  "301-500",
+                  "501-1000",
+                  "1000 above",
+                ].map((option) => (
+                  <Chip
+                    key={option}
+                    label={option}
+                    variant={
+                      selectedEmployees === option ? "filled" : "outlined"
+                    }
+                    color={selectedEmployees === option ? "primary" : "default"}
+                    onClick={() => setSelectedEmployees(option)}
+                    clickable
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            {/* Action Buttons */}
+            <Box display="flex" justifyContent="flex-end" mt={4} gap={1}>
+              <Button
+                variant="outlined"
+                onClick={() => setShowCompanyModal(null)}
+              >
+                Cancel
+              </Button>
+              <Button variant="contained" color="success">
+                Change
+              </Button>
+            </Box>
+          </DialogContent>
+        </Dialog>
       )}
     </Box>
   );
