@@ -1302,7 +1302,15 @@ const PostJob = () => {
                         key={option.label}
                         onClick={() => {
                           field.onChange(option.value);
-                          setjoiningfee(option.value); // optional local state
+                          setjoiningfee(option.value); 
+          
+                          if(!option.value){
+                            
+                            setValue("joiningFeeAmount", null);
+                            setValue("joiningFeeReason", null);
+                            setValue("joiningFeeReasonDetail", null);
+                            setValue("joiningFeeAmountTime", null)
+                          }
                         }}
                         className={`cursor-pointer px-6 py-1 rounded-full border transition ${
                           field.value === option.value
@@ -1351,7 +1359,7 @@ const PostJob = () => {
                         {...field}
                         label="Joining Fee Amount"
                         fullWidth
-                        disabled={action === "edit"}
+                        
                         size="small"
                         placeholder="Enter Fee Amount"
                         error={!!errors.joiningFeeAmount}
@@ -1432,7 +1440,7 @@ const PostJob = () => {
                         <TextField
                           {...field}
                           label="joining fees amount reason Amount"
-                          disabled={action === "edit"}
+                          
                           fullWidth
                           size="small"
                           placeholder="Mention the Reason"
@@ -1675,6 +1683,9 @@ const PostJob = () => {
                           onClick={() => {
                             field.onChange(type);
                             setExperience(type);
+                            if(type !== "Experienced Only"){
+                              setValue("experienceLevel",null)
+                            }
                           }}
                           className={`cursor-pointer px-6 py-1 rounded-full border ${
                             field.value === type
@@ -2070,6 +2081,13 @@ const PostJob = () => {
                       const value = e.target.value === "true";
                       setWalkIn(value);
                       field.onChange(value);
+                      if(!value){
+                        setValue("walkInAddress", null);
+                        setValue("walkInStartDate", null);
+                        setValue("WalkInEndDate", null);
+                        setValue("walkInStartTime", null);
+                        setValue("walkInInstruction", null)
+                      }
                     }}
                   >
                     <FormControlLabel
