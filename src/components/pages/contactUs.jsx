@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -12,6 +11,73 @@ const Contact = () => {
     message: "",
     inquiryType: "general",
   });
+
+  const footerSections = [
+    {
+      title: "Platform",
+      links: [
+        "Post a Job",
+        "Browse Candidates",
+        "Pricing Plans",
+        "Success Stories",
+        "How It Works",
+      ],
+    },
+    {
+      title: "Resources",
+      links: [
+        "Hiring Guide",
+        "Interview Tips",
+        "Salary Insights",
+        "Industry Reports",
+        "Blog",
+      ],
+    },
+    {
+      title: "Support",
+      links: [
+        "Help Center",
+        "Contact Us",
+        "Live Chat",
+        "Video Tutorials",
+        "API Documentation",
+      ],
+    },
+    {
+      title: "Company",
+      links: ["About Us", "Careers", "Press", "Partners", "Investors"],
+    },
+  ];
+  const TwitterIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+    </svg>
+  );
+
+  const LinkedinIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  );
+
+  const FacebookIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  );
+
+  const InstagramIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12.017 0C8.396 0 7.989.013 7.041.048 6.094.082 5.52.204 5.02.26a3.43 3.43 0 00-1.24.485 2.458 2.458 0 00-.909.909 3.43 3.43 0 00-.485 1.24C2.33 3.439 2.208 4.013 2.175 4.96 2.139 5.908 2.126 6.315 2.126 9.936v4.128c0 3.621.013 4.028.048 4.976.033.947.155 1.521.21 2.021.056.5.24.96.485 1.24.25.351.568.669.909.909.28.245.74.429 1.24.485.5.055 1.074.177 2.021.21.948.035 1.355.048 4.976.048h4.128c3.621 0 4.028-.013 4.976-.048.947-.033 1.521-.155 2.021-.21a3.43 3.43 0 001.24-.485 2.458 2.458 0 00.909-.909 3.43 3.43 0 00.485-1.24c.055-.5.177-1.074.21-2.021.035-.948.048-1.355.048-4.976V9.936c0-3.621-.013-4.028-.048-4.976-.033-.947-.155-1.521-.21-2.021a3.43 3.43 0 00-.485-1.24 2.458 2.458 0 00-.909-.909 3.43 3.43 0 00-1.24-.485c-.5-.055-1.074-.177-2.021-.21C16.045.013 15.638 0 12.017 0z" />
+    </svg>
+  );
+
+  const socialLinks = [
+    { icon: TwitterIcon, href: "#", label: "Twitter" },
+    { icon: LinkedinIcon, href: "#", label: "LinkedIn" },
+    { icon: FacebookIcon, href: "#", label: "Facebook" },
+    { icon: InstagramIcon, href: "#", label: "Instagram" },
+  ];
 
   // Icons as inline SVG components (same as other pages)
   const MailIcon = ({ className = "h-5 w-5" }) => (
@@ -269,7 +335,7 @@ const Contact = () => {
       icon: MailIcon,
       title: "Email Support",
       description: "Send us an email and we'll respond within 24 hours",
-      contact: "hello@talenthire.com",
+      contact: "sales@unigrowtalent.com",
       action: "Send Email",
       color: "from-blue-500 to-blue-600",
     },
@@ -277,7 +343,7 @@ const Contact = () => {
       icon: PhoneIcon,
       title: "Phone Support",
       description: "Call us for immediate assistance during business hours",
-      contact: "+1 (555) 123-4567",
+      contact: "+91 120-4178-702",
       action: "Call Now",
       color: "from-green-500 to-green-600",
     },
@@ -291,65 +357,6 @@ const Contact = () => {
     },
   ];
 
-  // Office Locations Data
-  const offices = [
-    {
-      city: "San Francisco",
-      country: "USA",
-      address: "123 Innovation Drive, San Francisco, CA 94105",
-      phone: "+1 (555) 123-4567",
-      hours: "Mon-Fri: 9:00 AM - 6:00 PM PST",
-      isHeadquarters: true,
-    },
-    {
-      city: "New York",
-      country: "USA",
-      address: "456 Tech Avenue, New York, NY 10001",
-      phone: "+1 (555) 234-5678",
-      hours: "Mon-Fri: 9:00 AM - 6:00 PM EST",
-      isHeadquarters: false,
-    },
-    {
-      city: "London",
-      country: "UK",
-      address: "789 Business Street, London, UK EC2A 4DP",
-      phone: "+44 20 7123 4567",
-      hours: "Mon-Fri: 9:00 AM - 5:00 PM GMT",
-      isHeadquarters: false,
-    },
-    {
-      city: "Tokyo",
-      country: "Japan",
-      address: "321 Corporate Plaza, Tokyo, Japan 100-0005",
-      phone: "+81 3-1234-5678",
-      hours: "Mon-Fri: 9:00 AM - 6:00 PM JST",
-      isHeadquarters: false,
-    },
-  ];
-
-  // Support Categories
-  const supportCategories = [
-    {
-      icon: UserIcon,
-      title: "General Inquiries",
-      description: "Questions about our platform and services",
-    },
-    {
-      icon: BookOpenIcon,
-      title: "Technical Support",
-      description: "Help with platform features and troubleshooting",
-    },
-    {
-      icon: HeadphonesIcon,
-      title: "Sales Questions",
-      description: "Pricing, plans, and enterprise solutions",
-    },
-    {
-      icon: GlobeIcon,
-      title: "Partnership",
-      description: "Collaboration and integration opportunities",
-    },
-  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -368,11 +375,8 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-white">
-    
-      
-
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
+      <section className="relative pt-10 pb-8 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent)] opacity-50"></div>
 
@@ -398,8 +402,8 @@ const Contact = () => {
             </h1>
 
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Have questions about TalentHire? Need help getting started? Our
-              expert team is ready to assist you with all your hiring needs.
+              Have questions about Unigrow Talent? Need help getting started?
+              Our expert team is ready to assist you with all your hiring needs.
             </p>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
@@ -417,9 +421,9 @@ const Contact = () => {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-purple-600 mb-1">
-                  100+
+                  45+
                 </div>
-                <div className="text-sm text-gray-600">Countries Served</div>
+                <div className="text-sm text-gray-600">Clients Served</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-orange-600 mb-1">
@@ -452,44 +456,67 @@ const Contact = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {contactMethods.map((method, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="group"
-              >
-                <div className="bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-xl transition-all duration-300 hover:border-blue-200 text-center">
-                  <div
-                    className={`w-16 h-16 bg-gradient-to-r ${method.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <method.icon className="h-8 w-8 text-white" />
-                  </div>
+         <div className="grid md:grid-cols-3 gap-8">
+  {contactMethods.map((method, index) => (
+    <motion.div
+      key={index}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      viewport={{ once: true }}
+      className="group"
+    >
+      <div className="bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-xl transition-all duration-300 hover:border-blue-200 text-center">
+        <div
+          className={`w-16 h-16 bg-gradient-to-r ${method.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}
+        >
+          <method.icon className="h-8 w-8 text-white" />
+        </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">
-                    {method.title}
-                  </h3>
-                  <p className="text-gray-600 mb-6">{method.description}</p>
-                  <div className="text-lg font-semibold text-blue-600 mb-6">
-                    {method.contact}
-                  </div>
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full">
-                    {method.action}
-                    <ArrowRightIcon className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-4">
+          {method.title}
+        </h3>
+        <p className="text-gray-600 mb-6">{method.description}</p>
+        <div className="text-lg font-semibold text-blue-600 mb-6">
+          {method.contact}
+        </div>
+
+        {/* Action Button */}
+        {method.title === "Email Support" && (
+          <a href={`mailto:${method.contact}`}>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full">
+              {method.action}
+              <ArrowRightIcon className="w-4 h-4 ml-2" />
+            </Button>
+          </a>
+        )}
+        {method.title === "Phone Support" && (
+          <a href={`tel:${method.contact.replace(/[^0-9+]/g, '')}`}>
+            <Button className="bg-green-600 hover:bg-green-700 text-white w-full">
+              {method.action}
+              <ArrowRightIcon className="w-4 h-4 ml-2" />
+            </Button>
+          </a>
+        )}
+        {method.title === "Live Chat" && (
+          <a href="#live-chat" onClick={() => alert('Live chat coming soon')}>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white w-full">
+              {method.action}
+              <ArrowRightIcon className="w-4 h-4 ml-2" />
+            </Button>
+          </a>
+        )}
+      </div>
+    </motion.div>
+  ))}
+</div>
+
         </div>
       </section>
 
       {/* Contact Form Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 ">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -512,38 +539,25 @@ const Contact = () => {
             viewport={{ once: true }}
             className="bg-white rounded-2xl shadow-xl p-8"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form
+              
+              className="space-y-6 "
+              action="https://formsubmit.co/sales@unigrowtalent.com"
+              method="POST"
+            >
+              {/* Hidden FormSubmit Settings */}
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_template" value="table" />
+              <input
+                type="hidden"
+                name="_next"
+                value="https://employer.talentnestjob.store/contact-us"
+              />
               {/* Inquiry Type */}
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-4">
                   What can we help you with?
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {supportCategories.map((category, index) => (
-                    <label
-                      key={index}
-                      className="relative cursor-pointer group"
-                    >
-                      <input
-                        type="radio"
-                        name="inquiryType"
-                        value={category.title.toLowerCase().replace(" ", "_")}
-                        checked={
-                          formData.inquiryType ===
-                          category.title.toLowerCase().replace(" ", "_")
-                        }
-                        onChange={handleInputChange}
-                        className="sr-only"
-                      />
-                      <div className="p-4 border-2 border-gray-200 rounded-xl text-center transition-all duration-200 group-hover:border-blue-300 peer-checked:border-blue-500 peer-checked:bg-blue-50">
-                        <category.icon className="h-6 w-6 mx-auto mb-2 text-gray-600 group-hover:text-blue-600" />
-                        <div className="text-sm font-medium text-gray-900">
-                          {category.title}
-                        </div>
-                      </div>
-                    </label>
-                  ))}
-                </div>
               </div>
 
               {/* Name and Email */}
@@ -555,11 +569,9 @@ const Contact = () => {
                   <input
                     type="text"
                     name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="John Doe"
+                    placeholder="Your Name"
                   />
                 </div>
                 <div>
@@ -569,11 +581,9 @@ const Contact = () => {
                   <input
                     type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="john@company.com"
+                    placeholder="example@company.com"
                   />
                 </div>
               </div>
@@ -587,8 +597,6 @@ const Contact = () => {
                   <input
                     type="text"
                     name="company"
-                    value={formData.company}
-                    onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="Your Company"
                   />
@@ -600,8 +608,6 @@ const Contact = () => {
                   <input
                     type="text"
                     name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="How can we help?"
@@ -616,8 +622,6 @@ const Contact = () => {
                 </label>
                 <textarea
                   name="message"
-                  value={formData.message}
-                  onChange={handleInputChange}
                   required
                   rows={6}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
@@ -642,7 +646,7 @@ const Contact = () => {
       </section>
 
       {/* Office Locations Section */}
-      <section className="py-20 bg-white">
+      {/* <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -710,7 +714,7 @@ const Contact = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Support Hours Section */}
       <section className="py-20 bg-gray-50">
@@ -762,11 +766,9 @@ const Contact = () => {
                 Phone Support
               </h3>
               <p className="text-gray-600 text-sm">
-                Mon-Fri: 6:00 AM - 8:00 PM
+                Mon-Sat: 10:00 AM - 6:00 PM
               </p>
-              <p className="text-gray-600 text-sm">
-                Sat-Sun: 8:00 AM - 6:00 PM
-              </p>
+             
             </motion.div>
 
             <motion.div
@@ -790,8 +792,8 @@ const Contact = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-10  bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-4 lg:px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -805,11 +807,8 @@ const Contact = () => {
               Don't wait – transform your hiring process today. Our team is
               standing by to help you succeed.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-[#2563EB] text-blue-600"
-              >
+            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-[#2563EB] text-blue-600">
                 Start Free Trial
                 <ArrowRightIcon className="w-5 h-5 ml-2" />
               </Button>
@@ -820,88 +819,101 @@ const Contact = () => {
               >
                 Schedule Demo
               </Button>
-            </div>
+            </div> */}
           </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
+      <footer className="bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
+          {/* Main Footer Content */}
+          <div className="py-16 grid md:grid-cols-2 lg:grid-cols-6 gap-8">
+            {/* Company Info */}
+            <div className="lg:col-span-2">
               <div className="text-2xl font-bold text-white mb-4">
-                TalentHire
+                Unigrow Talent
               </div>
-              <p className="text-gray-400 mb-6 leading-relaxed max-w-md">
+              <p className="text-gray-400 mb-6 leading-relaxed text-left">
                 The world's leading talent acquisition platform, connecting
                 exceptional candidates with forward-thinking companies since
-                2020.
+                2025.
               </p>
-              <div className="space-y-2 text-gray-400">
-                <div className="flex items-center">
+              <div className="space-y-3">
+                <div className="flex items-center text-gray-400">
                   <MailIcon className="h-4 w-4 mr-3" />
-                  hello@talenthire.com
+                  <a
+                    href="mailto:sales@unigrowtalent
+                .com"
+                    className=""
+                  >
+                    sales@unigrowtalent.com
+                  </a>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center text-gray-400">
                   <PhoneIcon className="h-4 w-4 mr-3" />
-                  +1 (555) 123-4567
+                  +91 120-4178-702
+                </div>
+                <div className="flex items-center text-gray-400">
+                  <MapPinIcon className="w-7 mr-3" />
+                  <p className="text-left">
+                    Office No:-435A, 4th Floor Orbit Plaza, Crossing Republic
+                    Ghaziabad, India
+                  </p>
                 </div>
               </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-white mb-4">Contact</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Support Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Live Chat
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Phone Support
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Email Support
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-white mb-4">Resources</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    API Reference
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    System Status
-                  </a>
-                </li>
-              </ul>
-            </div>
+
+            {/* Footer Links */}
+            {footerSections.map((section, index) => (
+              <div key={index}>
+                <h3 className="font-semibold text-white mb-4">
+                  {section.title}
+                </h3>
+                <ul className="space-y-3">
+                  {section.links.map((link) => (
+                    <li key={link}>
+                      <a
+                        href="#"
+                        className="text-gray-400 hover:text-white transition-colors"
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>© 2024 TalentHire. All rights reserved.</p>
+
+          {/* Bottom Footer */}
+          <div className="py-6 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between">
+            {/* Social Links */}
+            <div className="flex space-x-4 mb-4 md:mb-0">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-all"
+                >
+                  <social.icon className="h-5 w-5" />
+                </a>
+              ))}
+            </div>
+
+            {/* Legal Links */}
+            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-gray-400">
+              <span>© 2025 Unigrow Talent. All rights reserved.</span>
+              <a href="#" className="hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+              <a href="#" className="hover:text-white transition-colors">
+                Terms of Service
+              </a>
+              <a href="#" className="hover:text-white transition-colors">
+                Cookie Policy
+              </a>
+            </div>
           </div>
         </div>
       </footer>

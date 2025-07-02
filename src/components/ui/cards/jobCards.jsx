@@ -28,12 +28,10 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 const JobCard = ({ job }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const navigate = useNavigate();
-  const modalRef = useRef();
   const [pendingCount, setPendingCount] = useState(null);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleOpen = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
   const open = Boolean(anchorEl);
@@ -133,7 +131,10 @@ const JobCard = ({ job }) => {
 
   return (
     <div
-      onClick={() => navigate(`/employerHome/jobsDetail/${job.id}`)}
+      onClick={() => {
+        if(!showEditModal)
+        navigate(`/employerHome/jobsDetail/${job.id}`)
+      }}
       style={{
         backgroundColor: "#ffffff",
         borderRadius: "12px",
@@ -281,6 +282,7 @@ const JobCard = ({ job }) => {
               onClick={(e) => {
                 e.stopPropagation();
                 setShowEditModal(!showEditModal);
+                setAnchorEl(e.currentTarget)
               }}
               style={{
                 color: "#6b7280",
@@ -483,22 +485,33 @@ const JobCard = ({ job }) => {
 
       {/* Edit Modal/Dropdown */}
       {showEditModal && (
-        <div
-          style={{
-            position: "absolute",
-            top: "60px",
-            right: "24px",
-            zIndex: 50,
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            boxShadow:
-              "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        <Menu
+        id="job-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={()=>{
+          handleClose()
+          setShowEditModal(false)
+        }}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        PaperProps={{
+          style: {
+            minWidth: 160,
+            borderRadius: 8,
             border: "1px solid #e5e7eb",
-            padding: "8px",
-            minWidth: "160px",
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
+          },
+        }}
+      >
           {job?.status !== "E" && <div
             onClick={() => {
               setShowEditModal(false);
@@ -574,7 +587,7 @@ const JobCard = ({ job }) => {
           >
             {job?.status === "E" ? "Delete" : "Expire"} Job
           </div>
-        </div>
+        </Menu>
       )}
     </div>
   );

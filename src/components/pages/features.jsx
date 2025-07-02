@@ -1,9 +1,11 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 
 const Features = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Icons as inline SVG components (same as Index.tsx)
   const StarIcon = ({ className = "h-5 w-5" }) => (
@@ -11,6 +13,73 @@ const Features = () => {
       <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
     </svg>
   );
+
+  const footerSections = [
+    {
+      title: "Platform",
+      links: [
+        "Post a Job",
+        "Browse Candidates",
+        "Pricing Plans",
+        "Success Stories",
+        "How It Works",
+      ],
+    },
+    {
+      title: "Resources",
+      links: [
+        "Hiring Guide",
+        "Interview Tips",
+        "Salary Insights",
+        "Industry Reports",
+        "Blog",
+      ],
+    },
+    {
+      title: "Support",
+      links: [
+        "Help Center",
+        "Contact Us",
+        "Live Chat",
+        "Video Tutorials",
+        "API Documentation",
+      ],
+    },
+    {
+      title: "Company",
+      links: ["About Us", "Careers", "Press", "Partners", "Investors"],
+    },
+  ];
+  const TwitterIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+    </svg>
+  );
+
+  const LinkedinIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  );
+
+  const FacebookIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  );
+
+  const InstagramIcon = ({ className = "h-5 w-5" }) => (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12.017 0C8.396 0 7.989.013 7.041.048 6.094.082 5.52.204 5.02.26a3.43 3.43 0 00-1.24.485 2.458 2.458 0 00-.909.909 3.43 3.43 0 00-.485 1.24C2.33 3.439 2.208 4.013 2.175 4.96 2.139 5.908 2.126 6.315 2.126 9.936v4.128c0 3.621.013 4.028.048 4.976.033.947.155 1.521.21 2.021.056.5.24.96.485 1.24.25.351.568.669.909.909.28.245.74.429 1.24.485.5.055 1.074.177 2.021.21.948.035 1.355.048 4.976.048h4.128c3.621 0 4.028-.013 4.976-.048.947-.033 1.521-.155 2.021-.21a3.43 3.43 0 001.24-.485 2.458 2.458 0 00.909-.909 3.43 3.43 0 00.485-1.24c.055-.5.177-1.074.21-2.021.035-.948.048-1.355.048-4.976V9.936c0-3.621-.013-4.028-.048-4.976-.033-.947-.155-1.521-.21-2.021a3.43 3.43 0 00-.485-1.24 2.458 2.458 0 00-.909-.909 3.43 3.43 0 00-1.24-.485c-.5-.055-1.074-.177-2.021-.21C16.045.013 15.638 0 12.017 0z" />
+    </svg>
+  );
+
+  const socialLinks = [
+    { icon: TwitterIcon, href: "#", label: "Twitter" },
+    { icon: LinkedinIcon, href: "#", label: "LinkedIn" },
+    { icon: FacebookIcon, href: "#", label: "Facebook" },
+    { icon: InstagramIcon, href: "#", label: "Instagram" },
+  ];
 
   const SparklesIcon = ({ className = "h-5 w-5" }) => (
     <svg
@@ -306,9 +375,9 @@ const Features = () => {
   const coreFeatures = [
     {
       icon: TargetIcon,
-      title: "AI-Powered Matching",
+      title: "Powered Matching",
       description:
-        "Advanced machine learning algorithms analyze candidate profiles and job requirements to deliver precision matches with 98% accuracy rate.",
+        "Advanced algorithms analyze candidate profiles and job requirements to deliver precision matches with 98% accuracy rate.",
       features: [
         "50+ data points analysis",
         "Behavioral pattern recognition",
@@ -390,7 +459,7 @@ const Features = () => {
       icon: BrainIcon,
       title: "Smart Recommendations",
       description:
-        "AI-driven suggestions for optimizing job descriptions, improving candidate experiences, and enhancing hiring strategies.",
+        "Suggestions for optimizing job descriptions, improving candidate experiences, and enhancing hiring strategies.",
       details: [
         "Job description optimization",
         "Salary benchmarking",
@@ -438,38 +507,36 @@ const Features = () => {
 
   // Comparison Features
   const comparisonFeatures = [
-    { feature: "AI-Powered Matching", talenthire: true, traditional: false },
+    { feature: "Matching", Unigrow: true, traditional: false },
     {
       feature: "Real-Time Analytics",
-      talenthire: true,
+      Unigrow: true,
       traditional: "Limited",
     },
-    { feature: "Automated Screening", talenthire: true, traditional: false },
-    { feature: "Team Collaboration", talenthire: true, traditional: "Basic" },
-    { feature: "Mobile Apps", talenthire: true, traditional: false },
+    { feature: "Automated Screening", Unigrow: true, traditional: false },
+    { feature: "Team Collaboration", Unigrow: true, traditional: "Basic" },
+    { feature: "Mobile Apps", Unigrow: true, traditional: false },
     {
       feature: "24/7 Support",
-      talenthire: true,
+      Unigrow: true,
       traditional: "Business Hours",
     },
     {
       feature: "Custom Integrations",
-      talenthire: true,
+      Unigrow: true,
       traditional: "Limited",
     },
-    { feature: "Global Compliance", talenthire: true, traditional: false },
+    { feature: "Global Compliance", Unigrow: true, traditional: false },
   ];
 
   return (
     <div className="min-h-screen bg-white">
- 
-
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
+      <section className="relative pt-10 pb-8 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent)] opacity-50"></div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-5 py-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -492,11 +559,11 @@ const Features = () => {
 
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               Discover the comprehensive suite of tools and capabilities that
-              make TalentHire the leading choice for companies looking to
+              make Unigrow Talent the leading choice for companies looking to
               revolutionize their hiring process.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
                 className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -511,7 +578,7 @@ const Features = () => {
               >
                 Schedule Demo
               </Button>
-            </div>
+            </div> */}
           </motion.div>
         </div>
       </section>
@@ -592,7 +659,7 @@ const Features = () => {
               Advanced <span className="text-blue-600">Functionality</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Next-generation features that set TalentHire apart, providing
+              Next-generation features that set Unigrow Talent apart, providing
               enterprise-grade capabilities for organizations of all sizes.
             </p>
           </motion.div>
@@ -648,10 +715,10 @@ const Features = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose <span className="text-blue-600">TalentHire</span>
+              Why Choose <span className="text-blue-600">Unigrow Talent</span>
             </h2>
             <p className="text-xl text-gray-600">
-              See how TalentHire compares to traditional hiring methods and
+              See how Unigrow Talent compares to traditional hiring methods and
               legacy platforms.
             </p>
           </motion.div>
@@ -665,7 +732,7 @@ const Features = () => {
           >
             <div className="grid grid-cols-3 bg-gray-50 text-center py-4">
               <div className="text-gray-600 font-medium">Feature</div>
-              <div className="text-blue-600 font-bold">TalentHire</div>
+              <div className="text-blue-600 font-bold">Unigrow Talent</div>
               <div className="text-gray-600 font-medium">
                 Traditional Methods
               </div>
@@ -678,11 +745,11 @@ const Features = () => {
               >
                 <div className="text-gray-900 font-medium">{item.feature}</div>
                 <div className="text-center">
-                  {item.talenthire === true ? (
+                  {item.Unigrow === true ? (
                     <CheckCircleIcon className="h-6 w-6 text-green-500 mx-auto" />
                   ) : (
                     <span className="text-blue-600 font-medium">
-                      {item.talenthire}
+                      {item.Unigrow}
                     </span>
                   )}
                 </div>
@@ -718,22 +785,16 @@ const Features = () => {
               Ready to Experience These Features?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of companies already using TalentHire to transform
-              their hiring process. Start your free trial today and see the
-              difference our features can make.
+              Join thousands of companies already using Unigrow Talent to
+              transform their hiring process. Start your free trial today and
+              see the difference our features can make.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-[#2563EB] text-blue-600 "
-              >
-                Start Free Trial
-                <ArrowRightIcon className="w-5 h-5 ml-2" />
-              </Button>
-              <Button
-                size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-blue-600"
+                onClick={() => navigate("/contact-us")}
               >
                 Contact Sales
               </Button>
@@ -743,72 +804,95 @@ const Features = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
+      <footer className="bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
+          {/* Main Footer Content */}
+          <div className="py-16 grid md:grid-cols-2 lg:grid-cols-6 gap-8">
+            {/* Company Info */}
+            <div className="lg:col-span-2">
               <div className="text-2xl font-bold text-white mb-4">
-                TalentHire
+                Unigrow Talent
               </div>
-              <p className="text-gray-400 mb-6 leading-relaxed max-w-md">
+              <p className="text-gray-400 mb-6 leading-relaxed text-left">
                 The world's leading talent acquisition platform, connecting
                 exceptional candidates with forward-thinking companies since
-                2020.
+                2025.
               </p>
+              <div className="space-y-3">
+                <div className="flex items-center text-gray-400">
+                  <MailIcon className="h-4 w-4 mr-3" />
+                  <a
+                    href="mailto:sales@unigrowtalent
+                .com"
+                    className=""
+                  >
+                    sales@unigrowtalent.com
+                  </a>
+                </div>
+                <div className="flex items-center text-gray-400">
+                  <PhoneIcon className="h-4 w-4 mr-3" />
+                  +91 120-4178-702
+                </div>
+                <div className="flex items-center text-gray-400">
+                  <MapPinIcon className="w-7 mr-3" />
+                  <p className="text-left">
+                    Office No:-435A, 4th Floor Orbit Plaza, Crossing Republic
+                    Ghaziabad, India
+                  </p>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-white mb-4">Platform</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Security
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Integrations
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-white mb-4">Company</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Support
-                  </a>
-                </li>
-              </ul>
-            </div>
+
+            {/* Footer Links */}
+            {footerSections.map((section, index) => (
+              <div key={index}>
+                <h3 className="font-semibold text-white mb-4">
+                  {section.title}
+                </h3>
+                <ul className="space-y-3">
+                  {section.links.map((link) => (
+                    <li key={link}>
+                      <a
+                        href="#"
+                        className="text-gray-400 hover:text-white transition-colors"
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>© 2024 TalentHire. All rights reserved.</p>
+
+          {/* Bottom Footer */}
+          <div className="py-6 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between">
+            {/* Social Links */}
+            <div className="flex space-x-4 mb-4 md:mb-0">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-all"
+                >
+                  <social.icon className="h-5 w-5" />
+                </a>
+              ))}
+            </div>
+
+            {/* Legal Links */}
+            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-gray-400">
+              <span>© 2025 Unigrow Talent. All rights reserved.</span>
+              <a href="#" className="hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+              <a href="#" className="hover:text-white transition-colors">
+                Terms of Service
+              </a>
+              <a href="#" className="hover:text-white transition-colors">
+                Cookie Policy
+              </a>
+            </div>
           </div>
         </div>
       </footer>

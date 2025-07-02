@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../cards/NewCard.css";
 import Avatar from "@mui/material/Avatar";
 
@@ -41,16 +41,14 @@ const DetailRow = ({ logo, label, value }) => (
   </div>
 );
 
-export default function SimplePaper({ job, jobId, candidate }) {
+export default function SimplePaper({ jobId, candidate }) {
   const width = useWindowWidth();
   const isMobile = width <= 768;
   const [openProfileModal, setOpenProfileModal] = useState(false);
+  const [number, setNumber] = useState(null);
   const dispatch = useDispatch();
 
-
-
   const handleReject = async (id) => {
-    console.log(id);
     const response = await updateApplication(id, { status: "Rejected" });
     if (response) {
       showSuccessToast("succesfully Rejected");
@@ -70,6 +68,12 @@ export default function SimplePaper({ job, jobId, candidate }) {
     }
   };
 
+  const handleViewPhone = () => {
+    if (candidate) {
+      setNumber(9540441958);
+    }
+  };
+
   return (
     <>
       {isMobile ? (
@@ -77,8 +81,6 @@ export default function SimplePaper({ job, jobId, candidate }) {
           <div className="mobileCardWrapper border rounded-lg bg-white border">
             <div className="flex mt-2 mb-2 mr-2">
               <div className="flex gap-4">
-               
-
                 <Avatar sx={{ bgcolor: "#ff5722" }}>
                   {" "}
                   {candidate?.EmployeeProfile.fullName
@@ -229,18 +231,24 @@ export default function SimplePaper({ job, jobId, candidate }) {
                       JSON.parse(
                         candidate.EmployeeProfile.preferredJobCity
                       ).map((city, index) => (
-                        <Chip key={index} label={city} size="small" 
-                        sx={{
-          backgroundColor: "#E0F2FE", // light blue
-          color: "gray",           // darker blue text
-          fontSize: "12px",
-          padding: "2px 1px",
-          fontWeight: 500,
-          borderRadius: "8px",
-        }}/>
+                        <Chip
+                          key={index}
+                          label={city}
+                          size="small"
+                          sx={{
+                            backgroundColor: "#E0F2FE", // light blue
+                            color: "gray", // darker blue text
+                            fontSize: "12px",
+                            padding: "2px 1px",
+                            fontWeight: 500,
+                            borderRadius: "8px",
+                          }}
+                        />
                       ))
                     ) : (
-                      <span className="text-14 text-gray-650">Not Provided</span>
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
                     )}
                   </div>
                 </div>
@@ -251,100 +259,102 @@ export default function SimplePaper({ job, jobId, candidate }) {
                   <span className="text-gray-400">
                     <ShipWheel size={18} className="text-secondary" />
                   </span>
-                  <div className="text-gray-800 font-semibold text-14">Skills</div>
+                  <div className="text-gray-800 font-semibold text-14">
+                    Skills
+                  </div>
                 </div>
 
                 <div className="mobile-location text-14 text-gray-650 flex flex-wrap gap-2">
-  {candidate?.EmployeeProfile?.skills &&
-  JSON.parse(candidate.EmployeeProfile.skills)?.length > 0 ? (
-    JSON.parse(candidate.EmployeeProfile.skills).map((skill, index) => (
-      <Chip
-        key={index}
-        label={skill}
-        size="small"
-        sx={{
-          backgroundColor: "#E0F2FE", // light blue
-          color:"gray",           // dark blue text
-          fontSize: "12px",
-          padding: "2px 1px",
-          fontWeight: 500,
-          borderRadius: "8px",
-        }}
-      />
-    ))
-  ) : (
-    <span className="text-14 text-gary-650">Not Provided</span>
-  )}
-</div>
-
+                  {candidate?.EmployeeProfile?.skills &&
+                  JSON.parse(candidate.EmployeeProfile.skills)?.length > 0 ? (
+                    JSON.parse(candidate.EmployeeProfile.skills).map(
+                      (skill, index) => (
+                        <Chip
+                          key={index}
+                          label={skill}
+                          size="small"
+                          sx={{
+                            backgroundColor: "#E0F2FE", // light blue
+                            color: "gray", // dark blue text
+                            fontSize: "12px",
+                            padding: "2px 1px",
+                            fontWeight: 500,
+                            borderRadius: "8px",
+                          }}
+                        />
+                      )
+                    )
+                  ) : (
+                    <span className="text-14 text-gary-650">Not Provided</span>
+                  )}
+                </div>
               </div>
               <div className="flex flex-col mt-2">
                 <div className="flex items-center gap-2 flex-nowrap whitespace-nowrap mb-2">
                   <span className="text-gray-400">
                     <Languages size={18} className="text-secondary" />
                   </span>
-                  <div className="text-gray-800 font-semibold text-14">Languages</div>
+                  <div className="text-gray-800 font-semibold text-14">
+                    Languages
+                  </div>
                 </div>
                 <div className="mobile-education text-14 text-gray-650   ">
                   English ({candidate?.EmployeeProfile.englishProficiency})
                   <div className="flex flex-row gap-1 mt-4 mb-2">
-  {candidate?.EmployeeProfile?.otherLanguages &&
-  JSON.parse(candidate.EmployeeProfile.otherLanguages)?.length > 0 ? (
-    JSON.parse(candidate.EmployeeProfile.otherLanguages).map((language, index) => (
-      <Chip
-        key={index}
-        label={language}
-        size="small"
-        sx={{
-          backgroundColor: "#E0F2FE", // light blue
-          color: "gray",           // dark blue text
-          fontSize: "12px",
-          padding: "2px 1px",
-          fontWeight: 500,
-          borderRadius: "8px",
-        }}
-      />
-    ))
-  ) : (
-    <span className=" text-14 text-gray-650">Not Provided</span>
+                    {candidate?.EmployeeProfile?.otherLanguages &&
+                    JSON.parse(candidate.EmployeeProfile.otherLanguages)
+                      ?.length > 0 ? (
+                      JSON.parse(candidate.EmployeeProfile.otherLanguages).map(
+                        (language, index) => (
+                          <Chip
+                            key={index}
+                            label={language}
+                            size="small"
+                            sx={{
+                              backgroundColor: "#E0F2FE", // light blue
+                              color: "gray", // dark blue text
+                              fontSize: "12px",
+                              padding: "2px 1px",
+                              fontWeight: 500,
+                              borderRadius: "8px",
+                            }}
+                          />
+                        )
+                      )
+                    ) : (
+                      <span className=" text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    )}
 
-   
-    
-    
-  )}
-
-
-    {candidate?.matchedField.map((skill, index) => (
-      <Chip
-        key={index}
-        label={skill}
-        size="small"
-        sx={{
-          backgroundColor: "#E0F2FE", 
-          color:"gray",           
-          fontSize: "12px",
-          padding: "2px 1px",
-          fontWeight: 500,
-          borderRadius: "8px",
-        }}
-      />
-    ))
-  }
- 
-
-
-</div>
+                    {candidate?.matchedField.map((skill, index) => (
+                      <Chip
+                        key={index}
+                        label={skill}
+                        size="small"
+                        sx={{
+                          backgroundColor: "#E0F2FE",
+                          color: "gray",
+                          fontSize: "12px",
+                          padding: "2px 1px",
+                          fontWeight: 500,
+                          borderRadius: "8px",
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className="mobile-contact-button">
                 <Button
-                  variant="contained"
+                  variant={number ? "outlined" : "contained"}
                   size="small"
+                  onClick={handleViewPhone}
                   sx={{
                     fontSize: {
-                      xs: "12px", // small screen
-                      sm: "12px", // small-medium
-                      md: "15px", // default
+                      xs: "12px",
+                      sm: "12px",
+                      md: "15px",
                     },
                     padding: {
                       xs: "4px 8px",
@@ -352,7 +362,7 @@ export default function SimplePaper({ job, jobId, candidate }) {
                     },
                   }}
                 >
-                  <div>View Phone Number</div>
+                  <div>{number ? number : "View Phone Number"}</div>
                 </Button>
               </div>
 
@@ -401,9 +411,7 @@ export default function SimplePaper({ job, jobId, candidate }) {
         <div className="mb-4 mr-2 w-full  border rounded-lg shadow-xl mb-5">
           <div className="card-wrapper">
             <div className="custom-card border  ">
-              <label>
-              
-              </label>
+              <label></label>
               <div className="card-top-section">
                 <div className="left-avatar-section">
                   <Avatar sx={{ bgcolor: "#ff5722" }}>
@@ -708,8 +716,9 @@ export default function SimplePaper({ job, jobId, candidate }) {
                 <div className="flex flex-row justify-between">
                   <div className="flex">
                     <Button
-                      variant="contained"
+                      variant={number ? "outlined" : "contained"}
                       size="small"
+                      onClick={handleViewPhone}
                       sx={{
                         fontSize: {
                           xs: "10px", // small screen
@@ -722,7 +731,7 @@ export default function SimplePaper({ job, jobId, candidate }) {
                         },
                       }}
                     >
-                      <div>View Phone Number</div>
+                      <div>{number ? number : "View Phone Number"}</div>
                     </Button>
                   </div>
 

@@ -4,7 +4,7 @@ import ProfileUpdate from "../components/modals/otherModals/profileUpdateModal";
 import Jobs from "../components/pages/jobs";
 import PostJob from "../components/modals/otherModals/createJobModal";
 import CandidateManagementPage from "../components/pages/jobDetail";
-import SearchCandidatesForm from "../components/modals/otherModals/searchCandidateModal";
+import SearchCandidatesForm from "../components/pages/searchCandidateModal.jsx";
 import UnlockedCandidates from "../components/pages/unlockCandidate";
 import ApplicationsReportCard from "../components/ui/cards/ReportCard";
 import DownloadApplicationsCard from "../components/modals/otherModals/reportDownloadModal";
@@ -26,6 +26,7 @@ import Features from "../components/pages/features.jsx";
 import Index from "../components/pages/aboutUS.jsx";
 import ContactUs from "../components/pages/contactUs.jsx";
 import Navbar from "../components/ui/navbar.jsx";
+import  SavedSearch  from "../components/pages/savedSearch.jsx";
 
 function Layout() {
   return (
@@ -77,7 +78,8 @@ export default function Routess() {
         <Route path="jobs" element={<Jobs />} />
         <Route path="jobsDetail/:id" element={<CandidateManagementPage />} />
         <Route path="SearchCandidates" element={<SearchCandidatesForm />} />
-        <Route path="UnlockedCandidates" element={<Jobs />} />
+        <Route path ="SavedSearch" element={<SavedSearch/>}/>
+        <Route path="UnlockedCandidates" element={<UnlockedCandidates />} />
         <Route path="Reports" element={<ApplicationsReportCard />} />
         <Route path="downloadReport" element={<DownloadApplicationsCard />} />
         <Route path="profile" element={<ProfileUpdate />} />

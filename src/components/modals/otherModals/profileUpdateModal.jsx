@@ -111,6 +111,11 @@ const ProfileUpdate = () => {
       dispatch(fetchUserProfile());
     } else {
       showErrorToast("Could not updated");
+    if (response) {
+      showSuccessToast("Successfully Update");
+      dispatch(fetchUserProfile());
+    } else {
+      showErrorToast("Could not updated");
     }
   };
 

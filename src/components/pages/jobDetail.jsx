@@ -814,7 +814,7 @@ const CandidateManagementPage = () => {
                 borderColor: "#0784C9",
               }}
             >
-              <SimplePaper job={data} jobId={id} candidate={candidate} />
+              <SimplePaper  jobId={id} candidate={candidate} />
             </div>
           ))}
 

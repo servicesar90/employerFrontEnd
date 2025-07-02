@@ -22,6 +22,14 @@ import {
   MenuItem,
   Autocomplete,
   Chip,
+  Grid,
+  InputAdornment,
+  IconButton,
+  Menu,
+  Popper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -30,7 +38,9 @@ import {
   BriefcaseBusiness,
   ChevronDown,
   ChevronUp,
+  Cross,
   Handshake,
+  MapPin,
   Pencil,
   Plus,
   X,
@@ -51,6 +61,7 @@ import {
   fetchUserProfile,
   setJobData,
 } from "../../../Redux/getData";
+import { Close } from "@mui/icons-material";
 
 const steps = [
   "Job details",
@@ -154,6 +165,12 @@ const PostJob = () => {
   const [skillsSuggestions, setSkillsSuggestions] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [jobRoleSuggestions, setJobRoleSuggestions] = useState([]);
+  const [showCompanyChangeOptions, setShowCompanyChangeOoptions] =
+    useState(false);
+  const [anchorEl, setAnchorE1] = useState(null);
+  const [showCompanyModal, setShowCompanyModal] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState(null);
+  const [isConsultancyCompany, setIsConsultancyCompany] = useState(false)
 
   const { id, action } = useParams();
   const dispatch = useDispatch();
@@ -240,6 +257,52 @@ const PostJob = () => {
     },
   });
 
+  const handleCurrentLocation = async () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        setError("Geolocation is not supported by your browser.");
+        return resolve(null);
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const address = await getAddressFromCoords(
+              position.coords.latitude,
+              position.coords.longitude
+            );
+            resolve(address);
+          } catch (err) {
+            showErrorToast("Error while converting coordinates.");
+            resolve(null);
+          }
+        },
+        (err) => {
+          showErrorToast("Couldn't fetch the location");
+          resolve(null);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    });
+  };
+
+  const getAddressFromCoords = async (lat, lon) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`
+      );
+      const data = await response.json();
+
+      return data?.display_name;
+    } catch (err) {
+      return "Unable to fetch address";
+    }
+  };
+
   useEffect(() => {
     if (employer) {
       setValue("companyName", employer?.company.companyName);
@@ -307,6 +370,13 @@ const PostJob = () => {
         candidateType: selectedJob.candidateType,
         notificationPreference: selectedJob.notificationPreference,
       });
+      if (selectedJob?.walkIn) {
+        setWalkIn(true);
+        console.log(selectedJob?.walkIn);
+      }
+      if (selectedJob?.contactPrefernece === "no") {
+        setContactPermission("other");
+      }
     } else {
       reset({
         companyName: employer?.company.companyName,
@@ -433,6 +503,11 @@ const PostJob = () => {
     }
   };
 
+  const handleChageCompany = (e) => {
+    setShowCompanyChangeOoptions(!showCompanyChangeOptions);
+    setAnchorE1(e);
+  };
+
   const onSubmit = async (data) => {
     console.log("Form Submitted:", data);
 
@@ -460,6 +535,8 @@ const PostJob = () => {
       showErrorToast("Could not post job");
     }
   };
+
+  console.log(showCompanyModal);
 
   return (
     <Box className="p-6 pt-0 bg-gray-200 min-h-screen">
@@ -551,7 +628,7 @@ const PostJob = () => {
                         helperText={errors.companyName?.message}
                       />
                       <Button
-                        onClick={() => setSelectedChange(!changeSelected)}
+                        onClick={(e) => handleChageCompany(e.currentTarget)}
                         variant="text"
                         sx={{
                           color: "secondary",
@@ -657,23 +734,26 @@ const PostJob = () => {
 
                   return (
                     <div className="flex flex-wrap gap-4 mt-2">
-                      {["Full-Time", "Part-Time", "internship", "contract"].map(
-                        (type) => {
-                          return (
-                            <div
-                              key={type}
-                              onClick={() => field.onChange(type)}
-                              className={`cursor-pointer px-6 py-1 rounded-full border ${
-                                field.value === type
-                                  ? "bg-secondary text-white border-secondary"
-                                  : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                              }`}
-                            >
-                              {type.replace("-", " ")}
-                            </div>
-                          );
-                        }
-                      )}
+                      {[
+                        { val: "Full-Time", lab: "Full Time" },
+                        { val: "Part-Time", lab: "Part Time" },
+                        { val: "internship", lab: "Internship" },
+                        { val: "contract", lab: "Contract" },
+                      ].map((type) => {
+                        return (
+                          <div
+                            key={type.val}
+                            onClick={() => field.onChange(type.val)}
+                            className={`cursor-pointer px-6 py-1 rounded-full border ${
+                              field.value === type.val
+                                ? "bg-secondary text-white border-secondary"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                            }`}
+                          >
+                            {type.lab}
+                          </div>
+                        );
+                      })}
                     </div>
                   );
                 }}
@@ -733,25 +813,28 @@ const PostJob = () => {
                 rules={{ required: "Location type is required" }}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
-                    {["onSite", "remote", "hybrid", "field-work"].map(
-                      (type) => {
-                        return (
-                          <div
-                            key={type}
-                            onClick={() => {
-                              field.onChange(type);
-                            }}
-                            className={`cursor-pointer px-6 py-1 rounded-full border ${
-                              field.value === type
-                                ? "bg-secondary text-white border-secondary"
-                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                            }`}
-                          >
-                            {type.replace("-", " ")}
-                          </div>
-                        );
-                      }
-                    )}
+                    {[
+                      { val: "onSite", lab: "On-Site" },
+                      { val: "remote", lab: "Remote" },
+                      { val: "hybrid", lab: "Hybrid" },
+                      { val: "field-work", lab: "Field-Work" },
+                    ].map((type) => {
+                      return (
+                        <div
+                          key={type.val}
+                          onClick={() => {
+                            field.onChange(type.val);
+                          }}
+                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                            field.value === type.val
+                              ? "bg-secondary text-white border-secondary"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                          }`}
+                        >
+                          {type.lab}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               />
@@ -939,25 +1022,25 @@ const PostJob = () => {
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-4 mt-2">
                     {[
-                      "Fixed-only",
-                      "Fixed+Incentive",
-                      "Fixed+variable",
-                      "incentive",
+                      { val: "Fixed-only", lab: "Fixed Only" },
+                      { val: "Fixed+Incentive", lab: "Fixed+Incentive" },
+                      { val: "Fixed+variable", lab: "Fixed+Variable" },
+                      { val: "incentive", lab: "Incentive" },
                     ].map((type) => {
                       return (
                         <div
-                          key={type}
+                          key={type.val}
                           onClick={() => {
-                            field.onChange(type);
-                            setSelectedPayType(type);
+                            field.onChange(type.val);
+                            setSelectedPayType(type.val);
                           }}
                           className={`cursor-pointer px-6 py-1 rounded-full border ${
-                            field.value === type
+                            field.value === type.val
                               ? "bg-secondary text-white border-secondary"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
                           }`}
                         >
-                          {type.replace("-", " ")}
+                          {type.lab}
                         </div>
                       );
                     })}
@@ -1200,7 +1283,15 @@ const PostJob = () => {
                         key={option.label}
                         onClick={() => {
                           field.onChange(option.value);
-                          setjoiningfee(option.value); // optional local state
+                          setjoiningfee(option.value); 
+          
+                          if(!option.value){
+                            
+                            setValue("joiningFeeAmount", null);
+                            setValue("joiningFeeReason", null);
+                            setValue("joiningFeeReasonDetail", null);
+                            setValue("joiningFeeAmountTime", null)
+                          }
                         }}
                         className={`cursor-pointer px-6 py-1 rounded-full border transition ${
                           field.value === option.value
@@ -1249,7 +1340,7 @@ const PostJob = () => {
                         {...field}
                         label="Joining Fee Amount"
                         fullWidth
-                        disabled={action === "edit"}
+                        
                         size="small"
                         placeholder="Enter Fee Amount"
                         error={!!errors.joiningFeeAmount}
@@ -1330,7 +1421,7 @@ const PostJob = () => {
                         <TextField
                           {...field}
                           label="joining fees amount reason Amount"
-                          disabled={action === "edit"}
+                          
                           fullWidth
                           size="small"
                           placeholder="Mention the Reason"
@@ -1573,6 +1664,9 @@ const PostJob = () => {
                           onClick={() => {
                             field.onChange(type);
                             setExperience(type);
+                            if(type !== "Experienced Only"){
+                              setValue("experienceLevel",null)
+                            }
                           }}
                           className={`cursor-pointer px-6 py-1 rounded-full border ${
                             field.value === type
@@ -1762,7 +1856,9 @@ const PostJob = () => {
                 className="mt-6 border-t border-gray-300 py-4 flex flex-col items-start"
               >
                 <Typography className="mb-1 font-medium">
-                  {fieldKey} Options
+                  {`${fieldKey.charAt(0).toUpperCase()}${fieldKey.slice(
+                    1
+                  )} Options`}
                 </Typography>
 
                 <Controller
@@ -1968,6 +2064,13 @@ const PostJob = () => {
                       const value = e.target.value === "true";
                       setWalkIn(value);
                       field.onChange(value);
+                      if(!value){
+                        setValue("walkInAddress", null);
+                        setValue("walkInStartDate", null);
+                        setValue("WalkInEndDate", null);
+                        setValue("walkInStartTime", null);
+                        setValue("walkInInstruction", null)
+                      }
                     }}
                   >
                     <FormControlLabel
@@ -2005,13 +2108,29 @@ const PostJob = () => {
                     rules={{ required: "Address is required" }}
                     render={({ field }) => (
                       <div className="flex flex-col gap-2 items-start justify-center">
-                        <TextField
-                          {...field}
-                          placeholder="Enter full address"
-                          size="small"
-                          error={!!errors.walkInAddress}
-                          helperText={errors.walkInAddress?.message}
-                        />
+                        <div className="flex flex-row gap-2">
+                          <TextField
+                            {...field}
+                            placeholder="Enter full address"
+                            size="small"
+                            error={!!errors.walkInAddress}
+                            helperText={errors.walkInAddress?.message}
+                          />
+                          <IconButton
+                            onClick={async () => {
+                              const loc = await handleCurrentLocation();
+                              if (loc) {
+                                console.log(loc);
+                                setValue("walkInAddress", loc);
+                              }
+                            }}
+                            edge="end"
+                            aria-label="use current location"
+                          >
+                            <MapPin className="text-[#0784C9] " />
+                          </IconButton>
+                        </div>
+
                         <label className="m-0 text-12 text-gray-500">
                           <input
                             type="checkbox"
@@ -2111,23 +2230,126 @@ const PostJob = () => {
                       className="mb-2 self-start"
                       sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                     >
-                      Walk-in Start Time *
+                      Walk-in Time *
                     </FormLabel>
+
                     <Controller
                       name="walkInStartTime"
                       control={control}
-                      rules={{ required: "Start time is required" }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          type="text"
-                          size="small"
-                          fullWidth
-                          placeholder="Eg: 10:00 A.M- 06:00 P.M"
-                          error={!!errors.walkInStartTime}
-                          helperText={errors.walkInStartTime?.message}
-                        />
-                      )}
+                      fullWidth
+                      rules={{ required: "Walk-in time is required" }}
+                      defaultValue=""
+                      render={({ field }) => {
+                        const [startHour, setStartHour] = useState("");
+                        const [startPeriod, setStartPeriod] = useState("A.M");
+                        const [endHour, setEndHour] = useState("");
+                        const [endPeriod, setEndPeriod] = useState("P.M");
+
+                        // On mount, parse the initial value into individual time fields
+                        useEffect(() => {
+                          if (field.value) {
+                            const [start, end] = field.value.split(" - ") || [
+                              "",
+                              "",
+                            ];
+                            const [sh = "", sp = ""] = start.trim().split(" ");
+                            const [eh = "", ep = ""] = end.trim().split(" ");
+                            setStartHour(sh.replace(":00", ""));
+                            setStartPeriod(sp);
+                            setEndHour(eh.replace(":00", ""));
+                            setEndPeriod(ep);
+                          }
+                        }, [field.value]);
+
+                        // Update the main field value whenever any time field changes
+                        useEffect(() => {
+                          if (
+                            startHour &&
+                            startPeriod &&
+                            endHour &&
+                            endPeriod
+                          ) {
+                            const combined = `${startHour}:00 ${startPeriod} - ${endHour}:00 ${endPeriod}`;
+                            field.onChange(combined);
+                          }
+                        }, [startHour, startPeriod, endHour, endPeriod]);
+
+                        return (
+                          <Grid container spacing={2} sx={{ mt: 1 }}>
+                            {/* Start Time */}
+                            <Grid item xs={6}>
+                              <FormControl fullWidth size="small">
+                                <FormLabel>Start Hour</FormLabel>
+                                <Select
+                                  value={startHour}
+                                  onChange={(e) => setStartHour(e.target.value)}
+                                  displayEmpty
+                                >
+                                  <MenuItem value="">Select</MenuItem>
+                                  {[...Array(12)].map((_, i) => {
+                                    const hour = (i + 1).toString();
+                                    return (
+                                      <MenuItem key={hour} value={hour}>
+                                        {hour}
+                                      </MenuItem>
+                                    );
+                                  })}
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                            <Grid item xs={3}>
+                              <FormControl fullWidth size="small">
+                                <FormLabel>Start Period</FormLabel>
+                                <Select
+                                  value={startPeriod}
+                                  onChange={(e) =>
+                                    setStartPeriod(e.target.value)
+                                  }
+                                  displayEmpty
+                                >
+                                  <MenuItem value="A.M">A.M</MenuItem>
+                                  <MenuItem value="P.M">P.M</MenuItem>
+                                </Select>
+                              </FormControl>
+                            </Grid>
+
+                            {/* End Time */}
+                            <Grid item xs={6}>
+                              <FormControl fullWidth size="small">
+                                <FormLabel>End Hour</FormLabel>
+                                <Select
+                                  value={endHour}
+                                  onChange={(e) => setEndHour(e.target.value)}
+                                  displayEmpty
+                                >
+                                  <MenuItem value="">Select</MenuItem>
+                                  {[...Array(12)].map((_, i) => {
+                                    const hour = (i + 1).toString();
+                                    return (
+                                      <MenuItem key={hour} value={hour}>
+                                        {hour}
+                                      </MenuItem>
+                                    );
+                                  })}
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                            <Grid item xs={3}>
+                              <FormControl fullWidth size="small">
+                                <FormLabel>End Period</FormLabel>
+                                <Select
+                                  value={endPeriod}
+                                  onChange={(e) => setEndPeriod(e.target.value)}
+                                  displayEmpty
+                                >
+                                  <MenuItem value="A.M">A.M</MenuItem>
+                                  <MenuItem value="P.M">P.M</MenuItem>
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                          </Grid>
+                        );
+                      }}
                     />
                   </FormControl>
                 </Box>
@@ -2594,15 +2816,12 @@ const PostJob = () => {
                   <DetailRow
                     label="Is this a walk-in interview ?"
                     value={`${
-                      values.walkIn === "yes"
-                        ? `Address-${values.walkInAddress} from ${values.walkInStartDate}-${values.WalkInEndDate} on ${values.walkInStartDate}`
+                      values.walkIn
+                        ? `Address-${values.walkInAddress} from ${values.walkInStartDate}-${values.WalkInEndDate} on ${values.walkInStartTime}`
                         : "No"
                     }`}
                   />
-                  <DetailRow
-                    label="Communication"
-                    value={values.contactPrefernece}
-                  />
+
                   {contactpermission === "other" && (
                     <DetailRow
                       label="HR Detail"
@@ -2640,6 +2859,151 @@ const PostJob = () => {
             </Button>
           </div>
         </div>
+      )}
+      {showCompanyChangeOptions && (
+        <Menu
+          open={showCompanyChangeOptions}
+          onClose={() => setShowCompanyChangeOoptions(false)}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          sx={{ padding: "40px", borderRadius: "50%", maxWidth: "500px" }}
+        >
+          <RadioGroup
+            onChange={(e) => setShowCompanyModal(e.target.value)}
+            className="flex flex-col gap-4 ml-6 py-2 rounded-lg"
+          >
+            <FormControlLabel
+              value="same"
+              className="border p-2 flex border-gray text-sm shadow-lg rounded-lg"
+              control={<Radio />}
+              label="I changed my company"
+            />
+            <FormControlLabel
+              value="consultancy"
+              control={<Radio />}
+              className="border p-2 flex border-gray shadow-lg rounded-lg "
+              label="I belong to a consultancy & want to post for my client's company"
+            />
+            <FormControlLabel
+              value="other"
+              className="border p-2 flex  border-gray shadow-lg rounded-lg"
+              control={<Radio />}
+              label="I want to post for another company/business/consultancy of my own"
+            />
+          </RadioGroup>
+        </Menu>
+      )}
+
+      {showCompanyModal && (
+        <Dialog
+          open={showCompanyModal}
+          onClose={() => setShowCompanyModal(null)}
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography fontWeight={600}>Company Hiring For</Typography>
+            <IconButton size="small" onClick={() => setShowCompanyModal(null)}>
+              <Close />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent dividers>
+            {/* Description */}
+            <Typography fontSize={14} mb={2}>
+              You're changing your company from{" "}
+              <b>{employer?.company.companyName}</b> Please select/add company
+              below:
+            </Typography>
+
+            {/* Company Name Input */}
+            <Box mb={2}>
+              <Typography fontSize={14} fontWeight={500} mb={0.5}>
+                Your company name <span style={{ color: "red" }}>*</span>
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Select company"
+                size="small"
+                variant="outlined"
+                value={
+                  showCompanyModal == "consultancy"
+                    ? employer?.company?.companyName
+                    : ""
+                }
+              />
+            </Box>
+
+            {/* Checkbox */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={
+                    showCompanyModal === "consultancy" ? true : isConsultancyCompany
+                  }
+                  disabled={showCompanyModal === "consultancy"}
+                  onChange={(e) => setIsConsultancyCompany(e.target.checked)}
+                />
+              }
+              label="This is a Consultancy (Hiring or Staffing agency)"
+            />
+
+            {/* Employee Chips */}
+            <Box mt={3}>
+              <Typography fontSize={14} fontWeight={500} mb={1}>
+                Number of employees in your company{" "}
+                <span style={{ color: "red" }}>*</span>
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={1}>
+                {[
+                  "0-50",
+                  "51-100",
+                  "101-300",
+                  "301-500",
+                  "501-1000",
+                  "1000 above",
+                ].map((option) => (
+                  <Chip
+                    key={option}
+                    label={option}
+                    variant={
+                      selectedEmployees === option ? "filled" : "outlined"
+                    }
+                    color={selectedEmployees === option ? "primary" : "default"}
+                    onClick={() => setSelectedEmployees(option)}
+                    clickable
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            {/* Action Buttons */}
+            <Box display="flex" justifyContent="flex-end" mt={4} gap={1}>
+              <Button
+                variant="outlined"
+                onClick={() => setShowCompanyModal(null)}
+              >
+                Cancel
+              </Button>
+              <Button variant="contained" color="success">
+                Change
+              </Button>
+            </Box>
+          </DialogContent>
+        </Dialog>
       )}
     </Box>
   );
