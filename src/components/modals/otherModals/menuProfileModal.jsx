@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { profilePicUpload } from "../../../API/ApiFunctions";
 import UserForm from "./uploadFileModal";
 
-const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
+const MenuProfileModal = ({ open, anchor, handleClose, data, showVerifyModal }) => {
 
     const [openFileModal, setOpenFileModal] = useState(false);
     const navigate = useNavigate();
@@ -17,6 +17,8 @@ const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
     }
 
     const user = JSON.parse(localStorage.getItem("User"))
+
+    
 
     return (
         <>
@@ -68,6 +70,14 @@ const MenuProfileModal = ({ open, anchor, handleClose, data }) => {
                         }}>
                             <span className="text-sm text-gray-700">Company Detail</span>
                         </MenuItem>
+
+                        {!data?.is_verified && 
+                        <MenuItem onClick={() => {
+                            handleClose()
+                            showVerifyModal()
+                        }}>
+                            <span className="text-sm text-gray-700">Verify</span>
+                        </MenuItem>}
                         <MenuItem onClick={logOut}>
                             <span className="text-sm text-red-600">Sign out</span>
                         </MenuItem>

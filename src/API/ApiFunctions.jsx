@@ -11,11 +11,14 @@ import {
   getPlansApi,
   getSkillsSuggestionsApi,
   giveRazorpayApi,
+  gstVerifyApi,
   jobPostApi,
   logoUploadApi,
   mobileApi,
   otpApi,
   profilePicUploadApi,
+  RoleAiSuggestionsApi,
+  suggestJobRolesApi,
   updateCompanyApi,
   verifyPaymentApi,
 } from "./APIs";
@@ -357,12 +360,23 @@ export const getJobRolesSuggestions = async (value) => {
     const headers = {
       Authorization: `Bearer ${token}`,
     };
+  
 
-    const response = await axios.get(`${getJobRolesSuggestionsApi}/${value}`, {
+    const response = await axios.get(`${suggestJobRolesApi}/${value}`, {
       headers,
     });
 
-    return response;
+
+
+    if(response.data.data.length > 0){
+      return response
+    }else{
+       const aiResponse = await axios.get(`${RoleAiSuggestionsApi}/${value}`, {headers})
+       return aiResponse;
+    }
+
+   
+    
   } catch (err) {
     console.log("Error from get Skills suggestions api", err);
   }
@@ -486,3 +500,33 @@ export const getCredits = async () => {
     console.log("Error from give get bill api", err);
   }
 };
+
+export const gstVerify = async(value) =>{
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.get(`${gstVerifyApi}/${value}`, { headers });
+
+    return response;
+  } catch (err) {
+    console.log("Error from gst verify api", err);
+  }
+}
+
+export const postGstVerify = async(value, data) =>{
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.post(`${gstVerifyApi}/${value}`,{data}, { headers });
+
+    return response;
+  } catch (err) {
+    console.log("Error from gst verify api", err);
+  }
+}

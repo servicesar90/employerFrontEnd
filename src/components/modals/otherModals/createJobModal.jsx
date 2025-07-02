@@ -37,7 +37,6 @@ import {
 } from "lucide-react";
 import {
   editPostJob,
-  getCategorySuggestions,
   getCitiesbyPincode,
   getEducationSuggestions,
   getJobRolesSuggestions,
@@ -154,8 +153,6 @@ const PostJob = () => {
   const [isGetAddress, setIsGetAddress] = useState(false);
   const [skillsSuggestions, setSkillsSuggestions] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [categorySuggestions, setCategorySuggestions] = useState([]);
-  const [category, setCategory] = useState(null);
   const [jobRoleSuggestions, setJobRoleSuggestions] = useState([]);
 
   const { id, action } = useParams();
@@ -425,23 +422,14 @@ const PostJob = () => {
     }
   };
 
-  const handlecategorySuggestions = async () => {
-    const response = await getCategorySuggestions();
-    if (response) {
-      setCategorySuggestions(response.data.data);
-    } else {
-      showErrorToast("Couldn't fetch suggestions");
-    }
-  };
-
-  const handleCategory = async (value) => {
-    const response = await getJobRolesSuggestions(value);
-
-    if (response) {
-      setCategory(value);
-      setJobRoleSuggestions(response.data.data);
-    } else {
-      showErrorToast("could not fetch suggestions");
+  const handleRoleSuggestions = async (value) => {
+    if (value.length >= 3) {
+      const response = await getJobRolesSuggestions(value);
+      if (response) {
+        setJobRoleSuggestions(response.data?.data);
+      } else {
+        showErrorToast("could not fetch suggestions");
+      }
     }
   };
 
@@ -613,75 +601,42 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Category
+                Job Role
               </Typography>
+
               <Box className="flex items-start flex-row w-full gap-2 mt-2">
-                <Autocomplete
-                  freeSolo
-                  options={categorySuggestions}
-                  className="w-full"
-                  onInputChange={(event, newInputValue, reason) => {
-                    if (reason === "input") {
-                      if (categorySuggestions.length == 0) {
-                        handlecategorySuggestions();
-                      }
-                    }
-                  }}
-                  onChange={(event, value) => {
-                    if (value) {
-                      handleCategory(value);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      disabled={action === "edit"}
-                      placeholder="Enter Job Category"
-                      size="small"
-                      fullWidth
+                <Controller
+                  name="jobRoles"
+                  control={control}
+                  render={({ field }) => (
+                    <Autocomplete
+                      freeSolo
+                      options={jobRoleSuggestions}
+                      className="w-full"
+                      value={field.value || ""}
+                      onChange={(_, newValue) => field.onChange(newValue)}
+                      onInputChange={(event, newInputValue, reason) => {
+                       
+                        if (reason === "input") {
+                          handleRoleSuggestions(newInputValue);
+                        }
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder="Choose Job Roles"
+                          disabled={action === "edit"}
+                          size="small"
+                          fullWidth
+                          error={!!errors.jobRoles}
+                          helperText={errors.jobRoles?.message}
+                        />
+                      )}
                     />
                   )}
                 />
               </Box>
             </Box>
-
-            {(category || values.jobRoles) && (
-              <Box className="mt-4 w-1/2 flex flex-col items-start">
-                <Typography
-                  variant="h6"
-                  className="mb-2 self-start"
-                  sx={{ fontWeight: 700, fontSize: "0.9rem" }}
-                >
-                  Job Role
-                </Typography>
-                <Box className="flex items-start flex-row w-full gap-2 mt-2">
-                  <Controller
-                    name="jobRoles"
-                    control={control}
-                    render={({ field }) => (
-                      <Autocomplete
-                        freeSolo
-                        options={jobRoleSuggestions}
-                        className="w-full"
-                        value={field.value || ""}
-                        onChange={(_, newValue) => field.onChange(newValue)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            placeholder="Choose Job Roles"
-                            disabled={action === "edit"}
-                            size="small"
-                            fullWidth
-                            error={!!errors.jobRoles}
-                            helperText={errors.jobRoles?.message}
-                          />
-                        )}
-                      />
-                    )}
-                  />
-                </Box>
-              </Box>
-            )}
 
             <Box className="mt-6 flex flex-col items-start">
               <Typography
@@ -2482,7 +2437,7 @@ const PostJob = () => {
 
       {currentStep === 3 && (
         <div className=" w-full">
-          <div className="w-full borderb-gray bg-white flex p-4 flex-row justify-between">
+          <div className="w-full borderb-gray bg-white flex p-4 flex-row justify-between" onClick={() => setShowJobDetailpreview(!showJobDetailpreview)}>
             <div className="flex flex-row gap-4">
               <BriefcaseBusiness />
               <h3 className="font-bold text-lg">JobDetails</h3>
@@ -2511,7 +2466,6 @@ const PostJob = () => {
                 <div className="space-y-4 text-sm">
                   <DetailRow label="Company name" value={values.companyName} />
                   <DetailRow label="Job title" value={values.jobTitle} />
-                  <DetailRow label="category" value={category} />
                   <DetailRow label="Job role" value={values.jobRoles} />
                   <DetailRow label="Job type" value={values.jobType} />
                   <DetailRow label="Is Night Shift" value={values.nightShift} />
@@ -2546,7 +2500,11 @@ const PostJob = () => {
             </Card>
           )}
 
-          <div className="w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between">
+          <div className="w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between" onClick={() =>
+                    setShowCandidateRequirementPreview(
+                      !showCandidateRequirementsPreview
+                    )
+                  }>
             <div className="flex flex-row gap-4">
               <Award />
               <h3 className="font-bold text-lg">Candidate Requirement</h3>
@@ -2602,7 +2560,7 @@ const PostJob = () => {
             </Card>
           )}
 
-          <div className="w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between">
+          <div className="w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between" onClick={() => setShowInterviewDetailPreview(!shownterviewDetailPreview)}>
             <div className="flex flex-row gap-4">
               <Handshake />
               <h3 className="font-bold text-lg">Interview Information</h3>
