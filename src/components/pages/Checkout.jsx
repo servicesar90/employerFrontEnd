@@ -1,39 +1,68 @@
 // export default Checkout;
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-import { giveRazor, loadRazorpay } from "../../API/ApiFunctions";
+import {
+  getFreeCredit,
+  giveRazor,
+  loadRazorpay,
+  postJob,
+} from "../../API/ApiFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import { setJobData } from "../../Redux/getData";
+import { showErrorToast, showSuccessToast } from "../ui/toast";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const plan = JSON.parse(localStorage.getItem("selectedPlan"));
+  const checkRef = useRef(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const jobData = useSelector((state)=> state.getDataReducer.jobData);
-
-
- 
- 
+  const jobData = useSelector((state) => state.getDataReducer.jobData);
 
   useEffect(() => {
-    console.log(plan);
-    if (plan) {
-      const giveData = async () => {
-        const response = await giveRazor(plan.id);
-        if (response) {
-          
-          loadRazorpay(plan, response.data.orderId, jobData);
-          dispatch(setJobData(null))
-        }
-      };
+    if (!checkRef.current) {
+      checkRef.current = true;
+      if (plan && plan?.name !== "Basic") {
+        const giveData = async () => {
+          const response = await giveRazor(plan.id);
+          if (response) {
+            loadRazorpay(plan, response.data.orderId, jobData);
+            dispatch(setJobData(null));
+          }
+        };
 
-      giveData();
+        giveData();
+      } else if (plan?.name === "Basic") {
+        console.log("plan basic");
+        const giveFreeCredit = async () => {
+          const response = await getFreeCredit({ planId: plan?.id });
+          if (response) {
+            showSuccessToast("Successfully Added");
+            if (jobData) {
+              const response = await postJob(jobData);
+              if (response) {
+                showSuccessToast("successfully Posted");
+              } else {
+                showErrorToast("Could not post");
+              }
+              dispatch(setJobData(null));
+            }
+            navigate("/employerHome/jobs");
+          } else {
+            showErrorToast("Could not add");
+          }
+        };
+
+        giveFreeCredit();
+      }
+      
     }
   }, []);
 
   return (
     <div
-    className="w-full "
+      className="w-full "
       style={{
         minHeight: "100vh",
         backgroundColor: "#DEF3F9",
@@ -41,7 +70,6 @@ const Checkout = () => {
         alignItems: "center",
         justifyContent: "center",
         padding: "20px",
-
       }}
     >
       <div

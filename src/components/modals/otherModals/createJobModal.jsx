@@ -3024,14 +3024,13 @@ const PostJob = () => {
               >
                 Cancel
               </Button>
-              <Button
+              <button
                 disabled={!newCompanyName}
                 onClick={() => handleCompanyChange(showCompanyModal)}
-                variant="contained"
-                color="success"
+                className="btn-3d"
               >
                 Change
-              </Button>
+              </button>
             </Box>
           </DialogContent>
         </Dialog>

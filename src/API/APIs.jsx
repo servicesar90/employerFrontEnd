@@ -38,6 +38,8 @@ export const verifyPaymentApi = `${base_url}/api/v1/subscription/verify_payment`
 
 export const getBillApi = `${base_url}/api/v1/subscription/bill`
 
+export const getFreeCreditsApi = `${base_url}/api/v1/subscription/free`
+
 export const getCreditsApi = `${base_url}/api/v1/subscription/credits`
 
 export const updateCompanyApi = `${base_url}/api/v1/employer/company`

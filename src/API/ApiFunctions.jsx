@@ -7,6 +7,7 @@ import {
   getCitiesApi,
   getCreditsApi,
   getEducationSuggestionsApi,
+  getFreeCreditsApi,
   getJobRolesSuggestionsApi,
   getPlansApi,
   getSkillsSuggestionsApi,
@@ -470,6 +471,21 @@ export const loadRazorpay = (plan, orderId, jobData) => {
   const rzp = new window.Razorpay(options);
   rzp.open();
 };
+
+export const getFreeCredit = async(data)=>{
+   try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.post(getFreeCreditsApi,data, { headers });
+
+    return response;
+  } catch (err) {
+    console.log("Error from give get free credit api", err);
+  }
+}
 
 export const getBill = async () => {
   try {

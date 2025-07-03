@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPlans } from "../../API/ApiFunctions";
+import { getBill, getPlans } from "../../API/ApiFunctions";
 import { showErrorToast } from "../ui/toast";
 import { Briefcase, Database } from "lucide-react";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -15,6 +15,7 @@ const SelectPlan = () => {
   const [allplans, setAllPlans] = useState([]);
   const [filter, setFilter] = useState("Starter");
   const [plans, setPlan] = useState([]);
+  const [freeUsed, setFreeUsed] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,8 +27,22 @@ const SelectPlan = () => {
         showErrorToast("Could not fetch Plans");
       }
     };
+
+    const checkFreePlan = async ()=>{
+      const response = await getBill();
+      if(response){
+        const purchesed = response?.data?.data?.filter((dat)=> dat.Plan?.name == "Basic");
+      
+        if(purchesed.length >0){
+          setFreeUsed(true)
+        } 
+      }
+    }
     getData();
+    checkFreePlan();
   }, []);
+
+
 
   useEffect(() => {
     if (filter === "Starter") {
@@ -340,9 +355,10 @@ const SelectPlan = () => {
 
             <button
               onClick={() => handleSelect(plan)}
+              disabled={plan?.name == "Basic" && freeUsed}
               style={{
                 width: "90%",
-                background: "linear-gradient(135deg, #0784C9, #065a94)",
+                background: `${(plan?.name == "Basic" && freeUsed)? "linear-gradient(135deg,rgb(149, 173, 185),rgb(124, 168, 202))": "linear-gradient(135deg, #0784C9, #065a94)"}`,
                 color: "white",
                 border: "none",
                 borderRadius: "12px",
@@ -365,7 +381,7 @@ const SelectPlan = () => {
                 e.target.style.boxShadow = "0 4px 15px rgba(7, 132, 201, 0.4)";
               }}
             >
-              Choose Plan
+              {plan?.name == "Basic" && freeUsed ? "Plan Used" : "Choose Plan"}
             </button>
           </div>
         ))}
