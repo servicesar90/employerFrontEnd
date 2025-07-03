@@ -52,6 +52,7 @@ import {
   getJobRolesSuggestions,
   getSkillSuggestions,
   postJob,
+  updateCompany,
 } from "../../../API/ApiFunctions";
 import { useNavigate, useParams } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../ui/toast";
@@ -170,7 +171,8 @@ const PostJob = () => {
   const [anchorEl, setAnchorE1] = useState(null);
   const [showCompanyModal, setShowCompanyModal] = useState(null);
   const [selectedEmployees, setSelectedEmployees] = useState(null);
-  const [isConsultancyCompany, setIsConsultancyCompany] = useState(false)
+  const [isConsultancyCompany, setIsConsultancyCompany] = useState(false);
+  const [newCompanyName, setNewCompanyName] = useState(null);
 
   const { id, action } = useParams();
   const dispatch = useDispatch();
@@ -508,6 +510,23 @@ const PostJob = () => {
     setAnchorE1(e);
   };
 
+  const handleCompanyChange = async (value) => {
+    if (value === "same") {
+      const response = await updateCompany({ companyName: newCompanyName });
+      if (response) {
+        dispatch(fetchUserProfile());
+        showSuccessToast("successfully changed");
+        setShowCompanyModal(null);
+      } else {
+        showErrorToast("Could not update");
+      }
+    } else {
+      reset({ companyName: newCompanyName });
+      showSuccessToast("successfully changed");
+      setShowCompanyModal(null);
+    }
+  };
+
   const onSubmit = async (data) => {
     console.log("Form Submitted:", data);
 
@@ -535,8 +554,6 @@ const PostJob = () => {
       showErrorToast("Could not post job");
     }
   };
-
-  console.log(showCompanyModal);
 
   return (
     <Box className="p-6 pt-0 bg-gray-200 min-h-screen">
@@ -693,7 +710,6 @@ const PostJob = () => {
                       value={field.value || ""}
                       onChange={(_, newValue) => field.onChange(newValue)}
                       onInputChange={(event, newInputValue, reason) => {
-                       
                         if (reason === "input") {
                           handleRoleSuggestions(newInputValue);
                         }
@@ -744,7 +760,7 @@ const PostJob = () => {
                           <div
                             key={type.val}
                             onClick={() => field.onChange(type.val)}
-                            className={`cursor-pointer px-6 py-1 rounded-full border ${
+                            className={`cursor-pointer chip-3d ${
                               field.value === type.val
                                 ? "bg-secondary text-white border-secondary"
                                 : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -825,7 +841,7 @@ const PostJob = () => {
                           onClick={() => {
                             field.onChange(type.val);
                           }}
-                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                          className={`cursor-pointer chip-3d ${
                             field.value === type.val
                               ? "bg-secondary text-white border-secondary"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -1034,7 +1050,7 @@ const PostJob = () => {
                             field.onChange(type.val);
                             setSelectedPayType(type.val);
                           }}
-                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                          className={`cursor-pointer chip-3d ${
                             field.value === type.val
                               ? "bg-secondary text-white border-secondary"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -1283,17 +1299,16 @@ const PostJob = () => {
                         key={option.label}
                         onClick={() => {
                           field.onChange(option.value);
-                          setjoiningfee(option.value); 
-          
-                          if(!option.value){
-                            
+                          setjoiningfee(option.value);
+
+                          if (!option.value) {
                             setValue("joiningFeeAmount", null);
                             setValue("joiningFeeReason", null);
                             setValue("joiningFeeReasonDetail", null);
-                            setValue("joiningFeeAmountTime", null)
+                            setValue("joiningFeeAmountTime", null);
                           }
                         }}
-                        className={`cursor-pointer px-6 py-1 rounded-full border transition ${
+                        className={`cursor-pointer chip-3d transition ${
                           field.value === option.value
                             ? "bg-secondary text-white border-secondary"
                             : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -1340,7 +1355,6 @@ const PostJob = () => {
                         {...field}
                         label="Joining Fee Amount"
                         fullWidth
-                        
                         size="small"
                         placeholder="Enter Fee Amount"
                         error={!!errors.joiningFeeAmount}
@@ -1381,7 +1395,7 @@ const PostJob = () => {
                                 field.onChange(type);
                                 setjoiningFeeReason(type);
                               }}
-                              className={`cursor-pointer px-6 py-1 rounded-full border ${
+                              className={`cursor-pointer chip-3d ${
                                 field.value === type
                                   ? "bg-secondary text-white border-secondary"
                                   : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -1421,7 +1435,6 @@ const PostJob = () => {
                         <TextField
                           {...field}
                           label="joining fees amount reason Amount"
-                          
                           fullWidth
                           size="small"
                           placeholder="Mention the Reason"
@@ -1458,7 +1471,7 @@ const PostJob = () => {
                               onClick={() => {
                                 field.onChange(type);
                               }}
-                              className={`cursor-pointer px-6 py-1 rounded-full border ${
+                              className={`cursor-pointer chip-3d ${
                                 field.value === type
                                   ? "bg-secondary text-white border-secondary"
                                   : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -1484,7 +1497,16 @@ const PostJob = () => {
 
           <Box className="bg-white p-6 mt-2 flex justify-center flex-col items-center rounded shadow">
             <Box className="mt-2">
-              <Button
+              <button
+                onClick={handleSubmit(() => {
+                  setCurrentStep((prev) => prev + 1); // only runs if form is valid
+                })}
+                className="btn-3d"
+              >
+                Continue
+              </button>
+
+              {/* <Button
                 variant="contained"
                 sx={{ backgroundColor: "secondary", color: "white" }}
                 onClick={handleSubmit(() => {
@@ -1492,7 +1514,7 @@ const PostJob = () => {
                 })}
               >
                 Continue
-              </Button>
+              </Button> */}
             </Box>
           </Box>
         </form>
@@ -1543,7 +1565,7 @@ const PostJob = () => {
                             setValue("educationSpecialization", null);
                             handleEducationSuggestions(type);
                           }}
-                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                          className={`cursor-pointer chip-3d ${
                             field.value === type
                               ? "bg-secondary text-white border-secondary"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -1622,7 +1644,7 @@ const PostJob = () => {
                           onClick={() => {
                             field.onChange(type);
                           }}
-                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                          className={`cursor-pointer chip-3d ${
                             field.value === type
                               ? "bg-secondary text-white border-secondary"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -1664,11 +1686,11 @@ const PostJob = () => {
                           onClick={() => {
                             field.onChange(type);
                             setExperience(type);
-                            if(type !== "Experienced Only"){
-                              setValue("experienceLevel",null)
+                            if (type !== "Experienced Only") {
+                              setValue("experienceLevel", null);
                             }
                           }}
-                          className={`cursor-pointer px-6 py-1 rounded-full border ${
+                          className={`cursor-pointer chip-3d ${
                             field.value === type
                               ? "bg-secondary text-white border-secondary"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -1942,7 +1964,7 @@ const PostJob = () => {
                             <div
                               key={type}
                               onClick={() => field.onChange(type)}
-                              className={`cursor-pointer px-6 py-1 rounded-full border transition ${
+                              className={`cursor-pointer chip-3d transition ${
                                 field.value === type
                                   ? "bg-secondary text-white border-secondary"
                                   : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
@@ -2011,15 +2033,14 @@ const PostJob = () => {
               Back
             </Button>
 
-            <Button
-              variant="contained"
-              sx={{ backgroundColor: "secondary" }}
+            <button
+              className="btn-3d"
               onClick={handleSubmit(() => {
                 setCurrentStep((prev) => prev + 1); // only runs if form is valid
               })}
             >
               Continue
-            </Button>
+            </button>
           </Box>
         </form>
       )}
@@ -2064,12 +2085,12 @@ const PostJob = () => {
                       const value = e.target.value === "true";
                       setWalkIn(value);
                       field.onChange(value);
-                      if(!value){
+                      if (!value) {
                         setValue("walkInAddress", null);
                         setValue("walkInStartDate", null);
                         setValue("WalkInEndDate", null);
                         setValue("walkInStartTime", null);
-                        setValue("walkInInstruction", null)
+                        setValue("walkInInstruction", null);
                       }
                     }}
                   >
@@ -2644,22 +2665,24 @@ const PostJob = () => {
               Back
             </Button>
 
-            <Button
-              variant="contained"
-              sx={{ backgroundColor: "secondary" }}
+            <button
+              className="btn-3d"
               onClick={handleSubmit(() => {
                 setCurrentStep((prev) => prev + 1); // only runs if form is valid
               })}
             >
               Continue
-            </Button>
+            </button>
           </Box>
         </form>
       )}
 
       {currentStep === 3 && (
         <div className=" w-full">
-          <div className="w-full borderb-gray bg-white flex p-4 flex-row justify-between" onClick={() => setShowJobDetailpreview(!showJobDetailpreview)}>
+          <div
+            className="w-full borderb-gray bg-white flex p-4 flex-row justify-between"
+            onClick={() => setShowJobDetailpreview(!showJobDetailpreview)}
+          >
             <div className="flex flex-row gap-4">
               <BriefcaseBusiness />
               <h3 className="font-bold text-lg">JobDetails</h3>
@@ -2722,11 +2745,14 @@ const PostJob = () => {
             </Card>
           )}
 
-          <div className="w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between" onClick={() =>
-                    setShowCandidateRequirementPreview(
-                      !showCandidateRequirementsPreview
-                    )
-                  }>
+          <div
+            className="w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between"
+            onClick={() =>
+              setShowCandidateRequirementPreview(
+                !showCandidateRequirementsPreview
+              )
+            }
+          >
             <div className="flex flex-row gap-4">
               <Award />
               <h3 className="font-bold text-lg">Candidate Requirement</h3>
@@ -2782,7 +2808,12 @@ const PostJob = () => {
             </Card>
           )}
 
-          <div className="w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between" onClick={() => setShowInterviewDetailPreview(!shownterviewDetailPreview)}>
+          <div
+            className="w-full borderb-gray bg-white flex mt-4 p-4 flex-row justify-between"
+            onClick={() =>
+              setShowInterviewDetailPreview(!shownterviewDetailPreview)
+            }
+          >
             <div className="flex flex-row gap-4">
               <Handshake />
               <h3 className="font-bold text-lg">Interview Information</h3>
@@ -2850,13 +2881,9 @@ const PostJob = () => {
             >
               Back
             </Button>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={handleSubmit(onSubmit)}
-            >
+            <button className="btn-3d" onClick={handleSubmit(onSubmit)}>
               Continue
-            </Button>
+            </button>
           </div>
         </div>
       )}
@@ -2939,11 +2966,7 @@ const PostJob = () => {
                 placeholder="Select company"
                 size="small"
                 variant="outlined"
-                value={
-                  showCompanyModal == "consultancy"
-                    ? employer?.company?.companyName
-                    : ""
-                }
+                onChange={(e) => setNewCompanyName(e.target.value)}
               />
             </Box>
 
@@ -2952,7 +2975,9 @@ const PostJob = () => {
               control={
                 <Checkbox
                   checked={
-                    showCompanyModal === "consultancy" ? true : isConsultancyCompany
+                    showCompanyModal === "consultancy"
+                      ? true
+                      : isConsultancyCompany
                   }
                   disabled={showCompanyModal === "consultancy"}
                   onChange={(e) => setIsConsultancyCompany(e.target.checked)}
@@ -2976,16 +3001,17 @@ const PostJob = () => {
                   "501-1000",
                   "1000 above",
                 ].map((option) => (
-                  <Chip
+                  <span
                     key={option}
-                    label={option}
-                    variant={
-                      selectedEmployees === option ? "filled" : "outlined"
-                    }
-                    color={selectedEmployees === option ? "primary" : "default"}
+                    className={`chip-3d cursor-pointer ${
+                      selectedEmployees === option
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
                     onClick={() => setSelectedEmployees(option)}
-                    clickable
-                  />
+                  >
+                    {option}
+                  </span>
                 ))}
               </Box>
             </Box>
@@ -2998,7 +3024,12 @@ const PostJob = () => {
               >
                 Cancel
               </Button>
-              <Button variant="contained" color="success">
+              <Button
+                disabled={!newCompanyName}
+                onClick={() => handleCompanyChange(showCompanyModal)}
+                variant="contained"
+                color="success"
+              >
                 Change
               </Button>
             </Box>

@@ -117,7 +117,8 @@ const ProfileUpdate = () => {
     } else {
       showErrorToast("Could not updated");
     }
-  };
+  }
+};
 
   return (
     <div
