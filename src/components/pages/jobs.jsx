@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, Card, CardContent } from "@mui/material";
 import { Plus, FileText } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import JobCard from "../ui/cards/jobCards";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchJobs } from "../../Redux/getData";
@@ -9,6 +9,12 @@ import { fetchJobs } from "../../Redux/getData";
 export default function Jobs() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { onIntroReady } = useOutletContext();
+
+  useEffect(() => {
+    onIntroReady?.();
+  }, []);
 
   useEffect(() => {
     dispatch(fetchJobs());
@@ -37,6 +43,7 @@ export default function Jobs() {
                 All Jobs({jobs.length})
               </h1>
               <button
+                id="PostJob"
                 onClick={() => navigate(`/jobsModal/${null}/new`)}
                 className="btn-slanted"
               >

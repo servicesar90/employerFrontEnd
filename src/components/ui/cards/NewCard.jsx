@@ -46,7 +46,17 @@ export default function SimplePaper({ jobId, candidate }) {
   const isMobile = width <= 768;
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [number, setNumber] = useState(null);
+  const [profile, setProfile] = useState(null)
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+    if(candidate?.EmployeeProfile){
+      setProfile(candidate?.EmployeeProfile)
+    }else{
+      setProfile(candidate)
+    }
+  },[candidate])
+
 
   const handleReject = async (id) => {
     const response = await updateApplication(id, { status: "Rejected" });
@@ -74,6 +84,8 @@ export default function SimplePaper({ jobId, candidate }) {
     }
   };
 
+  console.log(candidate)
+
   return (
     <>
       {isMobile ? (
@@ -83,7 +95,7 @@ export default function SimplePaper({ jobId, candidate }) {
               <div className="flex gap-4">
                 <Avatar sx={{ bgcolor: "#ff5722" }}>
                   {" "}
-                  {candidate?.EmployeeProfile.fullName
+                  {profile?.fullName
                     .split(" ")
                     .map((word) => word[0])
                     .slice(0, 2)
@@ -94,7 +106,7 @@ export default function SimplePaper({ jobId, candidate }) {
               <div className=" flex w-full justify-between items-center ml-4">
                 <div>
                   <p className="text-16 font-semibold text-gray-800">
-                    {candidate?.EmployeeProfile.fullName || "N/A"}
+                    {profile?.fullName || "N/A"}
                   </p>
                 </div>
                 <div>
@@ -109,10 +121,10 @@ export default function SimplePaper({ jobId, candidate }) {
             <div className="flex line-info  w-full items-center justify-between pt-2 pb-2  gap-2">
               <div className="flex flex-col items-center flex-wrap gap-1 ml-3">
                 <BriefcaseBusiness size={18} className="text-secondary" />
-                {candidate?.EmployeeProfile.TotalExperience?.years ? (
+                {profile?.TotalExperience?.years ? (
                   <p className="text-14 text-gray-650">
-                    {candidate?.EmployeeProfile.TotalExperience?.years} years{" "}
-                    {candidate?.EmployeeProfile.TotalExperience?.months} months
+                    {profile?.TotalExperience?.years} years{" "}
+                    {profile?.TotalExperience?.months} months
                   </p>
                 ) : (
                   <p>N/A</p>
@@ -122,14 +134,14 @@ export default function SimplePaper({ jobId, candidate }) {
               <div className="flex flex-col items-center flex-wrap gap-1 ">
                 <IndianRupee size={18} className="text-secondary" />
                 <p className="text-14 text-gray-650">
-                  {candidate?.EmployeeProfile.salary || "N/A"}
+                  {profile?.salary || "N/A"}
                 </p>
               </div>
               <div></div>
               <div className="flex flex-col items-center flex-wrap gap-1 mr-3">
                 <MapPin size={18} className="text-secondary" />
                 <p className="text-14 text-gray-650">
-                  {candidate?.EmployeeProfile?.currentLocation || "N/A"}
+                  {profile?.currentLocation || "N/A"}
                 </p>
               </div>
             </div>
@@ -157,8 +169,8 @@ export default function SimplePaper({ jobId, candidate }) {
                   <div className="flex items-start relative">
                     <div className="w-2 h-2 bg-gray-400 rounded-full absolute -left-1 top-1" />
                     <p className="mobile-current-work">
-                      {candidate?.EmployeeProfile?.EmployeeExperiences?.[0] ? (
-                        `${candidate.EmployeeProfile.EmployeeExperiences[0].jobTitle} at ${candidate.EmployeeProfile.EmployeeExperiences[0].companyName}`
+                      {profile?.EmployeeExperiences?.[0] ? (
+                        `${profile?.EmployeeExperiences[0].jobTitle} at ${profile?.EmployeeExperiences[0].companyName}`
                       ) : (
                         <span className="text-14 text-gray-650">
                           Not Provided
@@ -171,8 +183,8 @@ export default function SimplePaper({ jobId, candidate }) {
                   <div className="flex items-start relative">
                     <div className="w-2 h-2 bg-gray-400 rounded-full absolute -left-1 top-1" />
                     <p className="mobile-current-work">
-                      {candidate?.EmployeeProfile?.EmployeeExperiences?.[1] ? (
-                        `${candidate.EmployeeProfile.EmployeeExperiences[1].jobTitle} at ${candidate.EmployeeProfile.EmployeeExperiences[1].companyName}`
+                      {profile?.EmployeeExperiences?.[1] ? (
+                        `${profile?.EmployeeExperiences[1].jobTitle} at ${profile?.EmployeeExperiences[1].companyName}`
                       ) : (
                         <span className="text-14 text-gray-650">
                           Not Provided
@@ -193,18 +205,18 @@ export default function SimplePaper({ jobId, candidate }) {
                   </div>
                 </div>
                 <div className="mobile-education text-14 text-gray-650">
-                  {candidate?.EmployeeProfile?.EmployeeEducations?.[0]
+                  {profile?.EmployeeEducations?.[0]
                     ?.degree ||
-                  candidate?.EmployeeProfile?.EmployeeEducations?.[0]
+                  profile?.EmployeeEducations?.[0]
                     ?.specialization ||
-                  candidate?.EmployeeProfile?.EmployeeEducations?.[0]
+                  profile?.EmployeeEducations?.[0]
                     ?.instituteName ? (
                     <>
-                      {candidate.EmployeeProfile.EmployeeEducations[0].degree ||
+                      {profile?.EmployeeEducations[0].degree ||
                         ""}{" "}
-                      {candidate.EmployeeProfile.EmployeeEducations[0]
+                      {profile?.EmployeeEducations[0]
                         .specialization || ""}{" "}
-                      {candidate.EmployeeProfile.EmployeeEducations[0]
+                      {profile?.EmployeeEducations[0]
                         .instituteName || ""}
                     </>
                   ) : (
@@ -225,11 +237,11 @@ export default function SimplePaper({ jobId, candidate }) {
                   </div>
 
                   <div className="mobile-location text-14 text-gray-650 flex flex-wrap gap-2">
-                    {candidate?.EmployeeProfile?.preferredJobCity &&
-                    JSON.parse(candidate.EmployeeProfile.preferredJobCity)
+                    {profile?.preferredJobCity &&
+                    JSON.parse(profile?.preferredJobCity)
                       ?.length > 0 ? (
                       JSON.parse(
-                        candidate.EmployeeProfile.preferredJobCity
+                        profile?.preferredJobCity
                       ).map((city, index) => (
                         <Chip
                           key={index}
@@ -265,9 +277,9 @@ export default function SimplePaper({ jobId, candidate }) {
                 </div>
 
                 <div className="mobile-location text-14 text-gray-650 flex flex-wrap gap-2">
-                  {candidate?.EmployeeProfile?.skills &&
-                  JSON.parse(candidate.EmployeeProfile.skills)?.length > 0 ? (
-                    JSON.parse(candidate.EmployeeProfile.skills).map(
+                  {profile?.skills &&
+                  JSON.parse(profile?.skills)?.length > 0 ? (
+                    JSON.parse(profile?.skills).map(
                       (skill, index) => (
                         <Chip
                           key={index}
@@ -299,12 +311,12 @@ export default function SimplePaper({ jobId, candidate }) {
                   </div>
                 </div>
                 <div className="mobile-education text-14 text-gray-650   ">
-                  English ({candidate?.EmployeeProfile.englishProficiency})
+                  English ({profile?.englishProficiency})
                   <div className="flex flex-row gap-1 mt-4 mb-2">
-                    {candidate?.EmployeeProfile?.otherLanguages &&
-                    JSON.parse(candidate.EmployeeProfile.otherLanguages)
+                    {profile?.otherLanguages &&
+                    JSON.parse(profile?.otherLanguages)
                       ?.length > 0 ? (
-                      JSON.parse(candidate.EmployeeProfile.otherLanguages).map(
+                      JSON.parse(profile?.otherLanguages).map(
                         (language, index) => (
                           <Chip
                             key={index}
@@ -327,7 +339,7 @@ export default function SimplePaper({ jobId, candidate }) {
                       </span>
                     )}
 
-                    {candidate?.matchedField.map((skill, index) => (
+                    {candidate?.matchedField?.map((skill, index) => (
                       <Chip
                         key={index}
                         label={skill}
@@ -395,14 +407,14 @@ export default function SimplePaper({ jobId, candidate }) {
                   <Paperclip size={12} className="text-gray-650 text-12" />
                 </span>
                 <span className="text-gray-650 text-12">
-                  {candidate?.EmployeeProfile.resumeURL
+                  {profile?.resumeURL
                     ? "Cv Attached"
                     : "Cv Not attached"}
                 </span>
               </div>
               <span className="text-gray-650 text-12">|</span>
               <div className="text-gray-650 text-12">
-                Active on {candidate?.EmployeeProfile.updatedAt.split("T")[0]}
+                Active on {profile?.updatedAt.split("T")[0]}
               </div>
             </div>
           </div>
@@ -416,7 +428,7 @@ export default function SimplePaper({ jobId, candidate }) {
                 <div className="left-avatar-section">
                   <Avatar sx={{ bgcolor: "#ff5722" }}>
                     {" "}
-                    {candidate?.EmployeeProfile.fullName
+                    {profile?.fullName
                       .split(" ")
                       .map((word) => word[0])
                       .slice(0, 2)
@@ -429,7 +441,7 @@ export default function SimplePaper({ jobId, candidate }) {
                     <div className="candidate-name gap-4">
                       <h1>
                         <p className="text-16 font-semibold text-gray-800">
-                          {candidate?.EmployeeProfile.fullName}
+                          {profile?.fullName}
                         </p>
                       </h1>
                       <button
@@ -449,10 +461,10 @@ export default function SimplePaper({ jobId, candidate }) {
                         </span>
                         <div className="experience">
                           <p className="text-gray-650 text-14">
-                            {candidate?.EmployeeProfile?.TotalExperience
+                            {profile?.TotalExperience
                               ?.years ||
-                            candidate?.EmployeeProfile?.TotalExperience?.months
-                              ? `${candidate.EmployeeProfile.TotalExperience.years} years ${candidate.EmployeeProfile.TotalExperience.months} months`
+                            profile?.TotalExperience?.months
+                              ? `${profile.TotalExperience.years} years ${profile.TotalExperience.months} months`
                               : "N/A"}
                           </p>
                         </div>
@@ -463,8 +475,8 @@ export default function SimplePaper({ jobId, candidate }) {
                         </span>
                         <div className="salary">
                           <p className="text-gray-650 text-14">
-                            {candidate?.EmployeeProfile?.salary
-                              ? `${candidate?.EmployeeProfile?.salary}`
+                            {profile?.salary
+                              ? `${profile?.salary}`
                               : "N/A"}
                           </p>
                         </div>
@@ -475,8 +487,8 @@ export default function SimplePaper({ jobId, candidate }) {
                         </span>
                         <div className="location">
                           <p className="text-gray-650 text-14">
-                            {candidate?.EmployeeProfile?.currentLocation
-                              ? `${candidate?.EmployeeProfile?.currentLocation}`
+                            {profile?.currentLocation
+                              ? `${profile?.currentLocation}`
                               : "N/A"}
                           </p>
                         </div>
@@ -520,16 +532,16 @@ export default function SimplePaper({ jobId, candidate }) {
                     </span>
                   }
                   value={
-                    candidate?.EmployeeProfile?.EmployeeExperiences?.[0] ? (
+                    profile?.EmployeeExperiences?.[0] ? (
                       <span className="text-14 text-gray-650">
                         {" "}
                         {
-                          candidate.EmployeeProfile.EmployeeExperiences[0]
+                          profile?.EmployeeExperiences[0]
                             .jobTitle
                         }{" "}
                         at{" "}
                         {
-                          candidate.EmployeeProfile.EmployeeExperiences[0]
+                          profile?.EmployeeExperiences[0]
                             .companyName
                         }
                       </span>
@@ -551,15 +563,15 @@ export default function SimplePaper({ jobId, candidate }) {
                     </span>
                   }
                   value={
-                    candidate?.EmployeeProfile?.EmployeeExperiences?.[1] ? (
+                    profile?.EmployeeExperiences?.[1] ? (
                       <span className="text-14 text-gray-650">
                         {
-                          candidate.EmployeeProfile.EmployeeExperiences[1]
+                          profile?.EmployeeExperiences[1]
                             .jobTitle
                         }{" "}
                         at $
                         {
-                          candidate.EmployeeProfile.EmployeeExperiences[1]
+                          profile?.EmployeeExperiences[1]
                             .companyName
                         }
                       </span>
@@ -579,13 +591,13 @@ export default function SimplePaper({ jobId, candidate }) {
                     </span>
                   }
                   value={
-                    candidate?.EmployeeProfile?.EmployeeEducations?.[0] ? (
+                    profile?.EmployeeEducations?.[0] ? (
                       <span className="text-14 text-gray-650 mr-2">
-                        {candidate.EmployeeProfile.EmployeeEducations[0]
+                        {profile?.EmployeeEducations[0]
                           ?.degree || ""}{" "}
-                        {candidate.EmployeeProfile.EmployeeEducations[0]
+                        {profile?.EmployeeEducations[0]
                           ?.specialization || ""}{" "}
-                        {candidate.EmployeeProfile.EmployeeEducations[0]
+                        {profile?.EmployeeEducations[0]
                           ?.instituteName || ""}
                       </span>
                     ) : (
@@ -603,11 +615,11 @@ export default function SimplePaper({ jobId, candidate }) {
                     </span>
                   }
                   value={
-                    candidate?.EmployeeProfile?.preferredJobCity &&
-                    JSON.parse(candidate.EmployeeProfile.preferredJobCity)
+                    profile?.preferredJobCity &&
+                    JSON.parse(profile?.preferredJobCity)
                       ?.length > 0 ? (
                       JSON.parse(
-                        candidate.EmployeeProfile.preferredJobCity
+                        profile?.preferredJobCity
                       ).map((city, index) => (
                         <span
                           key={index}
@@ -631,9 +643,9 @@ export default function SimplePaper({ jobId, candidate }) {
                     </span>
                   }
                   value={
-                    candidate?.EmployeeProfile?.skills &&
-                    JSON.parse(candidate.EmployeeProfile.skills)?.length > 0 ? (
-                      JSON.parse(candidate.EmployeeProfile.skills).map(
+                    profile?.skills &&
+                    JSON.parse(profile?.skills)?.length > 0 ? (
+                      JSON.parse(profile?.skills).map(
                         (skill, index) => (
                           <span
                             key={index}
@@ -658,9 +670,9 @@ export default function SimplePaper({ jobId, candidate }) {
                     </span>
                   }
                   value={
-                    candidate?.EmployeeProfile?.englishProficiency ? (
+                    profile?.englishProficiency ? (
                       <span className="text-14 text-gray-650">
-                        {candidate.EmployeeProfile.englishProficiency}
+                        {profile?.englishProficiency}
                       </span>
                     ) : (
                       <span className="text-14 text-gray-650">
@@ -677,9 +689,9 @@ export default function SimplePaper({ jobId, candidate }) {
                     </span>
                   }
                   value={
-                    candidate?.EmployeeProfile?.englishProficiency ? (
+                    profile?.englishProficiency ? (
                       <span className="text-14 text-gray-650">
-                        English ({candidate.EmployeeProfile.englishProficiency})
+                        English ({profile?.englishProficiency})
                       </span>
                     ) : (
                       <span className="text-14 text-gray-650">
@@ -771,14 +783,14 @@ export default function SimplePaper({ jobId, candidate }) {
                   <Paperclip size={12} className="text-gray-650 text-12" />
                 </span>
                 <span className="text-gray-650 text-12">
-                  {candidate?.EmployeeProfile.resumeURL
+                  {profile?.resumeURL
                     ? "Cv Attached"
                     : "Cv not Attached"}
                 </span>
               </div>
               <span className="text-gray-650 text-12">|</span>
               <div className="text-gray-650 text-12">
-                Active on {candidate?.EmployeeProfile.updatedAt.split("T")[0]}
+                Active on {profile?.updatedAt.split("T")[0]}
               </div>
             </div>
           </div>

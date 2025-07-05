@@ -15,6 +15,7 @@ import {
   gstVerifyApi,
   jobPostApi,
   logoUploadApi,
+  matchesDatabasesApi,
   mobileApi,
   otpApi,
   profilePicUploadApi,
@@ -544,5 +545,20 @@ export const postGstVerify = async(value, data) =>{
     return response;
   } catch (err) {
     console.log("Error from gst verify api", err);
+  }
+}
+
+export const matchedDatabase = async(jobId) =>{
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.get(`${matchesDatabasesApi}/${jobId}/matchedprofiles`, { headers });
+
+    return response;
+  } catch (err) {
+    console.log("Error from matched databases api", err);
   }
 }

@@ -13,6 +13,7 @@ import SimplePaper from "../ui/cards/NewCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchJobsById } from "../../Redux/getData";
 import { set } from "react-hook-form";
+import { matchedDatabase } from "../../API/ApiFunctions";
 
 const CandidateManagementPage = () => {
   const navigate = useNavigate();
@@ -26,6 +27,8 @@ const CandidateManagementPage = () => {
   const [originalCandidates, setOriginalCandidates] = useState(null);
   const [candidatess, setCandidate] = useState(null);
   const [isFilter, setIsFilter] = useState(false);
+  const [matchedDatabases, setMatchedDatabase] = useState(null);
+  const [showData, setShowData] = useState("matched");
   const [activeFilters, setActiveFilters] = useState({
     time: null,
     education: null,
@@ -61,6 +64,15 @@ const CandidateManagementPage = () => {
         3: selectedCandidate,
         4: rejectedCandidate,
       });
+
+      const getMatchedDatabases = async () => {
+        const response = await matchedDatabase(id);
+        if (response) {
+          setMatchedDatabase(response?.data?.EmployeeProfile);
+        }
+      };
+
+      getMatchedDatabases();
     } else {
       console.log("Couldn't fetch the data");
     }
@@ -236,12 +248,10 @@ const CandidateManagementPage = () => {
   const applyFilters = (filtersSet) => {
     let updatedList = [...originalCandidates];
 
-
     filtersSet.forEach((label) => {
       const filterFunc = filterFunctions[label];
       if (filterFunc) {
         updatedList = filterFunc(updatedList);
-       
       }
     });
 
@@ -534,7 +544,6 @@ const CandidateManagementPage = () => {
                     gender: null,
                   });
                 }}
-                
                 style={{ color: "#0784C9", width: "20px", height: "20px" }}
               />
             ) : (
@@ -799,24 +808,54 @@ const CandidateManagementPage = () => {
 
         {/* Right: Candidate List */}
         <div className="w-full md:w-3/4 max-h-[60vh] overflow-scroll">
+          <div className="w-full flex flex-row border border-[#0784C9] rounded overflow-hidden mb-4">
+            <div
+              className={`w-1/2 p-2 flex justify-center items-center font-bold cursor-pointer ${
+                showData === "matched"
+                  ? "bg-[#0784C9] text-white"
+                  : "bg-white text-secondary"
+              }`}
+              onClick={() => setShowData("matched")}
+              style={{ borderRight: "3px solid #0784C9" }} // bold vertical line
+            >
+              Matched ({candidatess?.length})
+            </div>
+            <div
+              className={`w-1/2 p-2 flex justify-center items-center font-bold cursor-pointer ${
+                showData === "databases"
+                  ? "bg-[#0784C9] text-white"
+                  : "bg-white text-secondary"
+              }`}
+              onClick={() => setShowData("databases")}
+            >
+              Databases ({matchedDatabases?.length})
+            </div>
+          </div>
+
           <div
             className="text-16 font-semibold mb-7"
             style={{ color: "#003B70" }}
           >
-            Showing {candidatess?.length} candidates
+            Showing{" "}
+            {showData == "matched"
+              ? candidatess?.length
+              : matchedDatabases?.length}{" "}
+            candidates
           </div>
-          {candidatess?.map((candidate, index) => (
-            <div
-              key={index}
-              className="mb-10 shadow-lg rounded-lg border hover:shadow-xl transition-shadow duration-200"
-              style={{
-                backgroundColor: "white",
-                borderColor: "#0784C9",
-              }}
-            >
-              <SimplePaper  jobId={id} candidate={candidate} />
-            </div>
-          ))}
+          {(showData == "matched" ? candidatess : matchedDatabases)?.map(
+            (candidate, index) => (
+              <div
+                key={index}
+                className="mb-10 shadow-lg rounded-lg border hover:shadow-xl transition-shadow duration-200"
+                style={{
+                  backgroundColor: "white",
+                  borderColor: "#0784C9",
+                }}
+              >
+                <SimplePaper jobId={id} candidate={candidate} />
+              </div>
+            )
+          )}
 
           {/* Pagination */}
           <div className="flex justify-end mt-4">
