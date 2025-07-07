@@ -165,12 +165,10 @@ const EmployerHome = () => {
 
  useEffect(() => {
 
-  cons
+  
   const hasSeenIntro = localStorage.getItem("introExit") === "true";
-
-  if (hasSeenIntro) return; 
-
-  const stepsReady = () => {
+ 
+   const stepsReady = () => {
     return steps.every((step) => {
       const el = document.querySelector(step.element);
       if (!el) return false;
@@ -179,27 +177,35 @@ const EmployerHome = () => {
     });
   };
 
-  const startIntroWhenReady = () => {
-    if (stepsReady()) {
-      setStepsDone(true); // 👈 show tour only now
-      observer.disconnect();
-    } else {
-      setTimeout(startIntroWhenReady, 200);
-    }
-  };
+  if (hasSeenIntro){
+    setStepsDone(false);
+    return
+  }else{
 
-  const observer = new MutationObserver(() => {
-    if (stepsReady()) {
-      setStepsDone(true);
-      observer.disconnect();
-    }
-  });
+    const startIntroWhenReady = () => {
+      if (stepsReady()) {
+        setStepsDone(true); 
+        observer.disconnect();
+      } else {
+        setTimeout(startIntroWhenReady, 200);
+      }
+    };
+  
+    const observer = new MutationObserver(() => {
+      if (stepsReady()) {
+        setStepsDone(true);
+        observer.disconnect();
+      }
+    });
+  
+    observer.observe(document.body, { childList: true, subtree: true });
+  
+    setTimeout(startIntroWhenReady, 300);
+  
+    return () => observer.disconnect();
+  }
+ 
 
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  setTimeout(startIntroWhenReady, 300);
-
-  return () => observer.disconnect();
 }, []);
 
   return (

@@ -627,7 +627,7 @@ const PostJob = () => {
                 className="self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Company You are Hiring For
+                Company You are Hiring For <span className="text-red-500">*</span>
               </Typography>
               <Box className="flex items-start flex-row w-full gap-2 mt-2">
                 <Controller
@@ -667,7 +667,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Job title / Designation
+                Job title / Designation <span className="text-red-500">*</span>
               </Typography>
               <Box className="flex items-start flex-row w-full gap-2 mt-2">
                 <Controller
@@ -737,7 +737,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Type of Job
+                Type of Job <span className="text-red-500">*</span>
               </Typography>
               <Controller
                 name="jobType"
@@ -807,7 +807,7 @@ const PostJob = () => {
               className="mb-2"
               sx={{ fontWeight: 700, fontSize: "1rem" }}
             >
-              Location
+              Location 
             </Typography>
             <Typography
               className="mb-2"
@@ -821,7 +821,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Work Location Type
+                Work Location Type <span className="text-red-500">*</span>
               </Typography>
               <Controller
                 name="workLocationType"
@@ -911,7 +911,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Pin Code
+                    Pin Code <span className="text-red-500">*</span>
                   </Typography>
 
                   <Controller
@@ -1028,7 +1028,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                What is the monthly pay type? *
+                What is the monthly pay type? <span className="text-red-500">*</span>
               </Typography>
 
               <Controller
@@ -1082,7 +1082,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Minimum Salary
+                    Minimum Salary <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="minimumSalary"
@@ -1129,7 +1129,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Maximum Salary
+                    Maximum Salary <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="maximumSalary"
@@ -1182,7 +1182,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Incentive
+                    Incentive <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="incentive"
@@ -1336,7 +1336,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Fee Amount
+                    Fee Amount <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="joiningFeeAmount"
@@ -1370,7 +1370,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    What is this fee for?
+                    What is this fee for? <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="joiningFeeReason"
@@ -1425,7 +1425,7 @@ const PostJob = () => {
                       className="mb-2 self-start"
                       sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                     >
-                      Mention {joiningFeeReason} Here
+                      Mention {joiningFeeReason} Here <span className="text-red-500">*</span>
                     </Typography>
                     <Controller
                       name="joiningFeeReasonDetail"
@@ -1452,7 +1452,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    When should the fee be paid?
+                    When should the fee be paid? <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="joiningFeeAmountTime"
@@ -1547,7 +1547,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Minimum Education *
+                Minimum Education <span className="text-red-500">*</span>
               </FormLabel>
 
               <Controller
@@ -1628,7 +1628,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                English level required *
+                English level required <span className="text-red-500">*</span>
               </FormLabel>
 
               <Controller
@@ -1671,7 +1671,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Total experience required *
+                Total experience required <span className="text-red-500">*</span>
               </FormLabel>
               <Controller
                 name="experience"
@@ -1717,7 +1717,7 @@ const PostJob = () => {
                   className="mb-2 self-start"
                   sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                 >
-                  Experience Level
+                  Experience Level <span className="text-red-500">*</span>
                 </FormLabel>
 
                 <Controller
@@ -2073,7 +2073,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Is this a walk-in interview? *
+                Is this a walk-in interview? 
               </FormLabel>
               <Controller
                 name="walkIn"
@@ -2121,7 +2121,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Walk-in Interview address *
+                    Walk-in Interview address <span className="text-red-500">*</span>
                   </FormLabel>
                   <Controller
                     name="walkInAddress"
@@ -2182,7 +2182,7 @@ const PostJob = () => {
                         className="mb-2 self-start"
                         sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                       >
-                        Walk-in Start date *
+                        Walk-in Start date <span className="text-red-500">*</span>
                       </FormLabel>
                       <Controller
                         name="walkInStartDate"
@@ -2208,7 +2208,7 @@ const PostJob = () => {
                         className="mb-2 self-start"
                         sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                       >
-                        Walk-in End Date *
+                        Walk-in End Date <span className="text-red-500">*</span>
                       </FormLabel>
                       <Controller
                         name="WalkInEndDate"
@@ -2251,7 +2251,7 @@ const PostJob = () => {
                       className="mb-2 self-start"
                       sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                     >
-                      Walk-in Time *
+                      Walk-in Time <span className="text-red-500">*</span>
                     </FormLabel>
 
                     <Controller
@@ -2412,7 +2412,7 @@ const PostJob = () => {
             {/* Communication Preferences */}
             <Box className="bg-blue-50 p-3 mt-4 rounded border border-blue-200">
               <Typography variant="body2">
-                📥 Leads information will be accessible on Unigrow portal and
+                Leads information will be accessible on Unigrow portal and
                 can be <strong>downloaded in excel format</strong>
               </Typography>
             </Box>
@@ -2470,7 +2470,7 @@ const PostJob = () => {
             <FormControl component="fieldset" fullWidth>
               <FormLabel className="mt-2 mb-2 self-start">
                 Every time you receive a candidate application,do you want
-                Whatsapp Alerts from Unigrow? *
+                Whatsapp Alerts from Unigrow? <span className="text-red-500">*</span>
               </FormLabel>
               <Controller
                 name="notificationPreference"
@@ -2526,7 +2526,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Recruiter's Name
+                    Recruiter's Name <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="otherRecruiterName"
@@ -2553,7 +2553,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Recruiter’s Whatsapp No.
+                    Recruiter’s Whatsapp No. <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="otherRecruiterNumber"
@@ -2586,7 +2586,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Recruiter’s Email ID *
+                    Recruiter’s Email ID <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="otherRecruiterEmail"
@@ -2623,7 +2623,7 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Which candidates should be able to contact you ?
+                    Which candidates should be able to contact you ? <span className="text-red-500">*</span>
                   </FormLabel>
                   <Controller
                     name="candidateType"
