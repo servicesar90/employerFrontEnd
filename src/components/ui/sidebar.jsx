@@ -16,12 +16,14 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
-const SidebarContent = ({ isCollapsed }) => {
+const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
   const location = useLocation();
   const [databaseOpen, setDatabaseOpen] = useState(false);
   const showFull = !isCollapsed;
 
+
   const { employer } = useSelector((state) => state.getDataReducer);
+  const navigate = useNavigate();
 
   const navItems = [
     {
@@ -208,7 +210,6 @@ const SidebarContent = ({ isCollapsed }) => {
 };
 
 const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
-  const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -225,7 +226,7 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
           } transition-[width] duration-500 ease-in-out`}
         >
           <div className="h-full flex mt-[8vh] flex-col justify-end">
-            <SidebarContent isCollapsed={collapsed && !hovered} />
+            <SidebarContent isCollapsed={collapsed && !hovered} mobileVisible={mobileVisible} onCloseMobile={onCloseMobile} />
           </div>
         </div>
       </div>

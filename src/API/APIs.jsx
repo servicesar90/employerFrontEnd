@@ -10,6 +10,8 @@ export const resendOtp = `${base_url}`
 
 export const otpApi = `${base_url}/api/v1/auth/verifysignin`
 
+export const logOutApi = `${base_url}/api/v1/auth/logout`
+
 export const jobPostApi = `${base_url}/api/v1/employer-job`
 
 export const createProfileApi = `${base_url}/api/v1/employer`
@@ -51,3 +53,4 @@ export const gstVerifyApi = `${base_url}/api/v1/services/gst`
 export const suggestJobRolesApi = `${base_url}/api/v1/suggest/roles/search`
 
 export const matchesDatabasesApi = `${base_url}/api/v1/database`
+

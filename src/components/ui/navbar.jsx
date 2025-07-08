@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../Redux/getData";
+import { logOutFunc } from "../../API/ApiFunctions";
+import { showErrorToast } from "./toast";
 
 export default function Navbar() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -49,8 +51,10 @@ export default function Navbar() {
     }
   }, [employee]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("TokenId");
+  const handleLogout = async() => {
+    const response = await logOutFunc();
+    if(response){
+      localStorage.removeItem("TokenId");
     localStorage.removeItem("User"); // or sessionStorage
     setIsLoggedIn(false);
     setShowProfileModal(false);
@@ -58,6 +62,10 @@ export default function Navbar() {
     setMobile("");
     navigate("/");
     window.location.reload();
+    }else{
+      showErrorToast("could not post")
+    }
+    
   };
 
  

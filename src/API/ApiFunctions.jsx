@@ -15,6 +15,7 @@ import {
   gstVerifyApi,
   jobPostApi,
   logoUploadApi,
+  logOutApi,
   matchesDatabasesApi,
   mobileApi,
   otpApi,
@@ -46,6 +47,23 @@ export const handleOtp = async (data) => {
     alert("Login Unsucessfull");
   }
 };
+
+export const logOutFunc = async() =>{
+  try {
+    const token = localStorage.getItem("TokenId");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.post(logOutApi, {}, { headers });
+
+    return response;
+  } catch (err) {
+    console.log(err)
+    showErrorToast("could not post");
+  }
+}
 
 export const resendOtpApiCall = async (data) => {
   try {
@@ -562,3 +580,4 @@ export const matchedDatabase = async(jobId) =>{
     console.log("Error from matched databases api", err);
   }
 }
+
