@@ -12,7 +12,7 @@ import {
   Paperclip,
 } from "lucide-react";
 import { Button, Chip } from "@mui/material";
-import { updateApplication } from "../../../API/ApiFunctions";
+import { getPhonenumber, updateApplication } from "../../../API/ApiFunctions";
 import { showErrorToast, showSuccessToast } from "../toast";
 import ProfileModal from "../../modals/otherModals/profileModal";
 import { useDispatch } from "react-redux";
@@ -46,7 +46,8 @@ export default function SimplePaper({ jobId, candidate }) {
   const isMobile = width <= 768;
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [number, setNumber] = useState(null);
-  const [profile, setProfile] = useState(null)
+  const [profile, setProfile] = useState(null);
+  const [isDatabase, setIsDatabase] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(()=>{
@@ -54,6 +55,7 @@ export default function SimplePaper({ jobId, candidate }) {
       setProfile(candidate?.EmployeeProfile)
     }else{
       setProfile(candidate)
+      setIsDatabase(true)
     }
   },[candidate])
 
@@ -78,9 +80,17 @@ export default function SimplePaper({ jobId, candidate }) {
     }
   };
 
-  const handleViewPhone = () => {
+  const handleViewPhone = async() => {
     if (candidate) {
-      setNumber(9540441958);
+      if(isDatabase){
+        const data={employeeId:candidate.id, jobId: jobId}
+        const response= await getPhonenumber(data);
+        if(response){
+          setNumber(response.data.user.number)
+        }
+      }else{
+        setNumber("9540441958")
+      }
     }
   };
 

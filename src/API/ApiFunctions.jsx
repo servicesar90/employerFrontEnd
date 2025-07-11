@@ -9,6 +9,7 @@ import {
   getEducationSuggestionsApi,
   getFreeCreditsApi,
   getJobRolesSuggestionsApi,
+  getNumberApi,
   getPlansApi,
   getSkillsSuggestionsApi,
   giveRazorpayApi,
@@ -581,3 +582,17 @@ export const matchedDatabase = async(jobId) =>{
   }
 }
 
+export const getPhonenumber =async(data)=>{
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.post(getNumberApi,{data}, { headers });
+
+    return response;
+  } catch (err) {
+    console.log("Error from get number databases api", err);
+  }
+}
