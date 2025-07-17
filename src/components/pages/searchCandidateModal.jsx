@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import {
   TextField,
@@ -583,21 +582,8 @@ return (
           </div>
         </div>
 
-        {/* Active in */}
-        <div className="w-48">
-          <InputLabel>Active in</InputLabel>
-          <Select
-            fullWidth
-            defaultValue="6"
-            size="small"
-            {...register("activeIn")}
-          >
-            <MenuItem value="1">1 month</MenuItem>
-            <MenuItem value="3">3 months</MenuItem>
-            <MenuItem value="6">6 months</MenuItem>
-            <MenuItem value="12">12 months</MenuItem>
-          </Select>
-        </div>
+
+       
 
         {/* Buttons */}
         <div className="flex gap-4 mt-6">
@@ -630,5 +616,3 @@ return (
 
 }
     
-  
-
