@@ -67,7 +67,7 @@ const SelectPlan = () => {
   console.log(plans)
 
   const handleSelect = (plan) => {
-  localStorage.setItem("selectedPlan", JSON.stringify(plan));
+ 
 
   const price = plan?.price || 0;
 
@@ -84,6 +84,10 @@ const SelectPlan = () => {
     total,
     desc: plan?.description
   });
+
+  const selectedPlan = {...plan, price: total};
+
+   localStorage.setItem("selectedPlan", JSON.stringify(selectedPlan));
 
   setOpenBillModal(true);
 };

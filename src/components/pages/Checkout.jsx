@@ -25,7 +25,7 @@ const Checkout = () => {
       checkRef.current = true;
       if (plan && plan?.name !== "Basic") {
         const giveData = async () => {
-          const response = await giveRazor(plan.id);
+          const response = await giveRazor(plan.id, plan?.price);
           if (response) {
             loadRazorpay(plan, response.data.orderId, jobData);
             dispatch(setJobData(null));

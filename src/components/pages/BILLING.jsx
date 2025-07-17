@@ -343,7 +343,7 @@ const downloadInvoice = async (id) => {
                     borderBottom: "1px solid #0784C9",
                   }}
                 >
-                  Amount
+                  Price
                 </th>
                 <th
                   style={{

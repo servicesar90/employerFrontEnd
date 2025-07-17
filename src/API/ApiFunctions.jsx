@@ -431,14 +431,14 @@ export const getPlans = async () => {
   }
 };
 
-export const giveRazor = async (id) => {
+export const giveRazor = async (id, price) => {
   try {
     const token = localStorage.getItem("TokenId");
     const headers = {
       Authorization: `Bearer ${token}`,
     };
 
-    const response = await axios.post(giveRazorpayApi, { id }, { headers });
+    const response = await axios.post(giveRazorpayApi, { id, price }, { headers });
 
     return response;
   } catch (err) {
@@ -451,6 +451,7 @@ export const loadRazorpay = (plan, orderId, jobData) => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
+
 
   const options = {
     key: "rzp_test_3gHC9NkJgGTL2w",
