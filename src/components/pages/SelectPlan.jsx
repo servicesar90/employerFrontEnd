@@ -10,13 +10,17 @@ import AlignVerticalTopIcon from "@mui/icons-material/AlignVerticalTop";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import ManIcon from "@mui/icons-material/Man";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 
 const SelectPlan = () => {
   const [allplans, setAllPlans] = useState([]);
   const [filter, setFilter] = useState("Starter");
   const [plans, setPlan] = useState([]);
-  const [freeUsed, setFreeUsed] = useState(false)
+  const [freeUsed, setFreeUsed] = useState(false);
+  const [openBillModal, setOpenBillModal]= useState(false);
+  const [choosePlan, setChoosePlan] = useState(null);
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const getData = async () => {
@@ -60,10 +64,30 @@ const SelectPlan = () => {
     }
   }, [allplans, filter]);
 
+  console.log(plans)
+
   const handleSelect = (plan) => {
-    localStorage.setItem("selectedPlan", JSON.stringify(plan));
-    navigate("/employerHome/checkout");
-  };
+  localStorage.setItem("selectedPlan", JSON.stringify(plan));
+
+  const price = plan?.price || 0;
+
+  // calculate numbers first
+  const CGST = +(price * 0.09).toFixed(2);
+  const SGST = +(price * 0.09).toFixed(2);
+  const basePlan = +price.toFixed(2);
+  const total = +(basePlan + CGST + SGST).toFixed(2);
+
+  setChoosePlan({
+    plan: basePlan,
+    CGST,
+    SGST,
+    total,
+    desc: plan?.description
+  });
+
+  setOpenBillModal(true);
+};
+
 
   const icons = [
     { icon: RemoveRedEyeIcon, color: "black" },
@@ -76,6 +100,7 @@ const SelectPlan = () => {
   ];
 
   return (
+    <>
     <div
       style={{
         background: "#DEF3F9",
@@ -403,6 +428,88 @@ const SelectPlan = () => {
         </div>
       )}
     </div>
+
+    {openBillModal && (
+  <Dialog open={openBillModal} onClose={() => setOpenBillModal(false)} maxWidth="sm" fullWidth>
+    <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', fontSize: '1.5rem' }}>
+      Invoice / Bill
+    </DialogTitle>
+    <DialogContent>
+      <div
+        style={{
+          border: '1px solid #ccc',
+          borderRadius: '8px',
+          padding: '16px',
+          marginTop: '8px',
+          fontFamily: 'Arial, sans-serif',
+        }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+          {/* <h2 style={{ margin: 0 }}>{choosePlan?.desc}</h2> */}
+          <h2 style={{ margin: 0 }}>Thank you for your purchase!</h2>
+
+          <small style={{ color: '#777' }}>Here is the breakdown of your bill:</small>
+        </div>
+
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <tbody>
+            <tr>
+              <td style={{ padding: '8px 0', fontWeight: 500 }}>Base Amount</td>
+              <td style={{ textAlign: 'right' }}>₹ {choosePlan?.plan}</td>
+            </tr>
+            <tr>
+              <td style={{ padding: '8px 0', fontWeight: 500 }}>CGST (9%)</td>
+              <td style={{ textAlign: 'right' }}>₹ {choosePlan?.CGST}</td>
+            </tr>
+            <tr>
+              <td style={{ padding: '8px 0', fontWeight: 500 }}>SGST (9%)</td>
+              <td style={{ textAlign: 'right' }}>₹ {choosePlan?.SGST}</td>
+            </tr>
+            <tr>
+              <td colSpan={2}>
+                <hr style={{ border: '0.5px solid #ddd', margin: '12px 0' }} />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ padding: '8px 0', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                Total Payable
+              </td>
+              <td
+                style={{
+                  textAlign: 'right',
+                  fontWeight: 'bold',
+                  fontSize: '1.1rem',
+                  color: '#1976d2',
+                }}
+              >
+                ₹ {choosePlan?.total}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </DialogContent>
+    <DialogActions sx={{ justifyContent: 'space-between', padding: '16px' }}>
+      <Button
+        variant="outlined"
+        onClick={() => setOpenBillModal(false)}
+      >
+        Back
+      </Button>
+      <Button
+        variant="contained"
+        onClick={() => {
+          setOpenBillModal(false);
+          navigate('/employerHome/checkout');
+        }}
+      >
+        Confirm & Pay
+      </Button>
+    </DialogActions>
+  </Dialog>
+)}
+
+    </>
   );
 };
 
