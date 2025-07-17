@@ -8,10 +8,13 @@ import {
   getCreditsApi,
   getEducationSuggestionsApi,
   getFreeCreditsApi,
+  getinvoiceApi,
   getJobRolesSuggestionsApi,
   getNumberApi,
   getPlansApi,
+  getProfileApi,
   getSkillsSuggestionsApi,
+  getUnlockedApi,
   giveRazorpayApi,
   gstVerifyApi,
   jobPostApi,
@@ -22,6 +25,8 @@ import {
   otpApi,
   profilePicUploadApi,
   RoleAiSuggestionsApi,
+  searchCandidateApi,
+  SkillsAiSuggestionsApi,
   suggestJobRolesApi,
   updateCompanyApi,
   verifyPaymentApi,
@@ -353,8 +358,16 @@ export const getSkillSuggestions = async (value) => {
     const response = await axios.get(`${getSkillsSuggestionsApi}/${value}`, {
       headers,
     });
+    if(response?.data?.data?.length > 0){
+      
+      return response
+    }else{
+      const aiResponse = await axios.get(`${SkillsAiSuggestionsApi}/${value}`, {headers});
+      
+      return aiResponse;
+    }
 
-    return response;
+    
   } catch (err) {
     console.log("Error from get Skills suggestions api", err);
   }
@@ -583,16 +596,108 @@ export const matchedDatabase = async(jobId) =>{
 }
 
 export const getPhonenumber =async(data)=>{
+  console.log(`data ${JSON.stringify(data)}`);
+  
   try {
     const token = localStorage.getItem("TokenId");
     const headers = {
       Authorization: `Bearer ${token}`,
     };
 
-    const response = await axios.post(getNumberApi,{data}, { headers });
-
-    return response;
+    const response = await axios.post(getNumberApi, data , { headers });
+    
+    return response?.data?.data?.phone;
   } catch (err) {
     console.log("Error from get number databases api", err);
+  }
+}
+
+export const getProfileFunc =async(data)=>{
+  console.log("data" ,data);
+  
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response = await axios.post(getProfileApi, data , { headers });
+   
+    return response.data.data;
+  } catch (err) {
+    console.log("Error from get profile databases api", err);
+  }
+}
+
+export const getUnlockedFunc =async()=>{
+
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(getUnlockedApi , { headers });
+    if(response){
+     
+       return response;
+    }
+    
+   
+  } catch (err) {
+    console.log("Error from get number databases api", err);
+  }
+}
+
+export const getUnlockedByIdFunc =async(id)=>{
+
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(`${getUnlockedApi}/${id}` , { headers });
+    if(response){
+     
+       return response;
+    }
+    
+   
+  } catch (err) {
+    console.log("Error from get unlock databases api", err);
+  }
+}
+
+export const getInvoiceFunc = async(id)=>{
+   try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(`${getinvoiceApi}/${id}` , { headers });
+    if(response){
+     
+       return response;
+    }
+    
+   
+  } catch (err) {
+    console.log("Error from get unlock databases api", err);
+  }
+}
+
+export const searchCandidateFunc =async(data)=>{
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.post(searchCandidateApi ,data, { headers });
+    if(response){
+       return response;
+    }
+    
+   
+  } catch (err) {
+    console.log("Error from get unlock databases api", err);
   }
 }

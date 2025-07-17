@@ -374,7 +374,6 @@ const PostJob = () => {
       });
       if (selectedJob?.walkIn) {
         setWalkIn(true);
-        console.log(selectedJob?.walkIn);
       }
       if (selectedJob?.contactPrefernece === "no") {
         setContactPermission("other");
@@ -461,7 +460,6 @@ const PostJob = () => {
           });
         }
       } catch (e) {
-        console.log(e);
         setIsGetAddress(false);
         setError("pinCode", {
           type: "manual",
@@ -475,22 +473,22 @@ const PostJob = () => {
     const response = await getEducationSuggestions(value);
 
     if (response) {
-      console.log(response.data);
       setEducation(value);
       setEducationSuggestions(response.data);
     } else {
-      showErrorToast("Could not fetch suggestionas");
+      showErrorToast("");
     }
   };
 
   const handleSkillsSuggestions = async (value) => {
-    console.log(value);
-    const response = await getSkillSuggestions(value);
-    if (response) {
-      console.log(response.data.data);
-      setSkillsSuggestions(response.data.data);
-    } else {
-      showErrorToast("Could not fetch suggestions");
+    if (value.length >= 3) {
+      const response = await getSkillSuggestions(value);
+      if (response) {
+        console.log(response.data.data);
+        setSkillsSuggestions(response?.data?.data);
+      } else {
+        showErrorToast("Could not find suggestions");
+      }
     }
   };
 
@@ -500,7 +498,7 @@ const PostJob = () => {
       if (response) {
         setJobRoleSuggestions(response.data?.data);
       } else {
-        showErrorToast("could not fetch suggestions");
+        showErrorToast("could not get suggestions");
       }
     }
   };
@@ -528,8 +526,6 @@ const PostJob = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log("Form Submitted:", data);
-
     let response = null;
 
     if (id !== "null") {
@@ -627,7 +623,8 @@ const PostJob = () => {
                 className="self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Company You are Hiring For <span className="text-red-500">*</span>
+                Company You are Hiring For{" "}
+                <span className="text-red-500">*</span>
               </Typography>
               <Box className="flex items-start flex-row w-full gap-2 mt-2">
                 <Controller
@@ -697,6 +694,23 @@ const PostJob = () => {
               >
                 Job Role
               </Typography>
+              <Box className="flex items-center text-xs text-gray-500 mt-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mr-1 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                  />
+                </svg>
+                <span>Suggestions powered by AI</span>
+              </Box>
 
               <Box className="flex items-start flex-row w-full gap-2 mt-2">
                 <Controller
@@ -723,6 +737,19 @@ const PostJob = () => {
                           fullWidth
                           error={!!errors.jobRoles}
                           helperText={errors.jobRoles?.message}
+                          InputProps={{
+                            ...params.InputProps,
+                            startAdornment: (
+                              <>
+                                <img
+                                  src="https://www.pngall.com/wp-content/uploads/16/Google-Gemini-Logo-Transparent.png"
+                                  alt="Gemini"
+                                  className="w-5 h-5 mr-1"
+                                />
+                                {params.InputProps.startAdornment}
+                              </>
+                            ),
+                          }}
                         />
                       )}
                     />
@@ -789,7 +816,6 @@ const PostJob = () => {
                           field.onChange(
                             e.target.checked ? "Night Shift" : "Day Shift"
                           );
-                          console.log("Night shift:", e.target.checked);
                         }}
                       />
                     }
@@ -807,7 +833,7 @@ const PostJob = () => {
               className="mb-2"
               sx={{ fontWeight: 700, fontSize: "1rem" }}
             >
-              Location 
+              Location
             </Typography>
             <Typography
               className="mb-2"
@@ -1028,7 +1054,8 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                What is the monthly pay type? <span className="text-red-500">*</span>
+                What is the monthly pay type?{" "}
+                <span className="text-red-500">*</span>
               </Typography>
 
               <Controller
@@ -1370,7 +1397,8 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    What is this fee for? <span className="text-red-500">*</span>
+                    What is this fee for?{" "}
+                    <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="joiningFeeReason"
@@ -1425,7 +1453,8 @@ const PostJob = () => {
                       className="mb-2 self-start"
                       sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                     >
-                      Mention {joiningFeeReason} Here <span className="text-red-500">*</span>
+                      Mention {joiningFeeReason} Here{" "}
+                      <span className="text-red-500">*</span>
                     </Typography>
                     <Controller
                       name="joiningFeeReasonDetail"
@@ -1452,7 +1481,8 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    When should the fee be paid? <span className="text-red-500">*</span>
+                    When should the fee be paid?{" "}
+                    <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="joiningFeeAmountTime"
@@ -1671,7 +1701,8 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Total experience required <span className="text-red-500">*</span>
+                Total experience required{" "}
+                <span className="text-red-500">*</span>
               </FormLabel>
               <Controller
                 name="experience"
@@ -1890,6 +1921,26 @@ const PostJob = () => {
                     if (fieldKey === "languages" || fieldKey === "skills") {
                       return (
                         <>
+                          {/* AI Info Label — Only for Skills */}
+                          {fieldKey === "skills" && (
+                            <Box className="flex items-center text-xs text-gray-500 -mb-2 mt-1">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 mr-1 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                                />
+                              </svg>
+                              <span>Suggestions powered by AI</span>
+                            </Box>
+                          )}
                           {/* Render selected chips */}
                           <Box className="flex flex-wrap rounded-2xl gap-2 mb-2">
                             {(field.value || []).map((value, idx) => (
@@ -1922,13 +1973,20 @@ const PostJob = () => {
                                   }
                                 }
                               }}
-                              options={(fieldKey === "skills"
-                                ? skillsSuggestions
-                                : ADDITIONAL_FIELDS[fieldKey]
-                              ).filter(
-                                (option) =>
-                                  !(field.value || []).includes(option)
-                              )}
+                              options={
+                                fieldKey === "skills"
+                                  ? skillsSuggestions
+                                  : ADDITIONAL_FIELDS[fieldKey].filter(
+                                      (option) =>
+                                        !(field.value || []).includes(option)
+                                    )
+                              }
+                              filterOptions={(options) => {
+                                if (fieldKey === "skills") {
+                                  return skillsSuggestions;
+                                }
+                                return options;
+                              }}
                               value={field.value || []}
                               onChange={(event, newValue) => {
                                 const currentValues = field.value || [];
@@ -1951,6 +2009,19 @@ const PostJob = () => {
                                   fullWidth
                                   className="border border-gray-300 rounded px-3 py-2 w-full"
                                   placeholder="Type and Select"
+                                  InputProps={{
+                                    ...params.InputProps,
+                                    startAdornment: (
+                                      <>
+                                        <img
+                                          src="https://www.pngall.com/wp-content/uploads/16/Google-Gemini-Logo-Transparent.png"
+                                          alt="Gemini"
+                                          className="w-5 h-5 mr-1"
+                                        />
+                                        {params.InputProps.startAdornment}
+                                      </>
+                                    ),
+                                  }}
                                 />
                               )}
                             />
@@ -2073,7 +2144,7 @@ const PostJob = () => {
                 className="mb-2 self-start"
                 sx={{ fontWeight: 700, fontSize: "0.9rem" }}
               >
-                Is this a walk-in interview? 
+                Is this a walk-in interview?
               </FormLabel>
               <Controller
                 name="walkIn"
@@ -2121,7 +2192,8 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Walk-in Interview address <span className="text-red-500">*</span>
+                    Walk-in Interview address{" "}
+                    <span className="text-red-500">*</span>
                   </FormLabel>
                   <Controller
                     name="walkInAddress"
@@ -2141,7 +2213,6 @@ const PostJob = () => {
                             onClick={async () => {
                               const loc = await handleCurrentLocation();
                               if (loc) {
-                                console.log(loc);
                                 setValue("walkInAddress", loc);
                               }
                             }}
@@ -2182,7 +2253,8 @@ const PostJob = () => {
                         className="mb-2 self-start"
                         sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                       >
-                        Walk-in Start date <span className="text-red-500">*</span>
+                        Walk-in Start date{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <Controller
                         name="walkInStartDate"
@@ -2412,8 +2484,8 @@ const PostJob = () => {
             {/* Communication Preferences */}
             <Box className="bg-blue-50 p-3 mt-4 rounded border border-blue-200">
               <Typography variant="body2">
-                Leads information will be accessible on Unigrow portal and
-                can be <strong>downloaded in excel format</strong>
+                Leads information will be accessible on Unigrow portal and can
+                be <strong>downloaded in excel format</strong>
               </Typography>
             </Box>
 
@@ -2470,7 +2542,8 @@ const PostJob = () => {
             <FormControl component="fieldset" fullWidth>
               <FormLabel className="mt-2 mb-2 self-start">
                 Every time you receive a candidate application,do you want
-                Whatsapp Alerts from Unigrow? <span className="text-red-500">*</span>
+                Whatsapp Alerts from Unigrow?{" "}
+                <span className="text-red-500">*</span>
               </FormLabel>
               <Controller
                 name="notificationPreference"
@@ -2553,7 +2626,8 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Recruiter’s Whatsapp No. <span className="text-red-500">*</span>
+                    Recruiter’s Whatsapp No.{" "}
+                    <span className="text-red-500">*</span>
                   </Typography>
                   <Controller
                     name="otherRecruiterNumber"
@@ -2623,7 +2697,8 @@ const PostJob = () => {
                     className="mb-2 self-start"
                     sx={{ fontWeight: 700, fontSize: "0.9rem" }}
                   >
-                    Which candidates should be able to contact you ? <span className="text-red-500">*</span>
+                    Which candidates should be able to contact you ?{" "}
+                    <span className="text-red-500">*</span>
                   </FormLabel>
                   <Controller
                     name="candidateType"

@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 
 const Features = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
   const navigate = useNavigate();
 
   // Icons as inline SVG components (same as Index.tsx)

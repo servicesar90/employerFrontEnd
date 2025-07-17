@@ -1,6 +1,6 @@
 // export  const base_url = "https://backend.talentnestjob.store";
 
-export  const base_url = "http://192.168.1.8:5000"; 
+export  const base_url = "http://192.168.1.5:5000"; 
 
 
 // LoginAPIs
@@ -48,10 +48,20 @@ export const updateCompanyApi = `${base_url}/api/v1/employer/company`
 
 export const RoleAiSuggestionsApi = `${base_url}/api/v1/suggest/roles/ai`
 
+export const SkillsAiSuggestionsApi = `${base_url}/api/v1/suggest/aiskills`
+
 export const gstVerifyApi = `${base_url}/api/v1/services/gst`
 
 export const suggestJobRolesApi = `${base_url}/api/v1/suggest/roles/search`
 
 export const matchesDatabasesApi = `${base_url}/api/v1/database`
 
-export const getNumberApi = `${base_url}/api/v1/database/phone`
+export const getNumberApi = `${base_url}/api/v1/database/viewphone`
+
+export const getProfileApi = `${base_url}/api/v1/database/viewprofile`
+
+export const getUnlockedApi = `${base_url}/api/v1/database/unlocked`
+
+export const getinvoiceApi = `${base_url}/api/v1/subscription/invoice`
+
+export const searchCandidateApi = `${base_url}/api/v1/database/searchcandidates`

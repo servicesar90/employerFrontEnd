@@ -1,8 +1,127 @@
 // export default BillingPage;
 import { useEffect, useState } from "react";
 import { Download, Mail } from "lucide-react";
-import { getBill } from "../../API/ApiFunctions";
+import { getBill, getInvoiceFunc } from "../../API/ApiFunctions";
 import { showErrorToast } from "../ui/toast";
+import html2pdf from "html2pdf.js";
+import { createRoot } from "react-dom/client";
+import { toWords } from "number-to-words";
+import { flushSync } from "react-dom";
+
+const Invoice = ({ data, invoiceNumber }) => {
+  if (!data) return null;
+
+
+
+  const subtotal = data?.Plan.price;
+  const cgst = +(subtotal * 0.09).toFixed(2);
+  const sgst = +(subtotal * 0.09).toFixed(2);
+  const total = +(subtotal + cgst + sgst).toFixed(2);
+
+  const totalInWords = `${toWords(Math.floor(total))} rupees only`;
+
+  return (
+    <div
+      id="invoice"
+      className="max-w-[800px] mx-auto bg-white text-black p-8"
+      style={{ fontFamily: "Arial, sans-serif", fontSize: "14px" }}
+    >
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <img
+            src="/unigrowLogo.png" 
+            alt="Company Logo"
+            className="h-10"
+          />
+          {/* <div className="font-bold text-lg">Unigrow Talent</div> */}
+        </div>
+        <div className="text-right">
+          <div className="font-bold text-lg">Invoice</div>
+          <div>Invoice No: {invoiceNumber}</div>
+        </div>
+      </div>
+
+      <div className="flex justify-between mb-4">
+        <div>
+          <strong>Date:</strong>{" "}
+          {new Date(data?.created_at).toLocaleDateString()}
+        </div>
+      </div>
+
+      {/* Parties */}
+      <div className="flex justify-between mb-6">
+        <div className="w-1/2 pr-2">
+          <strong>Invoiced To:</strong>
+          <p>{data?.Employer?.GstDetail?.tradeNam}</p>
+          <p>
+            {data?.Employer?.GstDetail?.bno},{" "}
+            {data?.Employer?.GstDetail?.bnm},{" "}
+            {data?.Employer?.GstDetail?.dst}
+          </p>
+          <p>GSTIN: {data?.Employer?.GstDetail?.gstin}</p>
+        </div>
+        <div className="w-1/2 pl-2">
+          <strong>Pay To:</strong>
+          <p>TalentNest People Services PVT. Ltd.</p>
+          <p>4F-435A, Crossing Republik, Gautambuddha Nagar</p>
+          <p>GSTIN: 09AALCT8284F1ZQ</p>
+          <p>info@talennestpeopleservices.com</p>
+        </div>
+      </div>
+
+      {/* Table */}
+      <table className="w-full text-left border-collapse mb-6">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border p-2">Service</th>
+            <th className="border p-2">Description</th>
+            <th className="border p-2">Rate</th>
+            <th className="border p-2">Qty</th>
+            <th className="border p-2">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="border p-2">Hot</td>
+            <td className="border p-2">
+              {data?.Plan?.description}
+            </td>
+            <td className="border p-2">₹{subtotal.toFixed(2)}</td>
+            <td className="border p-2">1</td>
+            <td className="border p-2">₹{subtotal.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td colSpan={4} className=" p-2 text-right">Subtotal:</td>
+            <td className="border p-2">₹{subtotal.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td colSpan={4} className=" p-2 text-right">CGST @ 9%:</td>
+            <td className="border p-2">₹{cgst.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td colSpan={4} className=" p-2 text-right">SGST @ 9%:</td>
+            <td className="border p-2">₹{sgst.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td colSpan={4} className=" p-2 text-right font-bold">Total:</td>
+            <td className="border p-2 font-bold">₹{total.toFixed(2)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      {/* Total in words */}
+      <p className="mb-4">
+        <strong>Total in words:</strong> {totalInWords}
+      </p>
+
+      {/* Note */}
+      <p className="text-xs mt-8">
+        NOTE: This is a computer-generated invoice and does not require a physical signature.
+      </p>
+    </div>
+  );
+};
 
 const BillingPage = () => {
   const [filter, setFilter] = useState("All");
@@ -38,6 +157,67 @@ const BillingPage = () => {
       setData(successData);
     }
   };
+
+
+const downloadInvoice = async (id) => {
+  const response = await getInvoiceFunc(id);
+
+  if (!response) {
+    showErrorToast("Couldn't Download");
+    return;
+  }
+
+  const data = response.data.data[0];
+  const invoiceNumber = `INV/${new Date(
+    data.created_at
+  ).getFullYear()}-${String(data.id).padStart(5, "0")}`;
+
+  const container = document.createElement("div");
+
+  // put it off-screen but renderable
+  container.style.position = "absolute";
+  container.style.left = "-9999px";
+  container.style.top = "0";
+  document.body.appendChild(container);
+
+  const root = createRoot(container);
+
+  // flush synchronously
+  flushSync(() => {
+    root.render(
+      <Invoice
+        data={data}
+        invoiceNumber={invoiceNumber}
+      />
+    );
+  });
+
+  // give browser a frame to paint
+  await new Promise((r) => requestAnimationFrame(r));
+
+  // optionally check if content is really there
+  console.log("Container innerHTML:", container);
+
+  html2pdf()
+    .from(container.innerHTML)
+    .set({
+      margin: 0.5,
+      filename: `${invoiceNumber}.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    })
+    .save()
+    .then(() => {
+      root.unmount();
+      container.remove();
+    })
+    .catch(() => {
+      showErrorToast("Failed to generate PDF");
+      root.unmount();
+      container.remove();
+    });
+};
+
 
   return (
     <div
@@ -194,7 +374,6 @@ const BillingPage = () => {
                   style={{
                     borderBottom: "1px solid #DEF3F9",
                   }}
-                 
                 >
                   <td style={{ padding: "12px 16px", color: "#003B70" }}>
                     {entry.created_at.split("T")[0]}
@@ -265,51 +444,50 @@ const BillingPage = () => {
                     )}
                   </td>
                   <td style={{ padding: "12px 16px" }}>
-                    {entry.status === "Success" ? (
-                      <button
+                    <button
+                      onClick={() => downloadInvoice(entry.id)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        color: "#0784C9",
+                        textDecoration: "underline",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <Download
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          color: "#0784C9",
-                          textDecoration: "underline",
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "12px",
+                          width: "14px",
+                          height: "14px",
+                          marginRight: "4px",
                         }}
-                      >
-                        <Download
-                          style={{
-                            width: "14px",
-                            height: "14px",
-                            marginRight: "4px",
-                          }}
-                        />
-                        Invoice
-                      </button>
-                    ) : (
-                      <button
+                      />
+                      Invoice
+                    </button>
+
+                    <button
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        color: "#003B70",
+                        textDecoration: "underline",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <Mail
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          color: "#003B70",
-                          textDecoration: "underline",
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "12px",
+                          width: "14px",
+                          height: "14px",
+                          marginRight: "4px",
                         }}
-                      >
-                        <Mail
-                          style={{
-                            width: "14px",
-                            height: "14px",
-                            marginRight: "4px",
-                          }}
-                        />
-                        Contact us
-                      </button>
-                    )}
+                      />
+                      Contact us
+                    </button>
                   </td>
                 </tr>
               ))}

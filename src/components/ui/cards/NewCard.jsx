@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "../cards/NewCard.css";
 import Avatar from "@mui/material/Avatar";
 
@@ -10,12 +10,18 @@ import {
   School,
   ShipWheel,
   Paperclip,
+  Database,
 } from "lucide-react";
 import { Button, Chip } from "@mui/material";
-import { getPhonenumber, updateApplication } from "../../../API/ApiFunctions";
+import {
+  getPhonenumber,
+  getProfileFunc,
+  getUnlockedByIdFunc,
+  updateApplication,
+} from "../../../API/ApiFunctions";
 import { showErrorToast, showSuccessToast } from "../toast";
 import ProfileModal from "../../modals/otherModals/profileModal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchJobsById } from "../../../Redux/getData";
 
 function useWindowWidth() {
@@ -45,20 +51,56 @@ export default function SimplePaper({ jobId, candidate }) {
   const width = useWindowWidth();
   const isMobile = width <= 768;
   const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [number, setNumber] = useState(null);
+
   const [profile, setProfile] = useState(null);
   const [isDatabase, setIsDatabase] = useState(false);
+  const [candidateDetail, setCandidateDetail] = useState(null);
   const dispatch = useDispatch();
 
-  useEffect(()=>{
-    if(candidate?.EmployeeProfile){
-      setProfile(candidate?.EmployeeProfile)
-    }else{
-      setProfile(candidate)
-      setIsDatabase(true)
+  useEffect(() => {
+    if (candidate?.EmployeeProfile) {
+      setProfile(candidate?.EmployeeProfile);
+      setIsDatabase(false);
+    } else {
+      setProfile(candidate);
+      setIsDatabase(true);
     }
-  },[candidate])
+  }, [candidate]);
 
+  const { employer, jobsById } = useSelector((state) => state.getDataReducer);
+
+  const setUnlocked = useCallback(async () => {
+    try {
+      const response = await getUnlockedByIdFunc(jobId);
+
+      if (response?.data?.data) {
+        const unlocked = response.data.data.some(
+          (dat) => dat?.EmployeeProfile?.user_id === profile.user_id
+        );
+
+        setProfile((prev) => ({
+          ...prev,
+          unlocked: unlocked || !isDatabase,
+        }));
+      } else {
+        setProfile((prev) => ({
+          ...prev,
+          unlocked: false,
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to fetch unlocked:", error);
+      setProfile((prev) => ({
+        ...prev,
+        unlocked: false,
+      }));
+    }
+  }, [candidate]);
+
+  useEffect(() => {
+    if (!profile) return;
+    setUnlocked();
+  }, [setUnlocked]);
 
   const handleReject = async (id) => {
     const response = await updateApplication(id, { status: "Rejected" });
@@ -80,21 +122,56 @@ export default function SimplePaper({ jobId, candidate }) {
     }
   };
 
-  const handleViewPhone = async() => {
-    if (candidate) {
-      if(isDatabase){
-        const data={employeeId:candidate.id, jobId: jobId}
-        const response= await getPhonenumber(data);
-        if(response){
-          setNumber(response.data.user.number)
+
+
+  const handleViewPhone = async () => {
+    if (!profile) return;
+
+    try {
+      if (isDatabase) {
+        const data = {
+          employeeId: profile.user_id,
+          jobId,
+          company: employer?.company?.companyName,
+          job: jobsById[0]?.jobTitle,
+        };
+
+        const response = await getPhonenumber(data);
+
+        if (response) {
+          setProfile((prev) => ({ ...prev, number: response }));
         }
-      }else{
-        setNumber("9540441958")
+      } else {
+        const number = profile?.User?.phone || "";
+        setProfile((prev) => ({ ...prev, number }));
       }
+    } catch (error) {
+      showErrorToast("Error fetching phone number");
     }
   };
 
-  console.log(candidate)
+  const getProfile = async () => {
+    if (profile) {
+      if (!isDatabase) {
+        setCandidateDetail(candidate);
+      } else {
+        const data = {
+          employeeId: profile?.user_id,
+          jobId: jobId,
+          company: employer?.company?.companyName,
+          job: jobsById[0]?.jobTitle,
+        };
+        console.log(data);
+        const response = await getProfileFunc(data);
+        if (response) {
+          setCandidateDetail(response);
+        } else {
+          showErrorToast("could not get profile");
+        }
+      }
+      setOpenProfileModal(true);
+    }
+  };
 
   return (
     <>
@@ -119,13 +196,17 @@ export default function SimplePaper({ jobId, candidate }) {
                     {profile?.fullName || "N/A"}
                   </p>
                 </div>
-                <div>
-                  <Chip
-                    label={<span className="text-white text-12">unlocked</span>}
-                    size="small"
-                    sx={{ backgroundColor: "#0784C9" }}
-                  />
-                </div>
+                {profile?.unlocked && (
+                  <div>
+                    <Chip
+                      label={
+                        <span className="text-white text-12">unlocked</span>
+                      }
+                      size="small"
+                      sx={{ backgroundColor: "#0784C9" }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex line-info  w-full items-center justify-between pt-2 pb-2  gap-2">
@@ -157,7 +238,7 @@ export default function SimplePaper({ jobId, candidate }) {
             </div>
 
             <button
-              onClick={() => setOpenProfileModal(true)}
+              onClick={() => getProfile()}
               className="flex w-full justify-start m-4 font-bold cursor-pointer text-sm text-green-500"
             >
               View Profile
@@ -215,19 +296,13 @@ export default function SimplePaper({ jobId, candidate }) {
                   </div>
                 </div>
                 <div className="mobile-education text-14 text-gray-650">
-                  {profile?.EmployeeEducations?.[0]
-                    ?.degree ||
-                  profile?.EmployeeEducations?.[0]
-                    ?.specialization ||
-                  profile?.EmployeeEducations?.[0]
-                    ?.instituteName ? (
+                  {profile?.EmployeeEducations?.[0]?.degree ||
+                  profile?.EmployeeEducations?.[0]?.specialization ||
+                  profile?.EmployeeEducations?.[0]?.instituteName ? (
                     <>
-                      {profile?.EmployeeEducations[0].degree ||
-                        ""}{" "}
-                      {profile?.EmployeeEducations[0]
-                        .specialization || ""}{" "}
-                      {profile?.EmployeeEducations[0]
-                        .instituteName || ""}
+                      {profile?.EmployeeEducations[0].degree || ""}{" "}
+                      {profile?.EmployeeEducations[0].specialization || ""}{" "}
+                      {profile?.EmployeeEducations[0].instituteName || ""}
                     </>
                   ) : (
                     "Not Provided"
@@ -247,31 +322,41 @@ export default function SimplePaper({ jobId, candidate }) {
                   </div>
 
                   <div className="mobile-location text-14 text-gray-650 flex flex-wrap gap-2">
-                    {profile?.preferredJobCity &&
-                    JSON.parse(profile?.preferredJobCity)
-                      ?.length > 0 ? (
-                      JSON.parse(
-                        profile?.preferredJobCity
-                      ).map((city, index) => (
-                        <Chip
-                          key={index}
-                          label={city}
-                          size="small"
-                          sx={{
-                            backgroundColor: "#E0F2FE", // light blue
-                            color: "gray", // darker blue text
-                            fontSize: "12px",
-                            padding: "2px 1px",
-                            fontWeight: 500,
-                            borderRadius: "8px",
-                          }}
-                        />
-                      ))
-                    ) : (
-                      <span className="text-14 text-gray-650">
-                        Not Provided
-                      </span>
-                    )}
+                    {(() => {
+                      let cities = profile?.preferredJobCity;
+
+                      if (typeof cities === "string") {
+                        try {
+                          cities = JSON.parse(cities);
+                        } catch {
+                          cities = [];
+                        }
+                      }
+
+                      if (Array.isArray(cities) && cities.length > 0) {
+                        return cities.map((city, index) => (
+                          <Chip
+                            key={index}
+                            label={city}
+                            size="small"
+                            sx={{
+                              backgroundColor: "#E0F2FE", // light blue
+                              color: "gray", // text
+                              fontSize: "12px",
+                              padding: "2px 4px",
+                              fontWeight: 500,
+                              borderRadius: "8px",
+                            }}
+                          />
+                        ));
+                      }
+
+                      return (
+                        <span className="text-14 text-gray-650">
+                          Not Provided
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -287,28 +372,41 @@ export default function SimplePaper({ jobId, candidate }) {
                 </div>
 
                 <div className="mobile-location text-14 text-gray-650 flex flex-wrap gap-2">
-                  {profile?.skills &&
-                  JSON.parse(profile?.skills)?.length > 0 ? (
-                    JSON.parse(profile?.skills).map(
-                      (skill, index) => (
+                  {(() => {
+                    let skills = profile?.skills;
+
+                    if (typeof skills === "string") {
+                      try {
+                        skills = JSON.parse(skills);
+                      } catch {
+                        skills = [];
+                      }
+                    }
+
+                    if (Array.isArray(skills) && skills.length > 0) {
+                      return skills.map((skill, index) => (
                         <Chip
                           key={index}
                           label={skill}
                           size="small"
                           sx={{
                             backgroundColor: "#E0F2FE", // light blue
-                            color: "gray", // dark blue text
+                            color: "gray", // text
                             fontSize: "12px",
-                            padding: "2px 1px",
+                            padding: "2px 4px",
                             fontWeight: 500,
                             borderRadius: "8px",
                           }}
                         />
-                      )
-                    )
-                  ) : (
-                    <span className="text-14 text-gary-650">Not Provided</span>
-                  )}
+                      ));
+                    }
+
+                    return (
+                      <span className="text-14 text-gray-650">
+                        Not Provided
+                      </span>
+                    );
+                  })()}
                 </div>
               </div>
               <div className="flex flex-col mt-2">
@@ -323,31 +421,41 @@ export default function SimplePaper({ jobId, candidate }) {
                 <div className="mobile-education text-14 text-gray-650   ">
                   English ({profile?.englishProficiency})
                   <div className="flex flex-row gap-1 mt-4 mb-2">
-                    {profile?.otherLanguages &&
-                    JSON.parse(profile?.otherLanguages)
-                      ?.length > 0 ? (
-                      JSON.parse(profile?.otherLanguages).map(
-                        (language, index) => (
+                    {(() => {
+                      let langs = profile?.otherLanguages;
+
+                      if (typeof langs === "string") {
+                        try {
+                          langs = JSON.parse(langs);
+                        } catch {
+                          langs = [];
+                        }
+                      }
+
+                      if (Array.isArray(langs) && langs.length > 0) {
+                        return langs.map((language, index) => (
                           <Chip
-                            key={index}
+                            key={`lang-${index}`}
                             label={language}
                             size="small"
                             sx={{
-                              backgroundColor: "#E0F2FE", // light blue
-                              color: "gray", // dark blue text
+                              backgroundColor: "#E0F2FE",
+                              color: "gray",
                               fontSize: "12px",
-                              padding: "2px 1px",
+                              padding: "2px 4px",
                               fontWeight: 500,
                               borderRadius: "8px",
                             }}
                           />
-                        )
-                      )
-                    ) : (
-                      <span className=" text-14 text-gray-650">
-                        Not Provided
-                      </span>
-                    )}
+                        ));
+                      }
+
+                      return (
+                        <span className="text-14 text-gray-650">
+                          Not Provided
+                        </span>
+                      );
+                    })()}
 
                     {candidate?.matchedField?.map((skill, index) => (
                       <Chip
@@ -369,7 +477,7 @@ export default function SimplePaper({ jobId, candidate }) {
               </div>
               <div className="mobile-contact-button">
                 <Button
-                  variant={number ? "outlined" : "contained"}
+                  variant={profile?.number ? "outlined" : "contained"}
                   size="small"
                   onClick={handleViewPhone}
                   sx={{
@@ -384,30 +492,34 @@ export default function SimplePaper({ jobId, candidate }) {
                     },
                   }}
                 >
-                  <div>{number ? number : "View Phone Number"}</div>
+                  <div>
+                    {profile?.number ? profile?.number : "View Phone Number"}
+                  </div>
                 </Button>
               </div>
 
-              <div className="flex flex-row gap-4 w-full justify-end mb-2">
-                <Button
-                  variant="outlined"
-                  onClick={() => handleShortList(candidate?.id)}
-                  disabled={candidate?.status === "Selected"}
-                  color="success"
-                >
-                  {candidate?.status === "Selected"
-                    ? "Shortlisted"
-                    : "ShortList"}
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => handleReject(candidate?.id)}
-                  disabled={candidate?.status === "Rejected"}
-                  color="error"
-                >
-                  {candidate?.status === "Rejected" ? "Rejected" : "Reject"}
-                </Button>
-              </div>
+              {isDatabase && (
+                <div className="flex flex-row gap-4 w-full justify-end mb-2">
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleShortList(candidate?.id)}
+                    disabled={candidate?.status === "Selected"}
+                    color="success"
+                  >
+                    {candidate?.status === "Selected"
+                      ? "Shortlisted"
+                      : "ShortList"}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleReject(candidate?.id)}
+                    disabled={candidate?.status === "Rejected"}
+                    color="error"
+                  >
+                    {candidate?.status === "Rejected" ? "Rejected" : "Reject"}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
           <div className="mobile-card-bottom-section text-xs bg-white border-l border-r ">
@@ -417,9 +529,7 @@ export default function SimplePaper({ jobId, candidate }) {
                   <Paperclip size={12} className="text-gray-650 text-12" />
                 </span>
                 <span className="text-gray-650 text-12">
-                  {profile?.resumeURL
-                    ? "Cv Attached"
-                    : "Cv Not attached"}
+                  {profile?.resumeURL ? "Cv Attached" : "Cv Not attached"}
                 </span>
               </div>
               <span className="text-gray-650 text-12">|</span>
@@ -455,7 +565,7 @@ export default function SimplePaper({ jobId, candidate }) {
                         </p>
                       </h1>
                       <button
-                        onClick={() => setOpenProfileModal(true)}
+                        onClick={() => getProfile()}
                         className="font-bold cursor-pointer text-sm text-green-500 "
                       >
                         View Profile
@@ -471,8 +581,7 @@ export default function SimplePaper({ jobId, candidate }) {
                         </span>
                         <div className="experience">
                           <p className="text-gray-650 text-14">
-                            {profile?.TotalExperience
-                              ?.years ||
+                            {profile?.TotalExperience?.years ||
                             profile?.TotalExperience?.months
                               ? `${profile.TotalExperience.years} years ${profile.TotalExperience.months} months`
                               : "N/A"}
@@ -485,9 +594,7 @@ export default function SimplePaper({ jobId, candidate }) {
                         </span>
                         <div className="salary">
                           <p className="text-gray-650 text-14">
-                            {profile?.salary
-                              ? `${profile?.salary}`
-                              : "N/A"}
+                            {profile?.salary ? `${profile?.salary}` : "N/A"}
                           </p>
                         </div>
                       </div>
@@ -505,26 +612,20 @@ export default function SimplePaper({ jobId, candidate }) {
                       </div>
                     </div>
                   </div>
-                  <div className="unlock-badge-section">
-                    <Chip
-                      label="Unlocked"
-                      size="small"
-                      sx={{
-                        backgroundColor: "#0784C9",
-                        color: "#fff",
-                        borderRadius: "4px",
-                      }}
-                    />
-                  </div>
 
                   <div className="unlock-badge-section">
                     <Chip
-                      label={`${candidate?.matchingPrecent}% matched`}
+                      label={`${
+                        candidate?.matchingPrecent
+                          ? candidate?.matchingPrecent
+                          : 0
+                      }% matched`}
                       size="small"
                       sx={{
                         backgroundColor: "#0784C9",
                         color: "#fff",
                         borderRadius: "4px",
+                        marginLeft: "100%",
                       }}
                     />
                   </div>
@@ -545,15 +646,8 @@ export default function SimplePaper({ jobId, candidate }) {
                     profile?.EmployeeExperiences?.[0] ? (
                       <span className="text-14 text-gray-650">
                         {" "}
-                        {
-                          profile?.EmployeeExperiences[0]
-                            .jobTitle
-                        }{" "}
-                        at{" "}
-                        {
-                          profile?.EmployeeExperiences[0]
-                            .companyName
-                        }
+                        {profile?.EmployeeExperiences[0].jobTitle} at{" "}
+                        {profile?.EmployeeExperiences[0].companyName}
                       </span>
                     ) : (
                       <span className="text-14 text-gray-650">
@@ -575,15 +669,8 @@ export default function SimplePaper({ jobId, candidate }) {
                   value={
                     profile?.EmployeeExperiences?.[1] ? (
                       <span className="text-14 text-gray-650">
-                        {
-                          profile?.EmployeeExperiences[1]
-                            .jobTitle
-                        }{" "}
-                        at $
-                        {
-                          profile?.EmployeeExperiences[1]
-                            .companyName
-                        }
+                        {profile?.EmployeeExperiences[1].jobTitle} at $
+                        {profile?.EmployeeExperiences[1].companyName}
                       </span>
                     ) : (
                       <span className="text-14 text-gray-650">
@@ -603,12 +690,9 @@ export default function SimplePaper({ jobId, candidate }) {
                   value={
                     profile?.EmployeeEducations?.[0] ? (
                       <span className="text-14 text-gray-650 mr-2">
-                        {profile?.EmployeeEducations[0]
-                          ?.degree || ""}{" "}
-                        {profile?.EmployeeEducations[0]
-                          ?.specialization || ""}{" "}
-                        {profile?.EmployeeEducations[0]
-                          ?.instituteName || ""}
+                        {profile?.EmployeeEducations[0]?.degree || ""}{" "}
+                        {profile?.EmployeeEducations[0]?.specialization || ""}{" "}
+                        {profile?.EmployeeEducations[0]?.instituteName || ""}
                       </span>
                     ) : (
                       <span className="text-14 text-gray-650">
@@ -624,27 +708,40 @@ export default function SimplePaper({ jobId, candidate }) {
                       Pref. City
                     </span>
                   }
-                  value={
-                    profile?.preferredJobCity &&
-                    JSON.parse(profile?.preferredJobCity)
-                      ?.length > 0 ? (
-                      JSON.parse(
-                        profile?.preferredJobCity
-                      ).map((city, index) => (
-                        <span
-                          key={index}
-                          className="text-14 text-gray-650 mr-3"
-                        >
-                          {city}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-14 text-gray-650 ">
+                  value={(() => {
+                    let cities = profile?.preferredJobCity;
+
+                    if (typeof cities === "string") {
+                      try {
+                        cities = JSON.parse(cities);
+                      } catch {
+                        cities = [];
+                      }
+                    }
+
+                    if (Array.isArray(cities) && cities.length > 0) {
+                      return (
+                        <div className="flex flex-wrap gap-2">
+                          {cities.map((city, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-1 bg-light rounded-full text-12 text-gray-700"
+                            >
+                              {city}
+                            </span>
+                          ))}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <span className="text-14 text-gray-650">
                         Not Provided
                       </span>
-                    )
-                  }
+                    );
+                  })()}
                 />
+
                 <DetailRow
                   logo={<ShipWheel size={18} className="text-secondary" />}
                   label={
@@ -652,26 +749,40 @@ export default function SimplePaper({ jobId, candidate }) {
                       Skills
                     </span>
                   }
-                  value={
-                    profile?.skills &&
-                    JSON.parse(profile?.skills)?.length > 0 ? (
-                      JSON.parse(profile?.skills).map(
-                        (skill, index) => (
-                          <span
-                            key={index}
-                            className="mr-3 text-14 text-gray-650"
-                          >
-                            {skill}
-                          </span>
-                        )
-                      )
-                    ) : (
+                  value={(() => {
+                    let skills = profile?.skills;
+
+                    if (typeof skills === "string") {
+                      try {
+                        skills = JSON.parse(skills);
+                      } catch {
+                        skills = [];
+                      }
+                    }
+
+                    if (Array.isArray(skills) && skills.length > 0) {
+                      return (
+                        <div className="flex flex-wrap gap-2">
+                          {skills.map((skill, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-1 bg-light rounded-full text-12 text-gray-700"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      );
+                    }
+
+                    return (
                       <span className="text-14 text-gray-650">
                         Not Provided
                       </span>
-                    )
-                  }
+                    );
+                  })()}
                 />
+
                 <DetailRow
                   logo={<Languages size={18} className="text-secondary" />}
                   label={
@@ -698,17 +809,38 @@ export default function SimplePaper({ jobId, candidate }) {
                       Languages
                     </span>
                   }
-                  value={
-                    profile?.englishProficiency ? (
-                      <span className="text-14 text-gray-650">
-                        English ({profile?.englishProficiency})
-                      </span>
-                    ) : (
+                  value={(() => {
+                    let langs = profile?.otherLanguages;
+
+                    if (typeof langs === "string") {
+                      try {
+                        langs = JSON.parse(langs);
+                      } catch {
+                        langs = [];
+                      }
+                    }
+
+                    if (Array.isArray(langs) && langs.length > 0) {
+                      return (
+                        <div className="flex flex-wrap gap-2">
+                          {langs.map((lang, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-1 bg-light rounded-full text-12 text-gray-700"
+                            >
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      );
+                    }
+
+                    return (
                       <span className="text-14 text-gray-650">
                         Not Provided
                       </span>
-                    )
-                  }
+                    );
+                  })()}
                 />
 
                 <DetailRow
@@ -738,7 +870,7 @@ export default function SimplePaper({ jobId, candidate }) {
                 <div className="flex flex-row justify-between">
                   <div className="flex">
                     <Button
-                      variant={number ? "outlined" : "contained"}
+                      variant={profile?.number ? "outlined" : "contained"}
                       size="small"
                       onClick={handleViewPhone}
                       sx={{
@@ -753,39 +885,47 @@ export default function SimplePaper({ jobId, candidate }) {
                         },
                       }}
                     >
-                      <div>{number ? number : "View Phone Number"}</div>
+                      <div>
+                        {profile?.number
+                          ? profile?.number
+                          : "View Phone Number"}
+                      </div>
                     </Button>
                   </div>
 
-                  <div className="flex flex-row gap-4 ">
-                    <Button
-                      variant="outlined"
-                      onClick={() => handleShortList(candidate?.id)}
-                      disabled={candidate?.status === "Selected"}
-                      color="success"
-                    >
-                      {candidate?.status === "Selected"
-                        ? "Shortlisted"
-                        : "ShortList"}
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleReject(candidate?.id)}
-                      disabled={candidate?.status === "Rejected"}
-                      color="error"
-                    >
-                      {candidate?.status === "Rejected" ? "Rejected" : "Reject"}
-                    </Button>
-                  </div>
+                  {!isDatabase && (
+                    <div className="flex flex-row gap-4 ">
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleShortList(candidate?.id)}
+                        disabled={candidate?.status === "Selected"}
+                        color="success"
+                      >
+                        {candidate?.status === "Selected"
+                          ? "Shortlisted"
+                          : "ShortList"}
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleReject(candidate?.id)}
+                        disabled={candidate?.status === "Rejected"}
+                        color="error"
+                      >
+                        {candidate?.status === "Rejected"
+                          ? "Rejected"
+                          : "Reject"}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
           <div className="card-bottom-section text-xs border">
             <div className="flex flex-row gap-1 ">
-              <div className="text-gray-650 text-12">29 unlocks</div>
-              <span className="text-gray-650 text-12">|</span>
-              <div className="text-gray-650 text-12">Proile Unlocked</div>
+              <div className="text-gray-650 text-12">
+                Proile {profile?.unlocked ? "Unlocked" : "locked"}
+              </div>
             </div>
             <div className="flex flex-row gap-1">
               <div className="flex flex-row items-center">
@@ -793,9 +933,7 @@ export default function SimplePaper({ jobId, candidate }) {
                   <Paperclip size={12} className="text-gray-650 text-12" />
                 </span>
                 <span className="text-gray-650 text-12">
-                  {profile?.resumeURL
-                    ? "Cv Attached"
-                    : "Cv not Attached"}
+                  {profile?.resumeURL ? "Cv Attached" : "Cv not Attached"}
                 </span>
               </div>
               <span className="text-gray-650 text-12">|</span>
@@ -812,7 +950,11 @@ export default function SimplePaper({ jobId, candidate }) {
           open={openProfileModal}
           onClose={() => setOpenProfileModal(false)}
           jobId={jobId}
-          candidate={candidate}
+          candidate={candidateDetail?.EmployeeProfile}
+          phone={isDatabase? candidateDetail?.phone : candidateDetail?.EmployeeProfile?.User?.phone}
+          isDatabase={isDatabase}
+          id={candidateDetail?.id}
+          status={candidateDetail?.status}
         />
       )}
     </>

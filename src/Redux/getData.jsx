@@ -1,5 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getCredits, getJob, getJobById, getProfile } from "../API/ApiFunctions";
+import {
+  getCredits,
+  getJob,
+  getJobById,
+  getProfile,
+  getUnlockedFunc,
+  searchCandidateFunc,
+} from "../API/ApiFunctions";
+import { showErrorToast } from "../components/ui/toast";
 
 export const fetchUserProfile = createAsyncThunk(
   "getData/fetchUserProfile",
@@ -34,8 +42,6 @@ export const fetchJobsById = createAsyncThunk(
     try {
       const response = await getJobById(id);
 
-      console.log(response)
-
       // simulate API returning error-like data
       if (response.status !== 200) {
         return rejectWithValue({ error: response.message, response });
@@ -48,6 +54,40 @@ export const fetchJobsById = createAsyncThunk(
   }
 );
 
+export const fetchUnlockedCandidate = createAsyncThunk(
+  "getData/fetchUnlockedCandidate",
+  async () => {
+    try {
+      const response = await getUnlockedFunc();
+      if (response) {
+   
+        return response.data.data;
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+);
+
+export const fetchSearchedCandidate = createAsyncThunk(
+  "getData/fetchSearchedCandidate",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await searchCandidateFunc(data);
+
+      // simulate API returning error-like data
+      if (response.status !== 200) {
+        return rejectWithValue({ error: response.message, response });
+      }
+
+      console.log(response)
+
+      return response.data.employees;
+    } catch (error) {
+      return rejectWithValue({ error: error.message });
+    }
+  }
+);
 
 const initialState = {
   employer: null,
@@ -57,17 +97,19 @@ const initialState = {
   jobCredit: null,
   dataBaseCredit: null,
   creditsData: null,
+  unlockedData: null,
   loading: false,
   error: null,
+  searchedData: null
 };
 
 const getDataSlice = createSlice({
   name: "getData",
   initialState,
   reducers: {
-    setJobData: (state, action) =>{
-      state.jobData= action.payload
-    }
+    setJobData: (state, action) => {
+      state.jobData = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -126,7 +168,40 @@ const getDataSlice = createSlice({
         state.jobCredit = null;
         state.dataBaseCredit = null;
         state.creditsData = null;
+      })
+      .addCase(fetchUnlockedCandidate.pending , (state)=>{
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUnlockedCandidate.fulfilled , (state, action)=>{
+        
+        state.loading = false;
+        state.unlockedData = action.payload;
+        state.searchedData = null
+        state.error = null;
+      })
+      .addCase(fetchUnlockedCandidate.rejected , (state, action)=>{
+        state.loading = false;
+        state.unlockedData = null
+        state.error = action.error.message;
+      })
+      .addCase(fetchSearchedCandidate.pending , (state)=>{
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSearchedCandidate.fulfilled , (state, action)=>{
+        
+        state.loading = false;
+        state.searchedData = action.payload;
+        state.unlockedData = null
+        state.error = null;
+      })
+      .addCase(fetchSearchedCandidate.rejected , (state, action)=>{
+        state.loading = false;
+        state.unlockedData = null
+        state.error = action.error.message;
       });
+      
   },
 });
 

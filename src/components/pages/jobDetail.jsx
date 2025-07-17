@@ -12,7 +12,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import SimplePaper from "../ui/cards/NewCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchJobsById } from "../../Redux/getData";
-import { set } from "react-hook-form";
 import { matchedDatabase } from "../../API/ApiFunctions";
 
 const CandidateManagementPage = () => {
@@ -45,7 +44,6 @@ const CandidateManagementPage = () => {
 
   useEffect(() => {
     if (jobsById) {
-      console.log(jobsById[0]);
       setData(jobsById[0]);
       const jobApps = jobsById[0]?.JobApplications || [];
       const pendingCandidate = jobApps.filter(
@@ -79,7 +77,12 @@ const CandidateManagementPage = () => {
   }, [jobsById]);
 
   useEffect(() => {
-    const currentCandidates = allCandidates?.[filterIndex];
+    let currentCandidates;
+    if (showData === "databases") {
+      currentCandidates = matchedDatabases;
+    } else {
+      currentCandidates = allCandidates?.[filterIndex];
+    }
 
     if (!currentCandidates || !jobsById) return;
 
@@ -88,13 +91,15 @@ const CandidateManagementPage = () => {
 
       let matchedCount = 0;
       const newMatchedFields = [];
+      const profile = candidate?.EmployeeProfile
+        ? candidate?.EmployeeProfile
+        : candidate;
 
       // Gender match
 
       if (jobsById[0]?.gender) {
         if (
-          jobsById[0]?.gender.toUpperCase() ===
-          candidate?.EmployeeProfile?.gender?.toUpperCase()
+          jobsById[0]?.gender.toUpperCase() === profile?.gender?.toUpperCase()
         ) {
           matchedCount++;
           newMatchedFields.push("Gender");
@@ -104,7 +109,7 @@ const CandidateManagementPage = () => {
       }
 
       // Education match
-      const educations = candidate?.EmployeeProfile?.EmployeeEducations;
+      const educations = profile?.EmployeeEducations;
       const highestEducation =
         Array.isArray(educations) && educations.length > 0
           ? educations.reduce((latest, current) => {
@@ -121,10 +126,12 @@ const CandidateManagementPage = () => {
 
       // Language match (partial)
       if (jobsById[0]?.languages) {
-        const totalLanguages = JSON.parse(jobsById[0]?.languages || "[]");
-        const candidateLanguages = JSON.parse(
-          candidate?.EmployeeProfile?.otherLanguages || "[]"
-        );
+        const totalLanguages = Array.isArray(jobsById[0]?.languages)
+          ? jobsById[0]?.languages
+          : JSON.parse(jobsById[0]?.languages) || "[]";
+        const candidateLanguages = Array.isArray(profile?.otherLanguages)
+          ? profile?.otherLanguages
+          : JSON.parse(profile?.otherLanguages) || "[]";
 
         const matchLanguageCount = totalLanguages.filter((item) =>
           candidateLanguages.includes(item)
@@ -140,17 +147,16 @@ const CandidateManagementPage = () => {
       }
 
       // English level
-      if (
-        jobsById[0]?.english === candidate?.EmployeeProfile?.englishProficiency
-      ) {
+      if (jobsById[0]?.english === profile?.englishProficiency) {
         matchedCount++;
         newMatchedFields.push("English Level");
       }
 
       // Location
-      const preferredCities = JSON.parse(
-        candidate?.EmployeeProfile?.preferredJobCity || "[]"
-      );
+      const preferredCities =
+        (Array.isArray(profile?.preferredJobCity)
+          ? profile?.preferredJobCity
+          : JSON.parse(profile?.preferredJobCity)) || [];
       if (preferredCities.includes(jobsById[0]?.city)) {
         matchedCount++;
         newMatchedFields.push("Location");
@@ -159,8 +165,7 @@ const CandidateManagementPage = () => {
       // Experience match
       const minExperienceLevel =
         Number(jobsById[0]?.experienceLevel?.split("-")[0]) || 0;
-      const candidateExpYears =
-        candidate?.EmployeeProfile?.TotalExperience?.years || 0;
+      const candidateExpYears = profile?.TotalExperience?.years || 0;
 
       if (minExperienceLevel === 0 || candidateExpYears >= minExperienceLevel) {
         matchedCount++;
@@ -169,8 +174,11 @@ const CandidateManagementPage = () => {
 
       // Job Role match
       let candidateJobRoles = [];
-      candidate?.EmployeeProfile?.EmployeeExperiences?.forEach((exp) => {
-        const roles = JSON.parse(exp?.jobRole || "[]");
+      profile?.EmployeeExperiences?.forEach((exp) => {
+        const roles =
+          (Array.isArray(exp?.jobRole)
+            ? exp?.jobRole
+            : JSON.parse(exp?.jobRole)) || [];
         candidateJobRoles.push(...roles);
       });
 
@@ -181,7 +189,7 @@ const CandidateManagementPage = () => {
 
       // Job Type
       const preferredTypes = JSON.parse(
-        candidate?.EmployeeProfile?.prefferedEmploymentTypes || "[]"
+        profile?.prefferedEmploymentTypes || "[]"
       );
       if (
         jobsById[0]?.jobType &&
@@ -192,9 +200,10 @@ const CandidateManagementPage = () => {
       }
 
       // Job Location Type
-      const preferredLocationTypes = JSON.parse(
-        candidate?.EmployeeProfile?.preferredLocationTypes || "[]"
-      );
+      const preferredLocationTypes =
+        (Array.isArray(profile?.preferredLocationTypes)
+          ? profile?.preferredLocationTypes
+          : JSON.parse(profile?.preferredLocationTypes)) || [];
       if (preferredLocationTypes.includes(jobsById[0]?.workLocationType)) {
         matchedCount++;
         newMatchedFields.push("Job Location Type");
@@ -202,10 +211,13 @@ const CandidateManagementPage = () => {
 
       // Skills (partial match)
       if (jobsById[0].skills) {
-        const totalSkills = JSON.parse(jobsById[0]?.skills || "[]");
-        const candidateSkills = JSON.parse(
-          candidate?.EmployeeProfile?.skills || "[]"
-        );
+        const totalSkills = Array.isArray(jobsById[0]?.skills)
+          ? jobsById[0]?.skills
+          : JSON.parse(jobsById[0]?.skills) || "[]";
+        const candidateSkills =
+          (Array.isArray(profile?.skills)
+            ? profile?.skills
+            : JSON.parse(profile?.skills)) || [];
 
         const matchSkillsCount = totalSkills.filter((skill) =>
           candidateSkills.includes(skill)
@@ -223,15 +235,24 @@ const CandidateManagementPage = () => {
       // Final matching percentage out of 10 total slots
       const matchPercentage = Math.round((matchedCount / 10) * 100);
 
+      console.log(matchPercentage, newMatchedFields);
+
       return {
         ...candidate,
         matchedField: newMatchedFields,
         matchingPrecent: matchPercentage,
       };
     });
-    setOriginalCandidates(newCandidate);
+
+    if (showData == "databases") {
+      setMatchedDatabase(newCandidate);
+    } else {
+      
+      setOriginalCandidates(newCandidate);
+    }
+
     setCandidate(newCandidate);
-  }, [allCandidates, filterIndex, jobsById]);
+  }, [allCandidates, filterIndex, jobsById, showData]);
 
   const filters = [
     { label: "Matched to job requirements" },
@@ -818,7 +839,7 @@ const CandidateManagementPage = () => {
               onClick={() => setShowData("matched")}
               style={{ borderRight: "3px solid #0784C9" }} // bold vertical line
             >
-              Matched ({candidatess?.length})
+              Applied ({originalCandidates?.length})
             </div>
             <div
               className={`w-1/2 p-2 flex justify-center items-center font-bold cursor-pointer ${
