@@ -36,7 +36,7 @@ export default function Jobs() {
   if (jobs?.length > 0) {
     return (
       <>
-        <div className="min-h-[80vh] w-full bg-[#DFF3F9] px-6 pt-6 rounded-xl ">
+        <div className="min-h-[95vh] w-full bg-[#DFF3F9] px-6 pt-6 rounded-xl ">
           <div className="max-w-6xl mx-auto ">
             <div className="flex items-center justify-between py-1 ">
               <h1 className="text-lg md:text-xl font-semibold text-gray-800">

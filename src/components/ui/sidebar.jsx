@@ -32,11 +32,11 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       route: "/employerHome/Jobs",
     },
     { label: "Databases", icon: <Database size={20} color="#0784C9" /> },
-    {
-      label: "Reports",
-      icon: <Notebook size={20} color="#0784C9" />,
-      route: "/employerHome/Reports",
-    },
+    // {
+    //   label: "Reports",
+    //   icon: <Notebook size={20} color="#0784C9" />,
+    //   route: "/employerHome/Reports",
+    // },
     {
       label: "Credits",
       icon: <HandCoins size={20} color="#0784C9" />,
@@ -55,11 +55,11 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       icon: <UserSearch size={18} color="#0784C9" />,
       route: "/employerHome/SearchCandidates",
     },
-    {
-      label: "Saved Searches",
-      icon: <Save size={18} color="#0784C9" />,
-      route: "/employerHome/SavedSearch",
-    },
+    // {
+    //   label: "Saved Searches",
+    //   icon: <Save size={18} color="#0784C9" />,
+    //   route: "/employerHome/SavedSearch",
+    // },
     {
       label: "Unlocked Candidates",
       icon: <Unlock size={18} color="#0784C9" />,

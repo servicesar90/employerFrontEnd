@@ -1,4 +1,11 @@
-import { Menu, HelpCircle, Database, CoinsIcon, HandCoins } from "lucide-react";
+import {
+  Menu,
+  HelpCircle,
+  Database,
+  CoinsIcon,
+  HandCoins,
+  DatabaseIcon,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import MenuProfileModal from "../modals/otherModals/menuProfileModal";
 import { fetchCredits, fetchUserProfile } from "../../Redux/getData";
@@ -6,30 +13,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import GstVerifyModal from "../modals/otherModals/verifyModal";
 
-
 const Header = ({ onMenuClick }) => {
   const navigate = useNavigate();
   const [showProfileModal, setShowprofileModal] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
-  
+
   const dispatch = useDispatch();
-
-
 
   useEffect(() => {
     dispatch(fetchUserProfile());
     dispatch(fetchCredits());
   }, [dispatch]);
 
-  const { employer, jobCredit } = useSelector((state) => state.getDataReducer);
+  const { employer, jobCredit, dataBaseCredit } = useSelector(
+    (state) => state.getDataReducer
+  );
 
   const avatarRef = useRef();
 
- 
-
   return (
     <>
-      
       <header className="w-full flex items-center justify-between px-6 py-3 bg-white shadow-sm">
         {/* Left: Logo and Menu */}
         <div className="flex items-center gap-4">
@@ -49,10 +52,17 @@ const Header = ({ onMenuClick }) => {
         <div className="flex items-center gap-6">
           <div
             id="credit"
-            className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer"
+            className="flex items-center gap-3 text-sm text-gray-700 font-medium cursor-pointer"
           >
-            <HandCoins className="w-5 h-5 text-gray-600" />
-            <span> {jobCredit ? jobCredit : 0}</span>
+            <div className="flex flex-row gap-2">
+              <HandCoins className="w-5 h-5 text-gray-600" />
+              <span> {jobCredit ? jobCredit : 0}</span>
+            </div>
+
+            <div className="flex flex-row gap-2">
+              <DatabaseIcon className="w-5 h-5 text-gray-600" />
+              <span> {dataBaseCredit ? dataBaseCredit : 0}</span>
+            </div>
           </div>
           <div
             onClick={() => navigate("/contact-us")}
