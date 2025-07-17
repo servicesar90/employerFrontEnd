@@ -122,8 +122,6 @@ export default function SimplePaper({ jobId, candidate }) {
     }
   };
 
-
-
   const handleViewPhone = async () => {
     if (!profile) return;
 
@@ -540,9 +538,9 @@ export default function SimplePaper({ jobId, candidate }) {
           </div>
         </>
       ) : (
-        <div className=" mr-2 w-full  border rounded-lg shadow-xl ">
+        <div className=" mr-2 w-full  border rounded-lg  ">
           <div className="card-wrapper">
-            <div className="custom-card border  ">
+            <div className="custom-card   ">
               <label></label>
               <div className="card-top-section">
                 <div className="left-avatar-section">
@@ -564,12 +562,29 @@ export default function SimplePaper({ jobId, candidate }) {
                           {profile?.fullName}
                         </p>
                       </h1>
-                      <button
-                        onClick={() => getProfile()}
-                        className="font-bold cursor-pointer text-sm text-green-500 "
-                      >
-                        View Profile
-                      </button>
+                      <div className="flex flex-end">
+                        <button
+                          onClick={() => getProfile()}
+                          className="font-bold cursor-pointer text-sm text-green-500 "
+                        >
+                          View Profile
+                        </button>
+
+                        <Chip
+                          label={`${
+                            candidate?.matchingPrecent
+                              ? candidate?.matchingPrecent
+                              : 0
+                          }% matched`}
+                          size="small"
+                          sx={{
+                            backgroundColor: "#0784C9",
+                            color: "#fff",
+                            borderRadius: "4px",
+                            marginLeft: "100%",
+                          }}
+                        />
+                      </div>
                     </div>
                     <div className="info">
                       <div className="candidate-experience flex flex-row gap-1 items-center">
@@ -613,7 +628,7 @@ export default function SimplePaper({ jobId, candidate }) {
                     </div>
                   </div>
 
-                  <div className="unlock-badge-section">
+                  {/* <div className="unlock-badge-section">
                     <Chip
                       label={`${
                         candidate?.matchingPrecent
@@ -628,7 +643,7 @@ export default function SimplePaper({ jobId, candidate }) {
                         marginLeft: "100%",
                       }}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -921,7 +936,7 @@ export default function SimplePaper({ jobId, candidate }) {
               </div>
             </div>
           </div>
-          <div className="card-bottom-section text-xs border">
+          <div className="card-bottom-section text-xs ">
             <div className="flex flex-row gap-1 ">
               <div className="text-gray-650 text-12">
                 Proile {profile?.unlocked ? "Unlocked" : "locked"}
@@ -951,7 +966,11 @@ export default function SimplePaper({ jobId, candidate }) {
           onClose={() => setOpenProfileModal(false)}
           jobId={jobId}
           candidate={candidateDetail?.EmployeeProfile}
-          phone={isDatabase? candidateDetail?.phone : candidateDetail?.EmployeeProfile?.User?.phone}
+          phone={
+            isDatabase
+              ? candidateDetail?.phone
+              : candidateDetail?.EmployeeProfile?.User?.phone
+          }
           isDatabase={isDatabase}
           id={candidateDetail?.id}
           status={candidateDetail?.status}

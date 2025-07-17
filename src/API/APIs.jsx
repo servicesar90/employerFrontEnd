@@ -65,3 +65,5 @@ export const getUnlockedApi = `${base_url}/api/v1/database/unlocked`
 export const getinvoiceApi = `${base_url}/api/v1/subscription/invoice`
 
 export const searchCandidateApi = `${base_url}/api/v1/database/searchcandidates`
+
+export const creditReportApi = `${base_url}/api/v1/bills/creditsusage`

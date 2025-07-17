@@ -38,7 +38,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     //   route: "/employerHome/Reports",
     // },
     {
-      label: "Credits",
+      label: "Credits & Usage",
       icon: <HandCoins size={20} color="#0784C9" />,
       route: "/employerHome/credits",
     },

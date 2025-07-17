@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   applicationApi,
   createProfileApi,
+  creditReportApi,
   getBillApi,
   getCategorySuggestionsApi,
   getCitiesApi,
@@ -700,5 +701,23 @@ export const searchCandidateFunc =async(data)=>{
    
   } catch (err) {
     console.log("Error from get unlock databases api", err);
+  }
+}
+
+
+export const creditReportFunc =async()=>{
+  try {
+    const token = localStorage.getItem("TokenId");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(creditReportApi, { headers });
+    if(response){
+       return response;
+    }
+    
+   
+  } catch (err) {
+    console.log("Error from get credit api", err);
   }
 }
