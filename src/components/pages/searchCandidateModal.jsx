@@ -16,8 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchSearchedCandidate } from "../../Redux/getData";
 import CandidateManagementPage from "./unlockCandidate";
 import { useEffect, useState } from "react";
-import { Filter } from "lucide-react";
-import SimplePaper from "../ui/cards/NewCard";
+import { Briefcase, DollarSign, Filter, GraduationCap, MapPin, Search, Users } from "lucide-react";
+import SimpleNewPaper from "../ui/cards/candidateCard";
+
 
 
 
@@ -458,13 +459,13 @@ return (
                   borderColor: "#0784C9",
                 }}
               >
-                <SimplePaper candidate={candidate} />
+                <SimpleNewPaper candidate={candidate} />
               </div>
             )
           )}
 
           {/* Pagination */}
-          <div className="flex justify-end mt-4">
+          {/* <div className="flex justify-end mt-4">
             <div
               className="border rounded-md px-3 py-1 text-sm hover:opacity-80 transition-opacity cursor-pointer"
               style={{
@@ -475,7 +476,7 @@ return (
             >
               1
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
@@ -483,129 +484,538 @@ return (
 } 
 else{
 return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded-xl mt-10">
-      <h2 className="text-2xl font-semibold mb-6">Search Candidates</h2>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Searching For */}
-        <FormControl component="fieldset" className="w-full">
-          <FormLabel>Searching for</FormLabel>
-          <RadioGroup row defaultValue="any" {...register("experience")}>
-            <FormControlLabel
-              value="Fresher Only"
-              control={<Radio />}
-              label="Freshers only"
-            />
-            <FormControlLabel
-              value="Experienced Only"
-              control={<Radio />}
-              label="Experienced only"
-            />
-            <FormControlLabel
-              value="Any"
-              control={<Radio />}
-              label="Any"
-            />
-          </RadioGroup>
-        </FormControl>
-
-        {/* Keywords */}
-        <TextField
-          label="Keywords"
-          variant="outlined"
-          placeholder="Enter JobTitle/JobRole"
-          fullWidth
-          size="small"
-          required
-          {...register("jobTitle")}
-        />
-
-        {/* Current city/region */}
-        <TextField
-          label="Current City/Region"
-          variant="outlined"
-          size="small"
-          fullWidth
-          {...register("location")}
-        />
-
-        {/* Experience */}
-        <div className="flex gap-4">
-          <TextField
-            label="Min Experience"
-            variant="outlined"
-            size="small"
-            type="number"
-            {...register("minExperience")}
-          />
-          <TextField
-            label="Max Experience"
-            variant="outlined"
-            size="small"
-            type="number"
-            {...register("maxExperience")}
-          />
-        </div>
-
-        {/* Salary */}
-        <div className="flex gap-4">
-          <TextField
-            label="Min Monthly Salary"
-            variant="outlined"
-            size="small"
-            type="number"
-            {...register("minimumSalary")}
-          />
-          <TextField
-            label="Max Monthly Salary"
-            variant="outlined"
-            size="small"
-            type="number"
-            {...register("maximumSalary")}
-          />
-        </div>
-
-        {/* Minimum Education */}
-        <div>
-          <FormLabel>Minimum Education</FormLabel>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {["10th pass", "12th pass", "ITI", "Diploma", "Graduate", "Post Graduate"].map(
-              (edu) => (
-                <FormControlLabel
-                  key={edu}
-                  control={<Radio {...register("education")} />}
-                  value={edu}
-                  label={edu}
-                />
-              )
-            )}
+   <div
+      style={{
+        height: "100vh",
+        backgroundColor: "#DEF3F9",
+        padding: "16px",
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ maxWidth: "800px", margin: "0 auto", height: "100%" }}>
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "20px",
+            marginTop:"-10px",
+            backgroundColor: "white",
+            padding: "16px",
+            borderRadius: "8px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div
+              style={{
+                backgroundColor: "#DEF3F9",
+                padding: "8px",
+                borderRadius: "8px",
+                border: "1px solid #0784C9",
+              }}
+            >
+              <Search size={20} color="#0784C9" />
+            </div>
+            <h1
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                color: "#003B70",
+                margin: "0",
+              }}
+            >
+              Search Candidates
+            </h1>
           </div>
+          <p
+            style={{
+              color: "#0784C9",
+              fontSize: "12px",
+              margin: "0",
+              fontStyle: "italic",
+            }}
+          >
+            Find the perfect candidate for your role
+          </p>
         </div>
 
-
-       
-
-        {/* Buttons */}
-        <div className="flex gap-4 mt-6">
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className="bg-blue-600"
+        {/* Main Form Container */}
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "8px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+            height: "calc(100vh - 120px)",
+            overflow: "auto",
+          }}
+        >
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            style={{
+              padding: "20px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              height: "100%",
+            }}
           >
-            Search Candidates
-          </Button>
-          <Button
-            type="button"
-            variant="outlined"
-            onClick={() => reset()}
-          >
-            Reset
-          </Button>
+            {/* Left Column */}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+            >
+              {/* Experience Type Card */}
+              <div
+                style={{
+                  backgroundColor: "#DEF3F9",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  border: "1px solid #0784C9",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <Briefcase size={16} color="#0784C9" />
+                  <FormLabel
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#003B70",
+                      margin: "0",
+                    }}
+                  >
+                    Searching for
+                  </FormLabel>
+                </div>
+                <RadioGroup row defaultValue="any" {...register("experience")}>
+                  <FormControlLabel
+                    value="Fresher Only"
+                    control={<Radio style={{ color: "#0784C9" }} />}
+                    label={
+                      <span style={{ fontSize: "12px", color: "#003B70" }}>
+                        Freshers only
+                      </span>
+                    }
+                  />
+                  <FormControlLabel
+                    value="Experienced Only"
+                    control={<Radio style={{ color: "#0784C9" }} />}
+                    label={
+                      <span style={{ fontSize: "12px", color: "#003B70" }}>
+                        Experienced only
+                      </span>
+                    }
+                  />
+                  <FormControlLabel
+                    value="Any"
+                    control={<Radio style={{ color: "#0784C9" }} />}
+                    label={
+                      <span style={{ fontSize: "12px", color: "#003B70" }}>
+                        Any
+                      </span>
+                    }
+                  />
+                </RadioGroup>
+              </div>
+
+              {/* Keywords */}
+              <div
+                style={{
+                  backgroundColor: "#DEF3F9",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  border: "1px solid #0784C9",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <Search size={16} color="#0784C9" />
+                  <label
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#003B70",
+                      margin: "0",
+                    }}
+                  >
+                    Keywords
+                  </label>
+                </div>
+                <TextField
+                  variant="outlined"
+                  placeholder="Enter JobTitle/JobRole"
+                  fullWidth
+                  size="small"
+                  required
+                  {...register("jobTitle")}
+                  sx={{
+                    backgroundColor: "white",
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#0784C9",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#0784C9",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#0784C9",
+                      },
+                      fontSize: "12px",
+                    },
+                  }}
+                />
+              </div>
+
+              {/* Location */}
+              <div
+                style={{
+                  backgroundColor: "#DEF3F9",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  border: "1px solid #0784C9",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <MapPin size={16} color="#0784C9" />
+                  <label
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#003B70",
+                      margin: "0",
+                    }}
+                  >
+                    Current City/Region
+                  </label>
+                </div>
+                <TextField
+                  variant="outlined"
+                  placeholder="Enter city or region"
+                  size="small"
+                  fullWidth
+                  {...register("location")}
+                  sx={{
+                    backgroundColor: "white",
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#0784C9",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#0784C9",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#0784C9",
+                      },
+                      fontSize: "12px",
+                    },
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Right Column */}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+            >
+              {/* Experience Range */}
+              <div
+                style={{
+                  backgroundColor: "#DEF3F9",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  border: "1px solid #0784C9",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <Users size={16} color="#0784C9" />
+                  <label
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#003B70",
+                      margin: "0",
+                    }}
+                  >
+                    Experience Range (Years)
+                  </label>
+                </div>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <TextField
+                    placeholder="Min"
+                    variant="outlined"
+                    size="small"
+                    type="number"
+                    {...register("minExperience")}
+                    style={{ flex: 1 }}
+                    sx={{
+                      backgroundColor: "white",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        fontSize: "12px",
+                      },
+                    }}
+                  />
+                  <TextField
+                    placeholder="Max"
+                    variant="outlined"
+                    size="small"
+                    type="number"
+                    {...register("maxExperience")}
+                    style={{ flex: 1 }}
+                    sx={{
+                      backgroundColor: "white",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        fontSize: "12px",
+                      },
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Salary Range */}
+              <div
+                style={{
+                  backgroundColor: "#DEF3F9",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  border: "1px solid #0784C9",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <DollarSign size={16} color="#0784C9" />
+                  <label
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#003B70",
+                      margin: "0",
+                    }}
+                  >
+                    Monthly Salary Range
+                  </label>
+                </div>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <TextField
+                    placeholder="Minimum"
+                    variant="outlined"
+                    size="small"
+                    type="number"
+                    {...register("minimumSalary")}
+                    style={{ flex: 1 }}
+                    sx={{
+                      backgroundColor: "white",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        fontSize: "12px",
+                      },
+                    }}
+                  />
+                  <TextField
+                    placeholder="Maximum"
+                    variant="outlined"
+                    size="small"
+                    type="number"
+                    {...register("maximumSalary")}
+                    style={{ flex: 1 }}
+                    sx={{
+                      backgroundColor: "white",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#0784C9",
+                        },
+                        fontSize: "12px",
+                      },
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Education */}
+              <div
+                style={{
+                  backgroundColor: "#DEF3F9",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  border: "1px solid #0784C9",
+                  flex: 1,
+                 
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <GraduationCap size={16} color="#0784C9" />
+                  <FormLabel
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#003B70",
+                      margin: "0",
+                    }}
+                  >
+                    Minimum Education
+                  </FormLabel>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "0px",
+                    textAlign:"left",
+                  }}
+                >
+                  {[
+                    "10th pass",
+                    "12th pass",
+                    "ITI",
+                    "Diploma",
+                    "Graduate",
+                    "Post Graduate",
+                  ].map((edu) => (
+                    <FormControlLabel
+                      key={edu}
+                      control={
+                        <Radio
+                          {...register("education")}
+                          style={{ color: "#0784C9" }}
+                        />
+                      }
+                      value={edu}
+                      label={
+                        <span style={{ fontSize: "11px", color: "#003B70" }}>
+                          {edu}
+                        </span>
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons - Full Width */}
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                display: "flex",
+                gap: "16px",
+                justifyContent: "center",
+                paddingTop: "20px",
+                
+                borderTop: "1px solid #0784C9",
+                marginTop: "auto",
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                style={{
+                  backgroundColor: "#0784C9",
+                  color: "white",
+                  padding: "12px 24px",
+                  borderRadius: "6px",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  textTransform: "none",
+                  minWidth: "150px",
+                }}
+              >
+                Search Candidates
+              </Button>
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={() => reset()}
+                style={{
+                  backgroundColor: "white",
+                  color: "#0784C9",
+                  padding: "12px 24px",
+                  borderRadius: "6px",
+                  border: "1px solid #0784C9",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  textTransform: "none",
+                  minWidth: "150px",
+                }}
+              >
+                Reset
+              </Button>
+            </div>
+          </form>
         </div>
-      </form>
-
-    
+      </div>
     </div>
      
   )

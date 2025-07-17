@@ -370,7 +370,7 @@ const CandidateManagementPage = () => {
     );
 
   return (
-    <div className="min-h-[80vh] w-full" style={{ backgroundColor: "#DFF3F9" }}>
+    <div className="min-h-[95vh] w-full" style={{ backgroundColor: "#DFF3F9" }}>
       <div
         className="flex items-center justify-between pl-2 pr-6 py-3 border-b border-t"
         style={{
@@ -879,7 +879,7 @@ const CandidateManagementPage = () => {
           )}
 
           {/* Pagination */}
-          <div className="flex justify-end mt-4">
+          {/* <div className="flex justify-end mt-4">
             <div
               className="border rounded-md px-3 py-1 text-sm hover:opacity-80 transition-opacity cursor-pointer"
               style={{
@@ -890,7 +890,7 @@ const CandidateManagementPage = () => {
             >
               1
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

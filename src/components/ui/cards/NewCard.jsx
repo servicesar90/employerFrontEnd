@@ -540,7 +540,7 @@ export default function SimplePaper({ jobId, candidate }) {
           </div>
         </>
       ) : (
-        <div className="mb-4 mr-2 w-full  border rounded-lg shadow-xl mb-5">
+        <div className=" mr-2 w-full  border rounded-lg shadow-xl ">
           <div className="card-wrapper">
             <div className="custom-card border  ">
               <label></label>

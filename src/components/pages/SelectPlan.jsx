@@ -434,83 +434,326 @@ const SelectPlan = () => {
     </div>
 
     {openBillModal && (
-  <Dialog open={openBillModal} onClose={() => setOpenBillModal(false)} maxWidth="sm" fullWidth>
-    <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', fontSize: '1.5rem' }}>
-      Invoice / Bill
-    </DialogTitle>
-    <DialogContent>
-      <div
-        style={{
-          border: '1px solid #ccc',
-          borderRadius: '8px',
-          padding: '16px',
-          marginTop: '8px',
-          fontFamily: 'Arial, sans-serif',
+    <Dialog
+      open={openBillModal}
+      onClose={() => setOpenBillModal(false)}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        style: {
+          backgroundColor: "#DEF3F9",
+          borderRadius: "12px",
+          boxShadow:
+            "0 8px 32px rgba(7, 132, 201, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1)",
+          border: "1px solid rgba(7, 132, 201, 0.2)",
+        },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          textAlign: "center",
+          fontWeight: "600",
+          fontSize: "20px",
+          color: "#003B70",
+          backgroundColor: "white",
+          margin: "16px",
+          borderRadius: "12px",
+          boxShadow: "0 4px 16px rgba(7, 132, 201, 0.1)",
+          border: "1px solid rgba(7, 132, 201, 0.1)",
+          position: "relative",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: "-1px",
+            left: "-1px",
+            right: "-1px",
+            bottom: "-1px",
+            background: "linear-gradient(135deg, #0784C9, #003B70)",
+            borderRadius: "12px",
+            zIndex: -1,
+          },
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-          {/* <h2 style={{ margin: 0 }}>{choosePlan?.desc}</h2> */}
-          <h2 style={{ margin: 0 }}>Thank you for your purchase!</h2>
+        📄 Invoice / Bill
+      </DialogTitle>
+      <DialogContent style={{ padding: "0 16px 16px 16px" }}>
+        <div
+          style={{
+            backgroundColor: "white",
+            border: "2px solid #0784C9",
+            borderRadius: "12px",
+            padding: "20px",
+            marginTop: "8px",
+            fontFamily: "Arial, sans-serif",
+            boxShadow: "0 4px 20px rgba(7, 132, 201, 0.15)",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Decorative corner elements */}
+          <div
+            style={{
+              position: "absolute",
+              top: "0",
+              right: "0",
+              width: "60px",
+              height: "60px",
+              background: "linear-gradient(135deg, #DEF3F9, #0784C9)",
+              borderBottomLeftRadius: "100%",
+              opacity: "0.3",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              bottom: "0",
+              left: "0",
+              width: "40px",
+              height: "40px",
+              background: "linear-gradient(45deg, #DEF3F9, #0784C9)",
+              borderTopRightRadius: "100%",
+              opacity: "0.3",
+            }}
+          />
 
-          <small style={{ color: '#777' }}>Here is the breakdown of your bill:</small>
+          <div
+            style={{
+              textAlign: "center",
+              marginBottom: "20px",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+           
+            <h2
+              style={{
+                margin: 0,
+                fontSize: "18px",
+                fontWeight: "700",
+                color: "#003B70",
+                marginBottom: "8px",
+              }}
+            >
+              Thank you for your purchase!
+            </h2>
+            <small
+              style={{
+                color: "#0784C9",
+                fontSize: "12px",
+                fontWeight: "500",
+              }}
+            >
+              Here is the breakdown of your bill:
+            </small>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#DEF3F9",
+              borderRadius: "8px",
+              padding: "16px",
+              border: "1px solid rgba(7, 132, 201, 0.2)",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      padding: "12px 8px",
+                      fontWeight: "600",
+                      fontSize: "14px",
+                      color: "#003B70",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                     Base Amount
+                  </td>
+                  <td
+                    style={{
+                      textAlign: "right",
+                      fontSize: "14px",
+                      color: "#0784C9",
+                      fontWeight: "700",
+                      padding: "12px 8px",
+                    }}
+                  >
+                    ₹ {choosePlan?.plan}
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      padding: "12px 8px",
+                      fontWeight: "600",
+                      fontSize: "14px",
+                      color: "#003B70",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                     CGST (9%)
+                  </td>
+                  <td
+                    style={{
+                      textAlign: "right",
+                      fontSize: "14px",
+                      color: "#0784C9",
+                      fontWeight: "700",
+                      padding: "12px 8px",
+                    }}
+                  >
+                    ₹ {choosePlan?.CGST}
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      padding: "12px 8px",
+                      fontWeight: "600",
+                      fontSize: "14px",
+                      color: "#003B70",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                     SGST (9%)
+                  </td>
+                  <td
+                    style={{
+                      textAlign: "right",
+                      fontSize: "14px",
+                      color: "#0784C9",
+                      fontWeight: "700",
+                      padding: "12px 8px",
+                    }}
+                  >
+                    ₹ {choosePlan?.SGST}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan={2}>
+                    <div
+                      style={{
+                        height: "2px",
+                        background:
+                          "linear-gradient(90deg, transparent, #0784C9, transparent)",
+                        margin: "16px 0",
+                        borderRadius: "2px",
+                      }}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      padding: "12px 8px",
+                      fontWeight: "700",
+                      fontSize: "16px",
+                      color: "#003B70",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      backgroundColor: "rgba(7, 132, 201, 0.1)",
+                      borderRadius: "6px 0 0 6px",
+                    }}
+                  >
+                    Total Payable
+                  </td>
+                  <td
+                    style={{
+                      textAlign: "right",
+                      fontWeight: "700",
+                      fontSize: "16px",
+                      color: "#0784C9",
+                      padding: "12px 8px",
+                      backgroundColor: "rgba(7, 132, 201, 0.1)",
+                      borderRadius: "0 6px 6px 0",
+                    }}
+                  >
+                    ₹ {choosePlan?.total}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <tbody>
-            <tr>
-              <td style={{ padding: '8px 0', fontWeight: 500 }}>Base Amount</td>
-              <td style={{ textAlign: 'right' }}>₹ {choosePlan?.plan}</td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px 0', fontWeight: 500 }}>CGST (9%)</td>
-              <td style={{ textAlign: 'right' }}>₹ {choosePlan?.CGST}</td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px 0', fontWeight: 500 }}>SGST (9%)</td>
-              <td style={{ textAlign: 'right' }}>₹ {choosePlan?.SGST}</td>
-            </tr>
-            <tr>
-              <td colSpan={2}>
-                <hr style={{ border: '0.5px solid #ddd', margin: '12px 0' }} />
-              </td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px 0', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                Total Payable
-              </td>
-              <td
-                style={{
-                  textAlign: 'right',
-                  fontWeight: 'bold',
-                  fontSize: '1.1rem',
-                  color: '#1976d2',
-                }}
-              >
-                ₹ {choosePlan?.total}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </DialogContent>
-    <DialogActions sx={{ justifyContent: 'space-between', padding: '16px' }}>
-      <Button
-        variant="outlined"
-        onClick={() => setOpenBillModal(false)}
-      >
-        Back
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => {
-          setOpenBillModal(false);
-          navigate('/employerHome/checkout');
+      </DialogContent>
+      <DialogActions
+        sx={{
+          justifyContent: "space-between",
+          padding: "16px",
+          backgroundColor: "white",
+          margin: "0 16px 16px 16px",
+          borderRadius: "12px",
+          boxShadow: "0 4px 16px rgba(7, 132, 201, 0.1)",
+          border: "1px solid rgba(7, 132, 201, 0.1)",
         }}
       >
-        Confirm & Pay
-      </Button>
-    </DialogActions>
-  </Dialog>
+        <Button
+          variant="outlined"
+          onClick={() => setOpenBillModal(false)}
+          style={{
+            color: "#0784C9",
+            border: "2px solid #0784C9",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            fontWeight: "600",
+            fontSize: "12px",
+            textTransform: "none",
+            transition: "all 0.3s ease",
+            background: "linear-gradient(135deg, white, #DEF3F9)",
+          }}
+          onMouseEnter={(e) => {
+            (e.target).style.transform = "translateY(-2px)";
+            (e.target ).style.boxShadow =
+              "0 4px 12px rgba(7, 132, 201, 0.2)";
+          }}
+          onMouseLeave={(e) => {
+            (e.target ).style.transform = "translateY(0)";
+            (e.target ).style.boxShadow = "none";
+          }}
+        >
+          ← Back
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setOpenBillModal(false);
+            navigate("/employerHome/checkout");
+          }}
+          style={{
+            background: "linear-gradient(135deg, #0784C9, #003B70)",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            fontWeight: "600",
+            fontSize: "12px",
+            textTransform: "none",
+            transition: "all 0.3s ease",
+            boxShadow: "0 4px 12px rgba(7, 132, 201, 0.3)",
+          }}
+          onMouseEnter={(e) => {
+            (e.target ).style.transform = "translateY(-2px)";
+            (e.target).style.boxShadow =
+              "0 6px 20px rgba(7, 132, 201, 0.4)";
+          }}
+          onMouseLeave={(e) => {
+            (e.target).style.transform = "translateY(0)";
+            (e.target).style.boxShadow =
+              "0 4px 12px rgba(7, 132, 201, 0.3)";
+          }}
+        >
+          Confirm & Pay 💳
+        </Button>
+      </DialogActions>
+    </Dialog>
 )}
 
     </>

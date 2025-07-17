@@ -5,9 +5,9 @@ import {
 
 } from "lucide-react";
 import FilterListOffIcon from "@mui/icons-material/FilterListOff"; 
-import SimplePaper from "../ui/cards/NewCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUnlockedCandidate } from "../../Redux/getData";
+import SimpleNewPaper from "../ui/cards/candidateCard";
 
 
 const CandidateManagementPage = () => {
@@ -31,7 +31,7 @@ const CandidateManagementPage = () => {
     dispatch(fetchUnlockedCandidate());
   }, [dispatch]);
 
-    const { unlockedData,  searchedData, loading } = useSelector((state) => state.getDataReducer);
+    const { unlockedData,  loading } = useSelector((state) => state.getDataReducer);
 
     useEffect(()=>{
       if(unlockedData){
@@ -39,11 +39,8 @@ const CandidateManagementPage = () => {
         setCandidate(unlockedData);
         setAllCandidates(unlockedData)
     
-      }else if(searchedData){
-        setCandidate(searchedData);
-        setAllCandidates(searchedData)
       }
-    },[unlockedData, searchedData])
+    },[unlockedData])
 
  
 
@@ -139,7 +136,7 @@ const CandidateManagementPage = () => {
     );
 
   return (
-    <div className="min-h-[90vh] w-full" style={{ backgroundColor: "#DFF3F9" }}>
+    <div className="min-h-[95vh] w-full" style={{ backgroundColor: "#DFF3F9" }}>
       
 
       
@@ -444,13 +441,13 @@ const CandidateManagementPage = () => {
                   borderColor: "#0784C9",
                 }}
               >
-                <SimplePaper candidate={candidate} />
+                <SimpleNewPaper candidate={candidate} />
               </div>
             )
           )}
 
           {/* Pagination */}
-          <div className="flex justify-end mt-4">
+          {/* <div className="flex justify-end mt-4">
             <div
               className="border rounded-md px-3 py-1 text-sm hover:opacity-80 transition-opacity cursor-pointer"
               style={{
@@ -461,7 +458,7 @@ const CandidateManagementPage = () => {
             >
               1
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
