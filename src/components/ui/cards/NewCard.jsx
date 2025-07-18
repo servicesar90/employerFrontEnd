@@ -175,7 +175,7 @@ export default function SimplePaper({ jobId, candidate }) {
     <>
       {isMobile ? (
         <>
-          <div className="mobileCardWrapper border rounded-lg bg-white border">
+          <div className="mobileCardWrapper border rounded-lg bg-white ">
             <div className="flex mt-2 mb-2 mr-2">
               <div className="flex gap-4">
                 <Avatar sx={{ bgcolor: "#ff5722" }}>
@@ -418,7 +418,7 @@ export default function SimplePaper({ jobId, candidate }) {
                 </div>
                 <div className="mobile-education text-14 text-gray-650   ">
                   English ({profile?.englishProficiency})
-                  <div className="flex flex-row gap-1 mt-4 mb-2">
+                  <div className="  mt-4 mb-2">
                     {(() => {
                       let langs = profile?.otherLanguages;
 
@@ -443,6 +443,8 @@ export default function SimplePaper({ jobId, candidate }) {
                               padding: "2px 4px",
                               fontWeight: 500,
                               borderRadius: "8px",
+                              marginBottom:"5px",
+                              marginRight:"4px"
                             }}
                           />
                         ));
@@ -467,6 +469,7 @@ export default function SimplePaper({ jobId, candidate }) {
                           padding: "2px 1px",
                           fontWeight: 500,
                           borderRadius: "8px",
+                          marginRight:"4px"
                         }}
                       />
                     ))}
@@ -520,7 +523,7 @@ export default function SimplePaper({ jobId, candidate }) {
               )}
             </div>
           </div>
-          <div className="mobile-card-bottom-section text-xs bg-white border-l border-r ">
+          <div className="mobile-card-bottom-section text-xs bg-white rounded-md ">
             <div className="flex flex-row gap-1">
               <div className="flex flex-row items-center">
                 <span>

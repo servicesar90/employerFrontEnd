@@ -14,6 +14,8 @@ import { showErrorToast, showSuccessToast } from "../../ui/toast";
 import { fetchJobsById } from "../../../Redux/getData";
 import { useDispatch } from "react-redux";
 import { updateApplication } from "../../../API/ApiFunctions";
+import { handlestring } from "../../../utils/functions";
+import { Tooltip } from "@mui/material";
 
 const ProfileModal = ({
   open,
@@ -117,7 +119,7 @@ const call = (number) => {
                 </h3>
               </div>
               <div className="space-y-3">
-                {candidate.EmployeeExperiences?.map((experience, index) => (
+                {(candidate.EmployeeExperiences.length >0) ?candidate.EmployeeExperiences?.map((experience, index) => (
                   <div key={index} className="bg-white rounded-lg p-3">
                     <div className="font-medium text-[#003B70] text-sm">
                       {experience.jobTitle}
@@ -129,7 +131,7 @@ const call = (number) => {
                       {experience.startDate} - {experience.endDate}
                     </div>
                   </div>
-                ))}
+                )): <p className="text-gray-500">No Experience provided</p>}
               </div>
             </div>
 
@@ -142,7 +144,7 @@ const call = (number) => {
                 </h3>
               </div>
               <div className="space-y-3">
-                {candidate.EmployeeEducations?.map((edu, index) => (
+                {(candidate.EmployeeEducations.length > 0) ? candidate.EmployeeEducations?.map((edu, index) => (
                   <div key={index} className="bg-white rounded-lg p-3">
                     <div className="font-medium text-[#003B70] text-sm">
                       {edu?.degree && `${edu.degree},`} {edu.specialization}
@@ -155,7 +157,7 @@ const call = (number) => {
                       {edu.endDate?.split("-")[0]}
                     </div>
                   </div>
-                ))}
+                )): <p className="text-gray-500">No Education provided</p>}
               </div>
             </div>
 
@@ -213,7 +215,7 @@ const call = (number) => {
               <div className="space-y-4">
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 w-50">
                   <div className="text-white/80 text-sm mb-1">Email</div>
-                  <div className="font-small w-[70]">{candidate.email}</div>
+                  <div className="font-small w-[70]"><Tooltip title={candidate?.email}>{handlestring(candidate.email, 15) }</Tooltip></div>
                 </div>
 
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">

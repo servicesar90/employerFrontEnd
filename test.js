@@ -1,9 +1,3 @@
-const ud = null;
+import { handlestring } from "./src/utils/functions.js";
 
-if(ud){
-    console.log("dsfgy");
-    
-}else{
-    console.log("hdugud");
-    
-}
+console.log(handlestring("Nikhil is jhatu boy", 16));

@@ -470,7 +470,7 @@ export default function SimpleNewPaper({ candidate, jobTitle }) {
             
             </div>
           </div>
-          <div className="mobile-card-bottom-section text-xs bg-white border-l border-r ">
+          <div className="mobile-card-bottom-section text-xs bg-white rounded-md ">
             <div className="flex flex-row gap-1">
               <div className="flex flex-row items-center">
                 <span>
