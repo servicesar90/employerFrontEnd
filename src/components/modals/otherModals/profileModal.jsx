@@ -10,7 +10,10 @@ import {
   GraduationCap,
   Check,
 } from "lucide-react";
-import { showErrorToast } from "../../ui/toast";
+import { showErrorToast, showSuccessToast } from "../../ui/toast";
+import { fetchJobsById } from "../../../Redux/getData";
+import { useDispatch } from "react-redux";
+import { updateApplication } from "../../../API/ApiFunctions";
 
 const ProfileModal = ({
   open,
@@ -23,28 +26,40 @@ const ProfileModal = ({
   status,
 }) => {
   const [age, setAge] = useState(0);
+  const dispatch = useDispatch()
 
   // Keep all your existing logic
   const handleReject = async (id) => {
-    console.log(id);
-    // const response = await updateApplication(id, { status: "Rejected" });
-    // if (response) {
-    //   showSuccessToast("Successfully Rejected");
-    //   dispatch(fetchJobsById(jobId));
-    // } else {
-    //   showErrorToast("Could not process, Try again!");
-    // }
+    
+    const response = await updateApplication(id, { status: "Rejected" });
+    if (response) {
+      showSuccessToast("Successfully Rejected");
+      dispatch(fetchJobsById(jobId));
+    } else {
+      showErrorToast("Could not process, Try again!");
+    }
   };
 
   const handleShortList = async (id) => {
-    // const response = await updateApplication(id, { status: "Selected" });
-    // if (response) {
-    //   showSuccessToast("Successfully Shortlisted");
-    //   dispatch(fetchJobsById(jobId));
-    // } else {
-    //   showErrorToast("Could not process, Try again!");
-    // }
+    const response = await updateApplication(id, { status: "Selected" });
+    if (response) {
+      showSuccessToast("Successfully Shortlisted");
+      dispatch(fetchJobsById(jobId));
+    } else {
+      showErrorToast("Could not process, Try again!");
+    }
   };
+
+   const whatsApp = (name, number) => {
+  const message = `Hey ${name}, I got your number through Unigrow Talent.`;
+  const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
+};
+
+const call = (number) => {
+  window.location.href = `tel:${number}`;
+};
+
 
   useEffect(() => {
     const dob = candidate?.dob;
@@ -326,12 +341,12 @@ const ProfileModal = ({
         {/* Action Footer */}
         <div className="border-t border-[#dff3f9] bg-gradient-to-r from-white to-[#dff3f9]/30 p-3">
           <div className="flex flex-wrap gap-4 justify-center ">
-            <button className="flex items-center gap-2 md:px-6 px-2 md:py-3 py-1 bg-secondary text-white rounded-xl hover:bg-primary transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:scale-105">
+            <button onClick={()=>call(phone)} className="flex items-center gap-2 md:px-6 px-2 md:py-3 py-1 bg-secondary text-white rounded-xl hover:bg-primary transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:scale-105">
               <Phone className="md:w-5 md:h-5 w-6 h-6" />
               <span className="hidden md:flex">Call {phone}</span>
             </button>
 
-            <button className="flex items-center gap-2 md:px-6 px-2 md:py-3 py-1 bg-secondary text-white rounded-xl hover:bg-primary transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:scale-105">
+            <button onClick={()=>whatsApp(candidate.fullName, phone)} className="flex items-center gap-2 md:px-6 px-2 md:py-3 py-1 bg-secondary text-white rounded-xl hover:bg-primary transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:scale-105">
               <MessageCircle className="md:w-5 md:h-5 w-6 h-6" />
               <span className="hidden md:flex">WhatsApp</span> 
             </button>

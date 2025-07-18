@@ -611,6 +611,9 @@ export const getPhonenumber =async(data)=>{
     return response?.data?.data?.phone;
   } catch (err) {
     console.log("Error from get number databases api", err);
+    if(err.status == 403){
+      showErrorToast(err.response?.data?.message)
+    }
   }
 }
 

@@ -140,7 +140,7 @@ export default function SimpleNewPaper({ candidate, jobTitle }) {
     }
   };
 
-  console.log(profile)
+
 
   return (
     <>
@@ -488,9 +488,9 @@ export default function SimpleNewPaper({ candidate, jobTitle }) {
           </div>
         </>
       ) : (
-        <div className=" mr-2 w-full  border rounded-lg ">
+        <div className=" mr-2 w-full rounded-lg ">
           <div className="card-wrapper">
-            <div className="custom-card border  ">
+            <div className="custom-card   ">
               <label></label>
               <div className="card-top-section">
                 <div className="left-avatar-section">
@@ -808,7 +808,7 @@ export default function SimpleNewPaper({ candidate, jobTitle }) {
               </div>
             </div>
           </div>
-          <div className="card-bottom-section text-xs border">
+          <div className="card-bottom-section text-xs">
             <div className="flex flex-row gap-1 ">
               <div className="text-gray-650 text-12">
                 Proile {unlocked ? "Unlocked" : "locked"}
