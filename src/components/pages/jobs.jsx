@@ -93,50 +93,100 @@ export default function Jobs() {
             </button>
           </div>
 
-          <Card className="mt-10">
-            <CardContent className="p-10 text-center">
-              <h2 className="text-xl font-medium mb-8">Post your first job</h2>
-              <div className="flex flex-col lg:flex-row justify-center gap-10">
+           <div
+            style={{
+              backgroundColor: "white",
+              padding: "40px",
+              borderRadius: "8px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+              textAlign: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                marginBottom: "32px",
+                color: "#003B70",
+              }}
+            >
+              Post your first job
+            </h2>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: "40px",
+              }}
+            >
+              <div
+                onClick={() => navigate(`/jobsModal/${null}/new`)}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
                 <div
-                  onClick={() => navigate(`/jobsModal/${null}/new`)}
-                  className="flex flex-col items-center"
+                  style={{
+                    backgroundColor: "#DEF3F9",
+                    color: "#0784C9",
+                    padding: "16px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
-                  <div className="bg-blue-100 text-blue-600 p-4 rounded-full">
-                    <Plus size={28} />
-                  </div>
-                  <p className="mt-4 font-medium">Start with blank form</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Use our blank form to create your job and fill manually
-                  </p>
-                  <Button
-                    variant="outlined"
-                    onClick={() => navigate("/jobsModal")}
-                    sx={{ marginTop: "10px" }}
-                  >
-                    Start with blank form
-                  </Button>
+                  <Plus size={28} />
                 </div>
-
-                {/* <div className="flex flex-col items-center">
-                   <div className="bg-purple-100 text-purple-600 p-4 rounded-full">
-                     <FileText size={28} />
-                   </div>
-                   <p className="mt-4 font-medium">Use a template</p>
-                   <p className="text-sm text-gray-500 mt-1">
-                     Use templates made by apna to save time and hire the right
-                     candidates.
-                   </p>
-                   <Button
-                     variant="contained"
-                     color="success"
-                     sx={{ marginTop: "10px" }}
-                   >
-                     Use a template
-                   </Button>
-                 </div> */}
+                <p
+                  style={{
+                    marginTop: "16px",
+                    fontWeight: "600",
+                    fontSize: "12px",
+                    color: "#003B70",
+                  }}
+                >
+                  Start with blank form
+                </p>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#0784C9",
+                    marginTop: "4px",
+                    marginBottom: "16px",
+                  }}
+                >
+                  Use our blank form to create your job and fill manually
+                </p>
+                <button
+                  onClick={() => navigate("/jobsModal")}
+                  style={{
+                    padding: "6px 16px",
+                    fontSize: "12px",
+                    border: "1px solid #0784C9",
+                    borderRadius: "20px",
+                    backgroundColor: "white",
+                    color: "#0784C9",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#DEF3F9";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "white";
+                  }}
+                >
+                  Start with blank form
+                </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     );
