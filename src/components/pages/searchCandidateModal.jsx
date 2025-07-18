@@ -30,7 +30,8 @@ export default function SearchCandidates() {
   const [showFilters, setShowFilters] = useState(false);
   const [candidatess, setCandidate] = useState(null);
   const [isFilter, setIsFilter] = useState(false);
-  const [allCandidates, setAllCandidates] = useState(null)
+  const [allCandidates, setAllCandidates] = useState(null);
+  const [jobTittle, setJobTitle] = useState(null)
   const [activeFilters, setActiveFilters] = useState({
     time: null,
     education: null,
@@ -43,6 +44,7 @@ export default function SearchCandidates() {
     
     dispatch(fetchSearchedCandidate(data))
     setShowSearched(true)
+    setJobTitle(data?.jobTitle)
 
   };
 
@@ -459,7 +461,7 @@ return (
                   borderColor: "#0784C9",
                 }}
               >
-                <SimpleNewPaper candidate={candidate} />
+                <SimpleNewPaper candidate={candidate} jobTitle={jobTittle} />
               </div>
             )
           )}

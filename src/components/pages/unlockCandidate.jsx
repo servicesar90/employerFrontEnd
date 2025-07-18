@@ -441,7 +441,7 @@ const CandidateManagementPage = () => {
                   borderColor: "#0784C9",
                 }}
               >
-                <SimpleNewPaper candidate={candidate} />
+                <SimpleNewPaper candidate={candidate}  />
               </div>
             )
           )}

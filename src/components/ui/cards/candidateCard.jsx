@@ -16,13 +16,12 @@ import { Button, Chip } from "@mui/material";
 import {
   getPhonenumber,
   getProfileFunc,
-  getUnlockedByIdFunc,
-  updateApplication,
+  
 } from "../../../API/ApiFunctions";
 import { showErrorToast, showSuccessToast } from "../toast";
 import ProfileModal from "../../modals/otherModals/profileModal";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchJobsById } from "../../../Redux/getData";
+import {  useSelector } from "react-redux";
+
 
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -47,7 +46,7 @@ const DetailRow = ({ logo, label, value }) => (
   </div>
 );
 
-export default function SimpleNewPaper({ candidate }) {
+export default function SimpleNewPaper({ candidate, jobTitle }) {
   const width = useWindowWidth();
   const isMobile = width <= 768;
   const [openProfileModal, setOpenProfileModal] = useState(false);
@@ -67,6 +66,8 @@ export default function SimpleNewPaper({ candidate }) {
        const unlocked = unlockedData?.some(
           (dat) => dat?.user_id === candidate.user_id
         );
+
+        console.log(unlocked)
 
         setUnlocked(unlocked)
      
@@ -164,7 +165,7 @@ export default function SimpleNewPaper({ candidate }) {
                     {profile?.fullName || "N/A"}
                   </p>
                 </div>
-                {profile?.unlocked && (
+                {unlocked && (
                   <div>
                     <Chip
                       label={
@@ -810,7 +811,7 @@ export default function SimpleNewPaper({ candidate }) {
           <div className="card-bottom-section text-xs border">
             <div className="flex flex-row gap-1 ">
               <div className="text-gray-650 text-12">
-                Proile {profile?.unlocked ? "Unlocked" : "locked"}
+                Proile {unlocked ? "Unlocked" : "locked"}
               </div>
             </div>
             <div className="flex flex-row gap-1">
@@ -835,10 +836,10 @@ export default function SimpleNewPaper({ candidate }) {
         <ProfileModal
           open={openProfileModal}
           onClose={() => setOpenProfileModal(false)}
-          jobId={jobId}
+          
           candidate={candidateDetail?.EmployeeProfile}
           phone={!unlocked? candidateDetail?.phone : candidateDetail?.EmployeeProfile?.User?.phone}
-          isDatabase={!unlocked}
+          isDatabase={unlocked}
           id={candidateDetail?.id}
           status={candidateDetail?.status}
         />

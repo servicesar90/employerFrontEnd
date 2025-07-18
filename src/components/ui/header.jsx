@@ -49,17 +49,17 @@ const Header = ({ onMenuClick }) => {
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center md:gap-6 gap-3">
           <div
             id="credit"
-            className="flex items-center gap-3 text-sm text-gray-700 font-medium cursor-pointer"
+            className="flex items-center md:gap-3 gap-1 text-sm text-gray-700 font-medium cursor-pointer"
           >
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row md:gap-2 gap-1">
               <HandCoins className="w-5 h-5 text-gray-600" />
               <span> {jobCredit ? jobCredit : 0}</span>
             </div>
 
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row md:gap-2 gap-1">
               <DatabaseIcon className="w-5 h-5 text-gray-600" />
               <span> {dataBaseCredit ? dataBaseCredit : 0}</span>
             </div>
@@ -69,7 +69,7 @@ const Header = ({ onMenuClick }) => {
             className="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer"
           >
             <HelpCircle className="w-5 h-5 text-gray-600" />
-            <span>Support</span>
+            <span className="hidden md:flex">Support</span>
           </div>
           {/* Avatar circle */}
           <div

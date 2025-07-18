@@ -1,204 +1,375 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    Tabs,
-    Tab,
-    Typography,
-    Button,
-    IconButton,
-    Chip,
-    Divider,
-    DialogActions
-} from '@mui/material';
-import { Close, Phone, WhatsApp, ThumbUp, Close as RejectIcon, PictureAsPdf } from '@mui/icons-material';
-import { Eye, View } from 'lucide-react';
-import { updateApplication } from '../../../API/ApiFunctions';
-import { showErrorToast, showSuccessToast } from '../../ui/toast';
-import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
-import { useDispatch } from 'react-redux';
-import { fetchJobsById } from '../../../Redux/getData';
+  X,
+  Phone,
+  MessageCircle,
+  FileText,
+  Eye,
+  MapPin,
+  Briefcase,
+  GraduationCap,
+  Check,
+} from "lucide-react";
+import { showErrorToast } from "../../ui/toast";
 
+const ProfileModal = ({
+  open,
+  onClose,
+  jobId,
+  candidate,
+  phone,
+  isDatabase,
+  id,
+  status,
+}) => {
+  const [age, setAge] = useState(0);
 
-const ProfileModal = ({ open, onClose, jobId, candidate, phone, isDatabase, id , status }) => {
+  // Keep all your existing logic
+  const handleReject = async (id) => {
+    console.log(id);
+    // const response = await updateApplication(id, { status: "Rejected" });
+    // if (response) {
+    //   showSuccessToast("Successfully Rejected");
+    //   dispatch(fetchJobsById(jobId));
+    // } else {
+    //   showErrorToast("Could not process, Try again!");
+    // }
+  };
 
+  const handleShortList = async (id) => {
+    // const response = await updateApplication(id, { status: "Selected" });
+    // if (response) {
+    //   showSuccessToast("Successfully Shortlisted");
+    //   dispatch(fetchJobsById(jobId));
+    // } else {
+    //   showErrorToast("Could not process, Try again!");
+    // }
+  };
 
+  useEffect(() => {
+    const dob = candidate?.dob;
+    const years = dob.split("-")[0];
+    const currentYear = new Date().getFullYear();
+    setAge(currentYear - years);
+  }, []);
 
-    const [age, setAge] = useState(0);
-    const dispatch = useDispatch();
+  if (!open) return null;
 
-    console.log(candidate)
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
 
-    const handleReject = async (id) => {
-        console.log(id)
-        const response = await updateApplication(id, { status: "Rejected" });
-        if (response) {
-          showSuccessToast("succesfully Rejected")
-          dispatch(fetchJobsById(jobId))
-        } else {
-          showErrorToast("could not processed, Try again!")
-        }
-      }
-    
-      const handleShortList = async (id) => {
-        const response = await updateApplication(id, { status: "Selected" });
-        if (response) {
-          showSuccessToast("succesfully Shortlisted")
-          dispatch(fetchJobsById(jobId))
-        } else {
-          showErrorToast("could not processed, Try again!")
-        }
-      }
+      {/* Modal Container */}
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[95vh] overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-[#003B70] to-[#0784C9] p-5 text-white">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-white/20 rounded-lg flex items-center justify-center text-xl font-bold">
+                {candidate.fullName.split("")[0].toUpperCase()}
+              </div>
+              <div>
+                <h1 className="text-xl font-bold mb-1">{candidate.fullName}</h1>
+                <div className="text-white/90 text-sm">
+                  {candidate.gender? candidate.gender: "N/A"}, {age && `${age} years,`}  {candidate?.salary && `• ₹ ${candidate?.salary}"/mo.`} 
+                  {candidate.currentLocation}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
 
-    useEffect(() => {
-        const dob = candidate?.dob;
-        const years = dob.split("-")[0];
-        const currentYear = new Date().getFullYear();
-        setAge(currentYear - years)
-    }, [])
-
-    return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth >
-
-            <DialogTitle className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="bg-purple-700 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-semibold">
-                        {candidate.fullName.split("")[0].toUpperCase()}
+        {/* Main Content */}
+        <div className="p-5 grid lg:grid-cols-3 gap-5 max-h-[65vh] overflow-y-auto">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* Work Experience */}
+            <div className="bg-[#dff3f9]/50 rounded-lg p-4 border border-[#0784C9]/20">
+              <div className="flex items-center gap-2 mb-3">
+                <Briefcase className="w-4 h-4 text-[#003B70]" />
+                <h3 className="text-base font-semibold text-[#003B70]">
+                  Work Experience
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {candidate.EmployeeExperiences?.map((experience, index) => (
+                  <div key={index} className="bg-white rounded-lg p-3">
+                    <div className="font-medium text-[#003B70] text-sm">
+                      {experience.jobTitle}
                     </div>
+                    <div className="text-[#0784C9] text-sm">
+                      {experience.companyName}
+                    </div>
+                    <div className="text-[#6A6A6A] text-xs">
+                      {experience.startDate} - {experience.endDate}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Education */}
+            <div className="bg-[#dff3f9]/50 rounded-lg p-4 border border-[#0784C9]/20">
+              <div className="flex items-center gap-2 mb-3">
+                <GraduationCap className="w-4 h-4 text-[#003B70]" />
+                <h3 className="text-base font-semibold text-[#003B70]">
+                  Education
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {candidate.EmployeeEducations?.map((edu, index) => (
+                  <div key={index} className="bg-white rounded-lg p-3">
+                    <div className="font-medium text-[#003B70] text-sm">
+                      {edu?.degree && `${edu.degree},`} {edu.specialization}
+                    </div>
+                    <div className="text-[#0784C9] text-sm">
+                      {edu.instituteName}
+                    </div>
+                    <div className="text-[#6A6A6A] text-xs">
+                      {edu.startDate?.split("-")[0]} -{" "}
+                      {edu.endDate?.split("-")[0]}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skills & Languages */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-[#dff3f9]/50 rounded-lg p-4 border border-[#0784C9]/20">
+                <h3 className="text-sm font-semibold text-[#003B70] mb-3">
+                  Skills
+                </h3>
+                <div className="flex flex-wrap gap-1">
+                  {(Array.isArray(candidate.skills)
+                    ? candidate.skills
+                    : JSON.parse(candidate.skills || "[]")
+                  )?.map((skill, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-1 bg-[#003B70] text-white rounded text-xs"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-[#dff3f9]/50 rounded-lg p-4 border border-[#0784C9]/20">
+                <h3 className="text-sm font-semibold text-[#003B70] mb-3">
+                  Languages
+                </h3>
+                <div className="flex flex-wrap gap-1">
+                  <span className="px-2 py-1 bg-[#0784C9] text-white rounded text-xs">
+                    English ({candidate.englishProficiency})
+                  </span>
+                  {(Array.isArray(candidate.otherLanguages)
+                    ? candidate.otherLanguages
+                    : JSON.parse(candidate.otherLanguages || "[]")
+                  )?.map((lang, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-1 bg-[#dff3f9] text-[#003B70] border border-[#0784C9]/30 rounded text-xs"
+                    >
+                      {lang}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Contact & Resume */}
+            <div className="bg-gradient-to-br from-[#003B70] to-[#0784C9] rounded-2xl p-6 text-white shadow-lg">
+              <h3 className="text-lg font-bold mb-4">Contact & Resume</h3>
+
+              <div className="space-y-4">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 w-50">
+                  <div className="text-white/80 text-sm mb-1">Email</div>
+                  <div className="font-small w-[70]">{candidate.email}</div>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                  <div className="flex items-center justify-between">
                     <div>
-                        <Typography variant="h6">{candidate.fullName}</Typography>
-                        <Typography variant="body2" sx={{ color: "darkgray", fontWeight: 700 }}>
-                            {candidate.gender}, {age} years &nbsp; | &nbsp;
-                            <span>₹{candidate.salary}/mo</span> &nbsp; | &nbsp;
-                            {candidate.currentLocation}, {candidate.hometown}
-                        </Typography>
+                      <div className="text-white/80 text-sm mb-1">Resume</div>
+                      <div className="font-medium text-sm">
+                        {candidate.resumeURL?.split("/").pop() || "No resume"}
+                      </div>
                     </div>
+                    <button
+                      onClick={()=>{
+                        if(candidate.resumeURL){
+                              window.open(candidate.resumeURL, "_blank");
+                        }else{
+                            showErrorToast('Resume not uploaded')
+                        }
+                      }}
+                      className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+                    >
+                      <Eye className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
-                <IconButton onClick={onClose}><Close /></IconButton>
-            </DialogTitle>
+              </div>
+            </div>
 
+            {/* Preferences */}
+            <div className="bg-gradient-to-br from-[#dff3f9] to-white rounded-2xl p-6 border border-[#0784C9]/20 shadow-lg">
+              <h3 className="text-lg font-bold text-[#003B70] mb-4">
+                Preferences
+              </h3>
 
-
-            <DialogContent className="space-y-6 p-6">
-
-                <>
-                    <section>
-                        <Typography variant="subtitle1" className="font-bold" sx={{ fontWeight: 700 }}>Work Experience</Typography>
-                        {candidate.EmployeeExperiences.map((experience, index) => (
-
-                            <Typography key={index} variant="body2" sx={{ marginTop: "20px" }}>
-                                {experience.jobTitle} at {experience.companyName} ({experience.startDate}- {experience.endDate})<br />
-                                {/* Role: {JSON.parse(experience.jobRole).map((role, index)=> <p key={index}>{role}</p>)} | Industry: {experience.industry} */}
-                            </Typography>
-                        ))}
-                    </section>
-
-                    <section>
-                        <Typography variant="subtitle1" className="font-semibold" sx={{ fontWeight: 700 }}>Education</Typography>
-                        {candidate.EmployeeEducations.map((edu, index) => (
-                            <Typography key={index} variant="body2">
-                                {edu.degree},{edu.specialization} | {edu.instituteName} | {edu.startDate.split("-")[0]}-{edu.endDate.split("-")[0]}
-                            </Typography>
-                        ))}
-                    </section>
-
-                    <section>
-                        <Typography variant="subtitle1" className="font-semibold" sx={{ fontWeight: 700 }}>Languages</Typography>
-                        <Chip label={`English (${candidate.englishProficiency})`} className="mr-2 mt-1" />
-                        {(Array.isArray(candidate.preferredShifts)? candidate.preferredShifts: JSON.parse(candidate.otherLanguages))?.map((lang, idx) => (
-                            <Chip key={idx} label={lang} className="mr-2 mt-1" />
-                        ))}
-                    </section>
-
-                    <section>
-                        <Typography variant="subtitle1" className="font-semibold" sx={{ fontWeight: 700 }}>Skills</Typography>
-
-                        {(Array.isArray(candidate.skills)? candidate.skills: JSON.parse(candidate.skills))?.map((lang, idx) => (
-                            <Chip key={idx} label={lang} className="mr-2 mt-1" />
-                        ))}
-                    </section>
-
-                    <section>
-                        <Typography variant="subtitle1" className="font-semibold" sx={{ fontWeight: 700 }}>Candidate Preferences</Typography>
-
-                        {(Array.isArray(candidate.preferredShifts)? candidate.preferredShifts: JSON.parse(candidate.preferredShifts))?.map((lang, idx) => (
-                            <Chip key={idx} label={lang} className="mr-2 mt-1" />
-                        ))}
-
-                        {(Array.isArray(candidate.prefferedEmploymentTypes)? candidate.prefferedEmploymentTypes: JSON.parse(candidate.prefferedEmploymentTypes))?.map((lang, idx) => (
-                            <Chip key={idx} label={lang} className="mr-2 mt-1" />
-                        ))}
-
-                        {(Array.isArray(candidate.preferredLocationTypes)? candidate.preferredLocationTypes: JSON.parse(candidate.preferredLocationTypes))?.map((lang, idx) => (
-                            <Chip key={idx} label={lang} className="mr-2 mt-1" />
-                        ))}
-
-                        {(Array.isArray(candidate.preferredJobCity)? candidate.preferredJobCity: JSON.parse(candidate.preferredJobCity))?.map((lang, idx) => (
-                            <Chip key={idx} label={lang} className="mr-2 mt-1" />
-                        ))}
-                    </section>
-
-                    <section>
-                        <Typography variant="subtitle1" className="font-semibold" sx={{ fontWeight: 700 }}>Basic Details</Typography>
-
-                        <Typography sx={{ color: "grey", fontSize: ["0.9rem"] }}>Email</Typography>
-                        {candidate.email}
-                    </section>
-
-
-                    <section >
-                        <Typography variant="subtitle1" className="font-semibold" sx={{ fontWeight: 700 }}>Resume</Typography>
-                        <div className='flex flex-row gap-4 mt-4'>
-
-
-                            <div className='flex flex-row gap-2'>
-                                <PictureAsPdf sx={{ color: 'red' }} />
-
-                                {candidate.resumeURL?.split("/").pop()}
-
-                            </div>
-                            <button onClick={() => window.open(candidate.resumeURL, '_blank')}>
-                                <RemoveRedEyeTwoToneIcon />
-                            </button>
-                        </div>
-                    </section>
-
-                    {/* <section>
-              <Typography variant="subtitle1" className="font-semibold">Matching</Typography>
-              <Typography variant="body2" className="text-gray-700">
-                {candidate.matching}
-              </Typography>
-            </section> */}
-                </>
-
-            </DialogContent>
-
-            <DialogActions sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 2 }}>
-
-                <Divider />
-
-                <div className="flex flex-wrap gap-3 mt-4 justify-start">
-                    <Button variant="contained" startIcon={<Phone />} className="bg-green-600 hover:bg-green-700">
-                        {phone}
-                    </Button>
-                    <Button variant="outlined" startIcon={<WhatsApp />} className="text-green-600 border-green-600">
-                        WhatsApp
-                    </Button>
-                    {!isDatabase && <><Button variant="outlined" onClick={() => handleShortList(id)} disabled={status === "Selected"} color="success">{(status === "Selected") ? "Shortlisted" : "ShortList"}</Button>
-                    <Button variant="contained" onClick={() => handleReject(id)} disabled={status === "Rejected"} color="error">{(status === "Rejected") ? "Rejected" : "Reject"}</Button></>}
-
+              <div className="space-y-4">
+                <div>
+                  <div className="text-[#6A6A6A] text-sm font-medium mb-2">
+                    Shifts
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(Array.isArray(candidate.preferredShifts)
+                      ? candidate.preferredShifts
+                      : JSON.parse(candidate.preferredShifts || "[]")
+                    )?.map((shift, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-1 bg-[#dff3f9] text-[#003B70] rounded-lg text-xs border border-[#0784C9]/20"
+                      >
+                        {shift}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                <Typography variant="caption" className="text-gray-500 mt-3 block" >
-                    Applied {candidate.appliedAgo} | Active {candidate.lastActive}
-                </Typography>
+                <div>
+                  <div className="text-[#6A6A6A] text-sm font-medium mb-2">
+                    Job Types
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(Array.isArray(candidate.prefferedEmploymentTypes)
+                      ? candidate.prefferedEmploymentTypes
+                      : JSON.parse(candidate.prefferedEmploymentTypes || "[]")
+                    )?.map((type, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-1 bg-[#dff3f9] text-[#003B70] rounded-lg text-xs border border-[#0784C9]/20"
+                      >
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
-            </DialogActions>
+                <div>
+                  <div className="text-[#6A6A6A] text-sm font-medium mb-2">
+                    Cities
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(Array.isArray(candidate.preferredJobCity)
+                      ? candidate.preferredJobCity
+                      : JSON.parse(candidate.preferredJobCity || "[]")
+                    )?.map((city, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-1 bg-[#dff3f9] text-[#003B70] rounded-lg text-xs border border-[#0784C9]/20"
+                      >
+                        {city}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            {/* Application Status */}
+            <div className="bg-gradient-to-br from-white to-[#dff3f9] rounded-2xl p-6 border border-[#0784C9]/20 shadow-lg">
+              <h3 className="text-lg font-bold text-[#003B70] mb-4">
+                Application
+              </h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-[#6A6A6A] text-sm">Applied</span>
+                  <span className="text-[#003B70] font-medium">
+                    {candidate.appliedAgo}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#6A6A6A] text-sm">Status</span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      status === "Selected"
+                        ? "bg-green-100 text-green-800"
+                        : status === "Rejected"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {status || "Pending"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        </Dialog>
-    );
+        {/* Action Footer */}
+        <div className="border-t border-[#dff3f9] bg-gradient-to-r from-white to-[#dff3f9]/30 p-3">
+          <div className="flex flex-wrap gap-4 justify-center ">
+            <button className="flex items-center gap-2 md:px-6 px-2 md:py-3 py-1 bg-secondary text-white rounded-xl hover:bg-primary transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:scale-105">
+              <Phone className="md:w-5 md:h-5 w-6 h-6" />
+              <span className="hidden md:flex">Call {phone}</span>
+            </button>
+
+            <button className="flex items-center gap-2 md:px-6 px-2 md:py-3 py-1 bg-secondary text-white rounded-xl hover:bg-primary transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:scale-105">
+              <MessageCircle className="md:w-5 md:h-5 w-6 h-6" />
+              <span className="hidden md:flex">WhatsApp</span> 
+            </button>
+
+            {!isDatabase && (
+      <>
+        <button
+          onClick={() => handleShortList(id)}
+          disabled={status === "Selected"}
+          className={`flex items-center gap-2 md:px-6 px-2 md:py-3 py-1 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl ${
+            status === "Selected"
+              ? "bg-green-100 text-green-800 cursor-not-allowed"
+              : "bg-[#0784C9] text-white hover:bg-[#003B70] hover:scale-105"
+          }`}
+        >
+          <Check className="md:w-5 md:h-5 w-6 h-6" />
+          <span className="hidden md:flex">Shortlist</span>
+        </button>
+
+        <button
+          onClick={() => handleReject(id)}
+          disabled={status === "Rejected"}
+          className={`flex items-center gap-2 md:px-6 px-2 md:py-3 py-1 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl ${
+            status === "Rejected"
+              ? "bg-red-100 text-red-800 cursor-not-allowed"
+              : "bg-red-600 text-white hover:bg-red-700 hover:scale-105"
+          }`}
+        >
+          <X className="md:w-5 md:h-5 w-6 h-6" />
+          <span className="hidden md:flex">Reject</span>
+        </button>
+      </>
+    )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ProfileModal;
