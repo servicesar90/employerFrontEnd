@@ -104,7 +104,8 @@ export default function Navbar() {
           {!isLoggedIn ? (
             <div className="flex flex-row gap-2">
               <button
-                disabled
+              onClick={()=>window.open("https://app.talentnestjob.store","_blank")}
+             
                 className="bg-blue-500 text-white px-1 md:px-2 py-1 rounded-md text-[0.8rem] md:text-16 font-medium"
               >
                 Candidate Login
