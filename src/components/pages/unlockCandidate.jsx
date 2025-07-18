@@ -1,49 +1,37 @@
 import { useEffect, useState } from "react";
-import {
- 
-  Filter,
+import { Filter } from "lucide-react";
+import FilterListOffIcon from "@mui/icons-material/FilterListOff";
 
-} from "lucide-react";
-import FilterListOffIcon from "@mui/icons-material/FilterListOff"; 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUnlockedCandidate } from "../../Redux/getData";
 import SimpleNewPaper from "../ui/cards/candidateCard";
 
-
 const CandidateManagementPage = () => {
- 
   const dispatch = useDispatch();
   const [showFilters, setShowFilters] = useState(false);
   const [candidatess, setCandidate] = useState(null);
   const [isFilter, setIsFilter] = useState(false);
-  const [allCandidates, setAllCandidates] = useState(null)
+  const [allCandidates, setAllCandidates] = useState(null);
   const [activeFilters, setActiveFilters] = useState({
     time: null,
     education: null,
     gender: null,
   });
 
- 
-
-
-
   useEffect(() => {
     dispatch(fetchUnlockedCandidate());
   }, [dispatch]);
 
-    const { unlockedData,  loading } = useSelector((state) => state.getDataReducer);
+  const { unlockedData, loading } = useSelector(
+    (state) => state.getDataReducer,
+  );
 
-    useEffect(()=>{
-      if(unlockedData){
-        
-        setCandidate(unlockedData);
-        setAllCandidates(unlockedData)
-    
-      }
-    },[unlockedData])
-
- 
-
+  useEffect(() => {
+    if (unlockedData) {
+      setCandidate(unlockedData);
+      setAllCandidates(unlockedData);
+    }
+  }, [unlockedData]);
 
   const handlefilter = (type, value) => {
     const updatedFilters = {
@@ -137,12 +125,7 @@ const CandidateManagementPage = () => {
 
   return (
     <div className="min-h-[95vh] w-full" style={{ backgroundColor: "#DFF3F9" }}>
-      
-
-      
-   
       {/* bottom section */}
-
       <div className="flex gap-2 p-4 flex-col md:flex-row relative">
         {/* Mobile Filter Button */}
         <div className="md:hidden flex justify-center mb-2">
@@ -161,12 +144,11 @@ const CandidateManagementPage = () => {
 
         {/* Left Filters - Drawer on mobile, visible on md+ */}
         <div
-          className={`
-    ${
-      showFilters
-        ? "fixed bottom-0 left-0 w-full max-w-full h-[80vh] z-50 shadow-xl p-4 rounded-t-2xl animate-slideUp overflow-y-auto"
-        : "hidden"
-    }
+          className={`    ${
+            showFilters
+              ? "fixed bottom-0 left-0 w-full max-w-full h-[80vh] z-50 shadow-xl p-4 rounded-t-2xl animate-slideUp overflow-y-auto"
+              : "hidden"
+          }
     md:static md:block md:w-1/4 md:space-y-4 md:bg-transparent md:shadow-none md:p-0
   `}
           style={{
@@ -212,8 +194,6 @@ const CandidateManagementPage = () => {
             )}
             Filters
           </div>
-
-         
 
           <div
             className="rounded-lg max-h-[40vh] overflow-scroll border shadow-sm p-4 space-y-2 text-14 text-left"
@@ -420,19 +400,16 @@ const CandidateManagementPage = () => {
         )}
 
         {/* Right: Candidate List */}
-        <div className="w-full md:w-3/4 max-h-[85vh] overflow-scroll">
-          
-
+        <div className="w-full md:w-3/4 max-h-[85vh] overflow-y-scroll">
           <div
             className="text-16 font-semibold mb-7"
             style={{ color: "#003B70" }}
           >
-            Showing{" "}
-            {candidatess?.length}{" "}
-            candidates
+            Showing {candidatess?.length || 0} candidates
           </div>
-          {candidatess?.map(
-            (candidate, index) => (
+
+          {candidatess && candidatess.length > 0 ? (
+            candidatess.map((candidate, index) => (
               <div
                 key={index}
                 className="mb-10 shadow-lg rounded-lg border hover:shadow-xl transition-shadow duration-200"
@@ -441,24 +418,79 @@ const CandidateManagementPage = () => {
                   borderColor: "#0784C9",
                 }}
               >
-                <SimpleNewPaper candidate={candidate}  />
+                <SimpleNewPaper candidate={candidate} />
               </div>
-            )
-          )}
-
-          {/* Pagination */}
-          {/* <div className="flex justify-end mt-4">
+            ))
+          ) : (
             <div
-              className="border rounded-md px-3 py-1 text-sm hover:opacity-80 transition-opacity cursor-pointer"
+              className="p-20 text-center rounded-lg shadow-lg border"
               style={{
-                borderColor: "#0784C9",
-                color: "#003B70",
                 backgroundColor: "white",
+                borderColor: "#0784C9",
               }}
             >
-              1
+              <div
+                className="mx-auto mb-6 rounded-full flex items-center justify-center"
+                style={{
+                  backgroundColor: "#DEF3F9",
+                  width: "80px",
+                  height: "80px",
+                }}
+              >
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#0784C9"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <h2
+                className="text-18 font-semibold mb-4"
+                style={{ color: "#003B70" }}
+              >
+                No Candidates Found
+              </h2>
+              <p className="text-12 mb-6" style={{ color: "#0784C9" }}>
+                No candidates match your current filter criteria. Try adjusting
+                your filters or check back later for new applications.
+              </p>
+              <button
+                onClick={() => {
+                  setCandidate(allCandidates);
+                  setIsFilter(false);
+                  setActiveFilters({
+                    time: null,
+                    education: null,
+                    gender: null,
+                  });
+                }}
+                className="px-6 py-2 rounded-full text-12 font-medium transition-all"
+                style={{
+                  backgroundColor: "#0784C9",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#0066A3";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "#0784C9";
+                }}
+              >
+                Clear All Filters
+              </button>
             </div>
-          </div> */}
+          )}
+
+          
         </div>
       </div>
     </div>
