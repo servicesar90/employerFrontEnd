@@ -1,4 +1,4 @@
-// export default BillingPage;
+
 import { useEffect, useState } from "react";
 import { Download, Mail } from "lucide-react";
 import { getBill, getInvoiceFunc } from "../../API/ApiFunctions";
@@ -21,105 +21,244 @@ const Invoice = ({ data, invoiceNumber }) => {
   const totalInWords = `${toWords(Math.floor(total))} rupees only`;
 
   return (
+    // <div
+    //   id="invoice"
+    //   className="max-w-[800px] mx-auto bg-white text-black p-8"
+    //   style={{ fontFamily: "Arial, sans-serif", fontSize: "14px" }}
+    // >
+    //   {/* Header */}
+    //   <div className="flex justify-between items-center mb-6">
+    //     <div>
+    //       <img
+    //         src="/unigrowLogo.png" 
+    //         alt="Company Logo"
+    //         className="h-10"
+    //       />
+    //       {/* <div className="font-bold text-lg">Unigrow Talent</div> */}
+    //     </div>
+    //     <div className="text-right">
+    //       <div className="font-bold text-lg">Invoice</div>
+    //       <div>Invoice No: {invoiceNumber}</div>
+    //     </div>
+    //   </div>
+
+    //   <div className="flex justify-between mb-4">
+    //     <div>
+    //       <strong>Date:</strong>{" "}
+    //       {new Date(data?.created_at).toLocaleDateString()}
+    //     </div>
+    //   </div>
+
+    //   {/* Parties */}
+    //   <div className="flex justify-between mb-6">
+    //     <div className="w-1/2 pr-2">
+    //       <strong>Invoiced To:</strong>
+    //       <p>{data?.Employer?.GstDetail?.tradeNam}</p>
+    //       <p>
+    //         {data?.Employer?.GstDetail?.bno},{" "}
+    //         {data?.Employer?.GstDetail?.bnm},{" "}
+    //         {data?.Employer?.GstDetail?.dst}
+    //       </p>
+    //       <p>GSTIN: {data?.Employer?.GstDetail?.gstin}</p>
+    //     </div>
+    //     <div className="w-1/2 pl-2">
+    //       <strong>Pay To:</strong>
+    //       <p>TalentNest People Services PVT. Ltd.</p>
+    //       <p>4F-435A, Crossing Republik, Gautambuddha Nagar</p>
+    //       <p>GSTIN: 09AALCT8284F1ZQ</p>
+    //       <p>info@talennestpeopleservices.com</p>
+    //     </div>
+    //   </div>
+
+    //   {/* Table */}
+    //   <table className="w-full text-left border-collapse mb-6">
+    //     <thead>
+    //       <tr className="bg-gray-100">
+    //         <th className="border border-black p-2">Service</th>
+    //         <th className="border border-black p-2">Description</th>
+    //         <th className="border border-black p-2">Rate</th>
+    //         <th className="border border-black p-2">Qty</th>
+    //         <th className="border border-black p-2">Amount</th>
+    //       </tr>
+    //     </thead>
+    //     <tbody>
+    //       <tr>
+    //         <td className="border border-black p-2">Hot</td>
+    //         <td className="border border-black p-2">
+    //           {data?.Plan?.description}
+    //         </td>
+    //         <td className="border border-black p-2">₹{subtotal.toFixed(2)}</td>
+    //         <td className="border border-black p-2">1</td>
+    //         <td className="border border-black p-2">₹{subtotal.toFixed(2)}</td>
+    //       </tr>
+    //       <tr>
+    //         <td colSpan={4} className=" p-2 text-right border border-black">Subtotal:</td>
+    //         <td className="border border-black p-2 border border-black">₹{subtotal.toFixed(2)}</td>
+    //       </tr>
+    //       <tr>
+    //         <td colSpan={4} className=" p-2 text-right border border-black">CGST @ 9%:</td>
+    //         <td className="border border-black p-2">₹{cgst.toFixed(2)}</td>
+    //       </tr>
+    //       <tr>
+    //         <td colSpan={4} className=" p-2 text-right border border-black">SGST @ 9%:</td>
+    //         <td className="border border-black p-2">₹{sgst.toFixed(2)}</td>
+    //       </tr>
+    //       <tr>
+    //         <td colSpan={4} className=" p-2 text-right font-bold border border-black">Total:</td>
+    //         <td className="border border-black p-2 font-bold">₹{total.toFixed(2)}</td>
+    //       </tr>
+    //     </tbody>
+    //   </table>
+
+    //   {/* Total in words */}
+    //   <p className="mb-4">
+    //     <strong>Total in words:</strong> {totalInWords}
+    //   </p>
+
+    //   {/* Note */}
+    //   <p className="text-xs mt-8">
+    //     NOTE: This is a computer-generated invoice and does not require a physical signature.
+    //   </p>
+    // </div>
     <div
-      id="invoice"
-      className="max-w-[800px] mx-auto bg-white text-black p-8"
-      style={{ fontFamily: "Arial, sans-serif", fontSize: "14px" }}
-    >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <img
-            src="/unigrowLogo.png" 
-            alt="Company Logo"
-            className="h-10"
-          />
-          {/* <div className="font-bold text-lg">Unigrow Talent</div> */}
-        </div>
-        <div className="text-right">
-          <div className="font-bold text-lg">Invoice</div>
-          <div>Invoice No: {invoiceNumber}</div>
-        </div>
-      </div>
-
-      <div className="flex justify-between mb-4">
-        <div>
-          <strong>Date:</strong>{" "}
-          {new Date(data?.created_at).toLocaleDateString()}
-        </div>
-      </div>
-
-      {/* Parties */}
-      <div className="flex justify-between mb-6">
-        <div className="w-1/2 pr-2">
-          <strong>Invoiced To:</strong>
-          <p>{data?.Employer?.GstDetail?.tradeNam}</p>
-          <p>
-            {data?.Employer?.GstDetail?.bno},{" "}
-            {data?.Employer?.GstDetail?.bnm},{" "}
-            {data?.Employer?.GstDetail?.dst}
-          </p>
-          <p>GSTIN: {data?.Employer?.GstDetail?.gstin}</p>
-        </div>
-        <div className="w-1/2 pl-2">
-          <strong>Pay To:</strong>
-          <p>TalentNest People Services PVT. Ltd.</p>
-          <p>4F-435A, Crossing Republik, Gautambuddha Nagar</p>
-          <p>GSTIN: 09AALCT8284F1ZQ</p>
-          <p>info@talennestpeopleservices.com</p>
-        </div>
-      </div>
-
-      {/* Table */}
-      <table className="w-full text-left border-collapse mb-6">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">Service</th>
-            <th className="border p-2">Description</th>
-            <th className="border p-2">Rate</th>
-            <th className="border p-2">Qty</th>
-            <th className="border p-2">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border p-2">Hot</td>
-            <td className="border p-2">
-              {data?.Plan?.description}
-            </td>
-            <td className="border p-2">₹{subtotal.toFixed(2)}</td>
-            <td className="border p-2">1</td>
-            <td className="border p-2">₹{subtotal.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td colSpan={4} className=" p-2 text-right">Subtotal:</td>
-            <td className="border p-2">₹{subtotal.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td colSpan={4} className=" p-2 text-right">CGST @ 9%:</td>
-            <td className="border p-2">₹{cgst.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td colSpan={4} className=" p-2 text-right">SGST @ 9%:</td>
-            <td className="border p-2">₹{sgst.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td colSpan={4} className=" p-2 text-right font-bold">Total:</td>
-            <td className="border p-2 font-bold">₹{total.toFixed(2)}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      {/* Total in words */}
-      <p className="mb-4">
-        <strong>Total in words:</strong> {totalInWords}
-      </p>
-
-      {/* Note */}
-      <p className="text-xs mt-8">
-        NOTE: This is a computer-generated invoice and does not require a physical signature.
-      </p>
+  id="invoice"
+  className="max-w-[800px] mx-auto bg-white text-black p-8 shadow-lg border border-gray-300"
+  style={{
+    fontFamily: "Arial, sans-serif",
+    fontSize: "14px",
+    minHeight: "1000px", // ensure fills page
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  }}
+>
+  {/* Header */}
+  <div className="flex justify-between items-center mb-6 border-b pb-4">
+    <div>
+      <img
+        src="/unigrowLogo.png"
+        alt="Company Logo"
+        className="h-12 mb-2"
+      />
+      <div className="text-sm text-gray-600">www.unigrowtalent.com</div>
     </div>
+    <div className="text-right">
+      <div className="text-2xl font-bold text-gray-800">INVOICE</div>
+      <div className="text-sm">Invoice No: <strong>{invoiceNumber}</strong></div>
+      <div className="text-sm">Date: <strong>{new Date(data?.created_at).toLocaleDateString()}</strong></div>
+    </div>
+  </div>
+
+  {/* Parties */}
+  <table className="w-full mb-6 border border-black">
+  <thead>
+    <tr className="bg-gray-100">
+      <th className="border border-black p-2 text-left">Billed To</th>
+      <th className="border border-black p-2 text-left">Pay To</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td className="border border-black p-2 align-top">
+        <p>{data?.Employer?.GstDetail?.tradeNam}</p>
+        <p>
+          {data?.Employer?.GstDetail?.bno},{" "}
+          {data?.Employer?.GstDetail?.bnm},{" "}
+          {data?.Employer?.GstDetail?.dst}
+        </p>
+        <p>GSTIN: {data?.Employer?.GstDetail?.gstin}</p>
+      </td>
+      <td className="border border-black p-2 align-top">
+        <p>TalentNest People Services PVT. Ltd.</p>
+        <p>4F-435A, Crossing Republik, Gautambuddha Nagar</p>
+        <p>GSTIN: 09AALCT8284F1ZQ</p>
+        <p>Email: info@talennestpeopleservices.com</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+  {/* Table */}
+  <table className="w-full text-left border-collapse mb-6">
+    <thead>
+      <tr className="bg-gray-100">
+        <th className="border border-black p-2 py-4 text-sm">Service</th>
+        <th className="border border-black p-2 py-4 text-sm">Description</th>
+        <th className="border border-black p-2 py-4 text-sm">Rate</th>
+        <th className="border border-black p-2 py-4 text-sm">Qty</th>
+        <th className="border border-black p-2 py-4 text-sm">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-black p-2 py-4">Hot</td>
+        <td className="border border-black p-2 py-4">{data?.Plan?.description}</td>
+        <td className="border border-black p-2 py-4">₹{subtotal.toFixed(2)}</td>
+        <td className="border border-black p-2 py-4">1</td>
+        <td className="border border-black p-2 py-4">₹{subtotal.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td colSpan={4} className="p-2 text-right font-semibold border border-black ">Subtotal:</td>
+        <td className="border border-black p-2">₹{subtotal.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td colSpan={4} className="p-2 text-right font-semibold border border-black ">CGST @ 9%:</td>
+        <td className="border border-black p-2">₹{cgst.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td colSpan={4} className="p-2 text-right font-semibold border border-black ">SGST @ 9%:</td>
+        <td className="border border-black p-2">₹{sgst.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td colSpan={4} className="p-2 text-right font-bold border border-black ">Total:</td>
+        <td className="border border-black p-2 font-bold">₹{total.toFixed(2)}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {/* Total in words */}
+  <p className="mb-2">
+    <strong>Total (in words):</strong> {totalInWords}
+  </p>
+
+  {/* Terms & Conditions */}
+  <div className="mt-2">
+    <h3 className="font-bold mb-2">Terms & Conditions</h3>
+    <ul className="text-xs  pl-4 space-y-1">
+      <li>Please make payments to the account details mentioned below.</li>
+      <li>For any queries, contact us at info@talennestpeopleservices.com.</li>
+    </ul>
+  </div>
+
+  {/* Bank Details */}
+  <div className="mt-2">
+    <h3 className="font-bold mb-2">Bank Details</h3>
+    <p className="text-xs">
+      <strong>Account Name:</strong> TalentNest People Services PVT. Ltd. <br/>
+      <strong>Account Number:</strong> XXXXXXXX1234 <br/>
+      <strong>IFSC:</strong> ABCD0123456 <br/>
+      <strong>Bank:</strong> Axis Bank, Crossing Republik, Ghaziabad
+    </p>
+  </div>
+
+  {/* Contact Information */}
+  
+
+  {/* Optional Tagline */}
+ 
+
+  {/* Signature */}
+  
+
+  {/* Footer */}
+  <div className="border-t pt-4 text-xs text-gray-600 mt-8">
+    <p>NOTE: This is a computer-generated invoice and does not require a physical signature.</p>
+    <p className="text-center mt-2 font-medium">Thank you for your business! We look forward to serving you again.</p>
+  </div>
+</div>
+
+
   );
 };
 
