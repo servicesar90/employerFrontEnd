@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import {motion} from "framer-motion"
 
 const Features = () => {
   
