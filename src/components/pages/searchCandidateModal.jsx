@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import { Briefcase, DollarSign, Filter, GraduationCap, MapPin, Search, Users } from "lucide-react";
 import SimpleNewPaper from "../ui/cards/candidateCard";
 
+import FilterListOffIcon from "@mui/icons-material/FilterListOff";
+
 
 
 

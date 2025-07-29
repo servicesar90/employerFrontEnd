@@ -27,6 +27,9 @@ import Index from "../components/pages/aboutUS.jsx";
 import ContactUs from "../components/pages/contactUs.jsx";
 import Navbar from "../components/ui/navbar.jsx";
 import  SavedSearch  from "../components/pages/savedSearch.jsx";
+import { Call } from "@mui/icons-material";
+import { Box } from "lucide-react";
+import {motion} from "framer-motion"
 
 function Layout() {
   return (
@@ -34,6 +37,29 @@ function Layout() {
       
       <Navbar />
       <Outlet />
+
+        <Box
+        sx={{
+          position: "fixed",
+          right: "5vw",
+          bottom: "10vh",
+          zIndex: 1000,
+        }}
+         onClick={()=> window.location.href = `tel:${9211336926}`}
+      >
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          style={{
+            background: "linear-gradient(90deg, #003B70, #0784C9)", // replace with your theme color
+            padding: "12px",
+            borderRadius: "50%",
+            display: "inline-block",
+          }}
+        >
+          <Call sx={{color: "white"}} />
+        </motion.div>
+      </Box>
     </div>
   );
 }

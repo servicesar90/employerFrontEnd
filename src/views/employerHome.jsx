@@ -5,7 +5,9 @@ import { Outlet } from "react-router-dom";
 import { Steps, Hints } from "intro.js-react";
 import "intro.js/introjs.css";
 import "intro.js/themes/introjs-modern.css";
-import { Briefcase, Home } from "lucide-react";
+import { Box, Briefcase, Home } from "lucide-react";
+import { Call } from "@mui/icons-material";
+import {motion} from 'framer-motion'
 
 const EmployerHome = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -247,6 +249,29 @@ const EmployerHome = () => {
           </div>
         </div>
       </div>
+       <Box
+        sx={{
+          position: "fixed",
+          right: "5vw",
+          bottom: "10vh",
+          zIndex: 1000,
+        }}
+         onClick={()=> window.location.href = `tel:${9211336926}`}
+      >
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          style={{
+            background: "linear-gradient(90deg, #003B70, #0784C9)", 
+            padding: "12px",
+            borderRadius: "50%",
+            display: "inline-block",
+          }}
+        >
+          <Call sx={{color: "white"}} />
+        </motion.div>
+      </Box>
+
     </>
   );
 };
