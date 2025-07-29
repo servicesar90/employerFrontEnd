@@ -5,9 +5,10 @@ import { Outlet } from "react-router-dom";
 import { Steps, Hints } from "intro.js-react";
 import "intro.js/introjs.css";
 import "intro.js/themes/introjs-modern.css";
-import { Box, Briefcase, Home } from "lucide-react";
+import {  Briefcase, Home } from "lucide-react";
 import { Call } from "@mui/icons-material";
 import {motion} from 'framer-motion'
+import { Box } from "@mui/material";
 
 const EmployerHome = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);

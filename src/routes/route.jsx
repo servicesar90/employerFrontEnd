@@ -28,8 +28,8 @@ import ContactUs from "../components/pages/contactUs.jsx";
 import Navbar from "../components/ui/navbar.jsx";
 import  SavedSearch  from "../components/pages/savedSearch.jsx";
 import { Call } from "@mui/icons-material";
-import { Box } from "lucide-react";
 import {motion} from "framer-motion"
+import { Box } from "@mui/material";
 
 function Layout() {
   return (
