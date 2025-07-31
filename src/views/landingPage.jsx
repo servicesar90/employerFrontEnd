@@ -731,38 +731,22 @@ const Index = () => {
 
   const testimonials = [
     {
-      name: "Sarah Mitchell",
-      title: "HR Director",
-      company: "TechCorp Solutions",
-      image: "SM",
-      rating: 5,
+      
       text: "Unigrow Talent transformed our hiring process completely. We reduced our time-to-hire by 60% and found candidates that are perfect cultural fits. The matching is incredibly accurate.",
       stats: { hired: 45, timeReduced: "60%" },
     },
     {
-      name: "David Chen",
-      title: "Startup Founder",
-      company: "InnovateLab",
-      image: "DC",
-      rating: 5,
+      
       text: "As a startup, we needed to hire fast without compromising quality. Unigrow Talent delivered exceptional candidates within days. The platform is intuitive and the support team is fantastic.",
       stats: { hired: 12, timeReduced: "75%" },
     },
     {
-      name: "Maria Rodriguez",
-      title: "VP of Engineering",
-      company: "DataFlow Inc",
-      image: "MR",
-      rating: 5,
+      
       text: "The quality of candidates we receive through Unigrow Talent is unmatched. The pre-screening process saves us countless hours, and the analytics help us make data-driven hiring decisions.",
       stats: { hired: 28, timeReduced: "50%" },
     },
     {
-      name: "James Wilson",
-      title: "Talent Acquisition Lead",
-      company: "CloudSync",
-      image: "JW",
-      rating: 5,
+      
       text: "We have tried multiple hiring platforms, but Unigrow Talent stands out. The candidate quality is exceptional, and the collaborative features make team hiring decisions seamless.",
       stats: { hired: 67, timeReduced: "65%" },
     },
@@ -1605,7 +1589,7 @@ const Index = () => {
                     "{testimonials[currentIndex].text}"
                   </blockquote>
 
-                  <div className="flex items-center justify-center space-x-4 mb-6">
+                  {/* <div className="flex items-center justify-center space-x-4 mb-6">
                     <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
                       {testimonials[currentIndex].image}
                     </div>
@@ -1618,15 +1602,9 @@ const Index = () => {
                         {testimonials[currentIndex].company}
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="flex items-center justify-center space-x-1 mb-6">
-                    {[...Array(testimonials[currentIndex].rating)].map(
-                      (_, i) => (
-                        <StarIcon key={i} className="h-5 w-5 text-yellow-400" />
-                      )
-                    )}
-                  </div>
+                  
 
                   <div className="grid grid-cols-2 gap-6 max-w-sm mx-auto">
                     <div className="text-center">
