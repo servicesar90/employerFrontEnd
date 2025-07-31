@@ -1,4 +1,4 @@
-export  const base_url = "https://backend.talentnestjob.store";
+export  const base_url = "https://backend.unigrowtalent.com";
 
 // export  const base_url = "http://192.168.1.5:5000"; 
 
